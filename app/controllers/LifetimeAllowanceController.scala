@@ -17,19 +17,19 @@
 package controllers
 
 import play.api.libs.json._
-import services.KnowledgeIntensiveService
+import services.{KnowledgeIntensiveService, LifetimeAllowanceService}
 import uk.gov.hmrc.play.microservice.controller.BaseController
+
 import scala.concurrent.Future
 import play.api.mvc._
 
-object KnowledgeIntensiveController extends KnowledgeIntensiveController
+object LifetimeAllowanceController extends LifetimeAllowanceController
 
-trait KnowledgeIntensiveController extends BaseController {
+trait LifetimeAllowanceController extends BaseController {
 
-  def checkRAndDCosts(operatingCosts1stYear: Int,operatingCosts2ndYear: Int,operatingCosts3rdYear: Int,
-                      rAndDCosts1stYear:Int, rAndDCosts2ndYear:Int, rAndDCosts3rdYear:Int): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(Json.toJson(KnowledgeIntensiveService.checkRAndDCosts(operatingCosts1stYear, operatingCosts2ndYear, operatingCosts3rdYear,
-      rAndDCosts1stYear, rAndDCosts2ndYear, rAndDCosts3rdYear))))
+  def checkLifetimeAllowanceExceeded(isKi: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int): Action[AnyContent] =
+    Action.async { implicit request =>
+
+      Future.successful(Ok(Json.toJson(LifetimeAllowanceService.checkLifetimeAllowanceExceeded(isKi,previousInvestmentSchemesTotal,proposedAmount))))
   }
-
 }
