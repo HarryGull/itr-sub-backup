@@ -48,4 +48,8 @@ trait KnowledgeIntensiveService {
 
     if (validOperatingCosts) operatingCostConditionFifteen||operatingCostConditionTen else false
   }
+
+  def validateSecondaryKiConditions(hasPercentageWithMasters: Boolean,
+                                    hasTenYearPlan: Boolean): Boolean = hasPercentageWithMasters || hasTenYearPlan
+
 }

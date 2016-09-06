@@ -32,4 +32,11 @@ trait KnowledgeIntensiveController extends BaseController {
       rAndDCosts1stYear, rAndDCosts2ndYear, rAndDCosts3rdYear))))
   }
 
+  def validateSecondaryKiConditions(hasPercentageWithMasters: Boolean,
+    hasTenYearPlan: Boolean):  Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(Json.toJson(KnowledgeIntensiveService.validateSecondaryKiConditions(hasPercentageWithMasters, hasTenYearPlan))))
+  }
+
+
+
 }
