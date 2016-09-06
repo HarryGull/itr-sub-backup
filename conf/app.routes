@@ -2,6 +2,4 @@
 
 GET        /hello-world            controllers.TestController.hello
 
-GET        /knowledge-intensive/rd-costs-checker/costs/operating-costs/:operatingCosts1stYear/:operatingCosts2ndYear/:operatingCosts3rdYear/rd-costs/:rAndDCosts1stYear/:rAndDCosts2ndYear/:rAndDCosts3rdYear           controllers.KnowledgeIntensiveController.checkRAndDCosts(operatingCosts1stYear: Int,operatingCosts2ndYear: Int,operatingCosts3rdYear: Int,rAndDCosts1stYear:Int, rAndDCosts2ndYear:Int, rAndDCosts3rdYear:Int)
-
 GET        /lifetime-allowance/lifetime-allowance-checker/is-knowledge-intensive/:isKi/previous-schemes-total/:previousInvestmentSchemesTotal/proposed-amount/:proposedAmount                                           controllers.LifetimeAllowanceController.checkLifetimeAllowanceExceeded(isKi: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int)

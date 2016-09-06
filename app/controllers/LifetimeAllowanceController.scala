@@ -17,7 +17,7 @@
 package controllers
 
 import play.api.libs.json._
-import services.{KnowledgeIntensiveService, LifetimeAllowanceService}
+import services.LifetimeAllowanceService
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
 import scala.concurrent.Future
