@@ -26,7 +26,7 @@ trait KnowledgeIntensiveService {
   val percentageFifteen: Double
   val percentageTen: Double
 
-  def checkRAndDCosts(operatingCosts1stYear: Int,operatingCosts2ndYear: Int,operatingCosts3rdYear: Int,
+  def validateKICosts(operatingCosts1stYear: Int,operatingCosts2ndYear: Int,operatingCosts3rdYear: Int,
                       rAndDCosts1stYear:Int, rAndDCosts2ndYear:Int, rAndDCosts3rdYear:Int): Boolean = {
 
     val costs = List((operatingCosts1stYear, rAndDCosts1stYear),
@@ -49,7 +49,7 @@ trait KnowledgeIntensiveService {
     if (validOperatingCosts) operatingCostConditionFifteen||operatingCostConditionTen else false
   }
 
-  def validateSecondaryKiConditions(hasPercentageWithMasters: Boolean,
+  def validateSecondaryKIConditions(hasPercentageWithMasters: Boolean,
                                     hasTenYearPlan: Boolean): Boolean = hasPercentageWithMasters || hasTenYearPlan
 
 }

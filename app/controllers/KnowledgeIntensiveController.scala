@@ -26,17 +26,15 @@ object KnowledgeIntensiveController extends KnowledgeIntensiveController
 
 trait KnowledgeIntensiveController extends BaseController {
 
-  def checkRAndDCosts(operatingCosts1stYear: Int,operatingCosts2ndYear: Int,operatingCosts3rdYear: Int,
+  def checkKICosts(operatingCosts1stYear: Int,operatingCosts2ndYear: Int,operatingCosts3rdYear: Int,
                       rAndDCosts1stYear:Int, rAndDCosts2ndYear:Int, rAndDCosts3rdYear:Int): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(Json.toJson(KnowledgeIntensiveService.checkRAndDCosts(operatingCosts1stYear, operatingCosts2ndYear, operatingCosts3rdYear,
+    Future.successful(Ok(Json.toJson(KnowledgeIntensiveService.validateKICosts(operatingCosts1stYear, operatingCosts2ndYear, operatingCosts3rdYear,
       rAndDCosts1stYear, rAndDCosts2ndYear, rAndDCosts3rdYear))))
   }
 
-  def validateSecondaryKiConditions(hasPercentageWithMasters: Boolean,
+  def checkSecondaryConditions(hasPercentageWithMasters: Boolean,
     hasTenYearPlan: Boolean):  Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(Json.toJson(KnowledgeIntensiveService.validateSecondaryKiConditions(hasPercentageWithMasters, hasTenYearPlan))))
+    Future.successful(Ok(Json.toJson(KnowledgeIntensiveService.validateSecondaryKIConditions(hasPercentageWithMasters, hasTenYearPlan))))
   }
-
-
 
 }
