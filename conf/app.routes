@@ -3,3 +3,6 @@
 GET        /knowledge-intensive/check-ki-costs/operating-costs/:operatingCosts1stYear/:operatingCosts2ndYear/:operatingCosts3rdYear/rd-costs/:rAndDCosts1stYear/:rAndDCosts2ndYear/:rAndDCosts3rdYear                           controllers.KnowledgeIntensiveController.checkKICosts(operatingCosts1stYear: Int,operatingCosts2ndYear: Int,operatingCosts3rdYear: Int,rAndDCosts1stYear:Int, rAndDCosts2ndYear:Int, rAndDCosts3rdYear:Int)
 
 GET        /knowledge-intensive/check-secondary-conditions/has-percentage-with-masters/:hasPercentageWithMasters/has-ten-year-plan/:hasTenYearPlan                                                                                            controllers.KnowledgeIntensiveController.checkSecondaryConditions(hasPercentageWithMasters: Boolean, hasTenYearPlan: Boolean)
+
+GET        /lifetime-allowance/lifetime-allowance-checker/is-knowledge-intensive/:isKi/previous-schemes-total/:previousInvestmentSchemesTotal/proposed-amount/:proposedAmount                                           controllers.LifetimeAllowanceController.checkLifetimeAllowanceExceeded(isKi: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int)
+
