@@ -32,4 +32,5 @@ trait LifetimeAllowanceController extends BaseController {
 
       Future.successful(Ok(Json.toJson(LifetimeAllowanceService.checkLifetimeAllowanceExceeded(isKi,previousInvestmentSchemesTotal,proposedAmount))))
   }
+
 }
