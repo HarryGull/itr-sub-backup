@@ -33,7 +33,7 @@ class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication{
 
     "calling with a KI = true. a valid ProposedInvestment and a valid PreviousSchemesTotal" should {
 
-      val result = checkLifetimeAllowanceExceeded(true, validAmount,validAmount)(fakeRequest)
+      val result = checkLifetimeAllowanceExceeded(true, true, validAmount,validAmount)(fakeRequest)
 
       "return status 200" in {
         status(result) shouldBe 200
@@ -53,7 +53,7 @@ class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication{
 
     "calling with a KI = true. a valid ProposedInvestment and an invalid PreviousSchemesTotal" should {
 
-      val result = checkLifetimeAllowanceExceeded(true, invalidAmount,validAmount)(fakeRequest)
+      val result = checkLifetimeAllowanceExceeded(true, true, invalidAmount,validAmount)(fakeRequest)
 
       "return status 200" in {
         status(result) shouldBe 200
