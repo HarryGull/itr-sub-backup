@@ -41,11 +41,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import models.{SubmissionRequestModel}
 
 
-object SubmissionService extends SubmissionService
+object SubmissionService extends SubmissionService{
+  val submissionDESConnector: SubmissionDESConnector = SubmissionDESConnector
+}
 
 trait SubmissionService {
 
+  val submissionDESConnector: SubmissionDESConnector
+
   def submitAA(submissionRequest: SubmissionRequestModel)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-        SubmissionDESConnector.submitAA(submissionRequest)
+    submissionDESConnector.submitAA(submissionRequest)
   }
 }
