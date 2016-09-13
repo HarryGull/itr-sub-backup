@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package services
 
-import services.LifetimeAllowanceService
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
-
 import uk.gov.hmrc.play.test.UnitSpec
 
 class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach{
 
+  val hadPrevRFI = true
+  val noPrevRFI = false
   val isKi = true
   val notKi = false
   val previousInvestmentSchemesKiTotalOver = 20000000
@@ -31,17 +31,18 @@ class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with Befor
   val previousInvestmentSchemesNotKiTotalOver = 12000000
   val previousInvestmentSchemesNotKiTotalBoundary = 11999999
   val proposedAmount = 1
+  val maxProposedAmount = 5000000
   val emptyAmount = 0
 
-  def lifetimeAllowanceCheckExceeds(isKi: Boolean, previousSchemesTotal:Int, proposedAmount: Int)(test: Boolean => Any) {
-    val result = LifetimeAllowanceService.checkLifetimeAllowanceExceeded(isKi,previousSchemesTotal,proposedAmount)
+  def lifetimeAllowanceCheckExceeds(hadPrevRFI: Boolean, isKi: Boolean, previousSchemesTotal:Int, proposedAmount: Int)(test: Boolean => Any) {
+    val result = LifetimeAllowanceService.checkLifetimeAllowanceExceeded(hadPrevRFI, isKi,previousSchemesTotal,proposedAmount)
     test(result)
   }
 
   "Sending a KI company when the previousSchemesTotal is 19999999 and the proposed amount is 1" should {
     "return false" in {
 
-      lifetimeAllowanceCheckExceeds(isKi,previousInvestmentSchemesKiTotalBoundary,proposedAmount)(
+      lifetimeAllowanceCheckExceeds(hadPrevRFI, isKi,previousInvestmentSchemesKiTotalBoundary,proposedAmount)(
         result => {
           result shouldBe false
         }
@@ -52,7 +53,7 @@ class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with Befor
   "Sending a KI company when the previousSchemesTotal is 20000000 and the proposed amount is 1" should {
     "return true" in {
 
-      lifetimeAllowanceCheckExceeds(isKi,previousInvestmentSchemesKiTotalOver,proposedAmount)(
+      lifetimeAllowanceCheckExceeds(hadPrevRFI,isKi,previousInvestmentSchemesKiTotalOver,proposedAmount)(
         result => {
           result shouldBe true
         }
@@ -63,7 +64,7 @@ class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with Befor
   "Sending a non KI company when the previousSchemesTotal is 11999999 and the proposed amount is 1" should {
     "return false" in {
 
-      lifetimeAllowanceCheckExceeds(notKi,previousInvestmentSchemesNotKiTotalBoundary,proposedAmount)(
+      lifetimeAllowanceCheckExceeds(hadPrevRFI, notKi,previousInvestmentSchemesNotKiTotalBoundary,proposedAmount)(
         result => {
           result shouldBe false
         }
@@ -74,7 +75,7 @@ class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with Befor
   "Sending a non KI company when the previousSchemesTotal is 12000000 and the proposed amount is 1" should {
     "return true" in {
 
-      lifetimeAllowanceCheckExceeds(notKi,previousInvestmentSchemesNotKiTotalOver,proposedAmount)(
+      lifetimeAllowanceCheckExceeds(hadPrevRFI, notKi,previousInvestmentSchemesNotKiTotalOver,proposedAmount)(
         result => {
           result shouldBe true
         }
@@ -82,10 +83,10 @@ class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with Befor
     }
   }
 
-  "Sending a non KI company when the previousSchemesTotal is 0 and the proposed amount is 1" should {
+  "Sending a non KI company with no previousSchemesTotal and the proposed amount is 1" should {
     "return false" in {
 
-      lifetimeAllowanceCheckExceeds(notKi,emptyAmount,proposedAmount)(
+      lifetimeAllowanceCheckExceeds(noPrevRFI, notKi,emptyAmount,proposedAmount)(
         result => {
           result shouldBe false
         }
@@ -93,10 +94,32 @@ class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with Befor
     }
   }
 
-  "Sending a KI company when the previousSchemesTotal is 0 and the proposed amount is 1" should {
+  "Sending a KI company with no previousSchemesTotal is 0 and the proposed amount is 1" should {
     "return false" in {
 
-      lifetimeAllowanceCheckExceeds(isKi,emptyAmount,proposedAmount)(
+      lifetimeAllowanceCheckExceeds(noPrevRFI, isKi,emptyAmount,proposedAmount)(
+        result => {
+          result shouldBe false
+        }
+      )
+    }
+  }
+
+  "Sending a non KI company with no previousSchemesTotal and the proposed amount is 50000000" should {
+    "return false" in {
+
+      lifetimeAllowanceCheckExceeds(noPrevRFI, notKi,emptyAmount,maxProposedAmount)(
+        result => {
+          result shouldBe false
+        }
+      )
+    }
+  }
+
+  "Sending a KI company with no previousSchemesTotal is 0 and the proposed amount is 5000000" should {
+    "return false" in {
+
+      lifetimeAllowanceCheckExceeds(noPrevRFI, isKi,emptyAmount,maxProposedAmount)(
         result => {
           result shouldBe false
         }
@@ -107,7 +130,7 @@ class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with Befor
   "Sending a non KI company when the previousSchemesTotal is 1 and the proposed amount is 0" should {
     "return false" in {
 
-      lifetimeAllowanceCheckExceeds(notKi,proposedAmount,emptyAmount)(
+      lifetimeAllowanceCheckExceeds(hadPrevRFI, notKi,proposedAmount,emptyAmount)(
         result => {
           result shouldBe false
         }
@@ -118,7 +141,7 @@ class LifetimeAllowanceServiceSpec extends UnitSpec with MockitoSugar with Befor
   "Sending a KI company when the previousSchemesTotal is 1 and the proposed amount is 0" should {
     "return false" in {
 
-      lifetimeAllowanceCheckExceeds(isKi,proposedAmount,emptyAmount)(
+      lifetimeAllowanceCheckExceeds(hadPrevRFI, isKi,proposedAmount,emptyAmount)(
         result => {
           result shouldBe false
         }

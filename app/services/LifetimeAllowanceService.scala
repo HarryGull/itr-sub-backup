@@ -28,14 +28,26 @@ trait LifetimeAllowanceService{
   val maxKi: Int
   val maxNonKi: Int
 
-  def checkLifetimeAllowanceExceeded(isKi: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int): Boolean = {
+  def checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int): Boolean = {
 
     /** Checks that all operating costs are greater than zero. 'forall' short hand for map and contains **/
-    def validAmounts: Boolean = previousInvestmentSchemesTotal > 0 && proposedAmount > 0
+    def validAmounts: Boolean = if(hadPrevRFI)previousInvestmentSchemesTotal > 0 && proposedAmount > 0 else proposedAmount > 0
+
+    def checkTotalKI(hadPreviousRFI: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int) : Boolean =  {
+      if(hadPreviousRFI) proposedAmount + previousInvestmentSchemesTotal > maxKi
+      else proposedAmount > maxKi
+    }
+
+    def checkTotalNonKI(hadPreviousRFI: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int) : Boolean = {
+      if(hadPreviousRFI) proposedAmount + previousInvestmentSchemesTotal > maxNonKi
+      else proposedAmount > maxNonKi
+    }
 
     if(validAmounts){
-      if (isKi) proposedAmount + previousInvestmentSchemesTotal > maxKi
-      else proposedAmount + previousInvestmentSchemesTotal > maxNonKi
+      if(isKi)
+        checkTotalKI(hadPrevRFI, previousInvestmentSchemesTotal, proposedAmount)
+      else
+        checkTotalNonKI(hadPrevRFI, previousInvestmentSchemesTotal, proposedAmount)
     } else false
   }
 }
