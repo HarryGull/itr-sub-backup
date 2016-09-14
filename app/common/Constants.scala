@@ -45,6 +45,7 @@ trait Constants {
   val dummySubmissionRequestModelForbidden = SubmissionRequestModel(ContactDetailsModel("James", "Harris", "0872990915","harris@forbiddengmail.com"),YourCompanyNeedModel("AA"))
   val dummySubmissionRequestModelServiceUnavailable = SubmissionRequestModel(ContactDetailsModel("James", "Harris", "0872990915","harris@serviceunavailablerequestgmail.com"),YourCompanyNeedModel("AA"))
 
+
   implicit val formats = Json.format[SubmissionRequestModel]
   val companyDetails = ContactDetailsModel("gary", "hull", "01952 256555", "fred@fred.com")
   val yourdetails = YourCompanyNeedModel("AA")

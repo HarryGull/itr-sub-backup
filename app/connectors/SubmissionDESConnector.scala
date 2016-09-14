@@ -31,8 +31,6 @@ object SubmissionDESConnector extends SubmissionDESConnector with ServicesConfig
 }
 trait SubmissionDESConnector {
 
-  // add addtional headers
-  implicit val hc: HeaderCarrier = HeaderCarrier().withExtraHeaders("Accept" -> "application/vnd.hmrc.1.0+json", "Content-Type" -> "application/json")
   def http: HttpGet with HttpPost with HttpPut
   val serviceUrl: String
 

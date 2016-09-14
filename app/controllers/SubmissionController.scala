@@ -25,19 +25,24 @@ import scala.concurrent.Future
 import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object SubmissionController extends SubmissionController
+object SubmissionController extends SubmissionController{
+  val submissionService: SubmissionService= SubmissionService
+}
+
 
 trait SubmissionController extends BaseController {
+
+  val submissionService: SubmissionService
 
   def submitAA: Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
     val submissionApplicationBodyJs = request.body.validate[SubmissionRequestModel]
     submissionApplicationBodyJs.fold(
       errors => Future.successful(BadRequest(Json.toJson(Error(message="Request to submit application failed with validation errors: " + errors)))),
       submitRequest => {
-        SubmissionService.submitAA(submitRequest) map { responseReceived =>
+        submissionService.submitAA(submitRequest) map { responseReceived =>
           responseReceived.status match {
             case CREATED => Ok(responseReceived.body)
-            case NOT_FOUND => NotFound(responseReceived.body)
+            case FORBIDDEN => Forbidden(responseReceived.body)
             case BAD_REQUEST => BadRequest(responseReceived.body)
             case SERVICE_UNAVAILABLE => ServiceUnavailable(responseReceived.body)
             case _ => InternalServerError(responseReceived.body)

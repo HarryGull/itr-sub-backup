@@ -35,89 +35,100 @@ package contollers
 import java.util.UUID
 
 import controllers.SubmissionController._
-import play.api.test.FakeRequest
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import play.api.libs.json.Json
+import play.api.test.{FakeRequest}
+import uk.gov.hmrc.play.http.{HttpResponse}
 import controllers.SubmissionController
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}
 import common.Constants._
-import connectors.SubmissionDESConnector
-import models.SubmissionResponseModel
-import play.api.libs.json.JsValue
-import play.api.mvc.{Action, BodyParser, BodyParsers}
-import play.api.test
+import models.{SubmissionResponseModel}
 import services.SubmissionService
-import scala.concurrent.ExecutionContext.Implicits.global
+
 
 import scala.concurrent.Future
 
-class SubmissionControllerSpec extends UnitSpec with MockitoSugar {
+class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
 
-  val sessionId = UUID.randomUUID.toString
-  val mockHttp : WSHttp = mock[WSHttp]
   val mockSubmissionService = mock[SubmissionService]
+  val submissionResponse = SubmissionResponseModel(true,"FBUND09889765", "Submission Request Successful")
+
+  val malformedJson =
+    """
+      |{
+      |{
+      |  "statusCode": malformed,
+      |  "message": "malformed"}'"
+      |}
+    """.stripMargin
+
+
+
 
   class Setup {
     object TestController extends SubmissionController {
       val submissionService = mockSubmissionService
     }
+  }
 
-    object mockDESConnector extends SubmissionDESConnector {
-      val serviceUrl = "dummy"
-      val http = mockHttp
+  "The controller should return a  " should {
+    "OK when a CREATED response is returned from stub" in new Setup {
+
+      when(mockSubmissionService.submitAA(Matchers.any())(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(CREATED,Some(validJs))))
+
+      val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelValid)))
+      status(result) shouldBe OK
+    }
+
+    "Forbidden when a Forbidden response is returned from stub" in new Setup {
+
+      when(mockSubmissionService.submitAA(Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(FORBIDDEN,Some(Json.toJson(forbiddenJs)))))
+
+      val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelForbidden)))
+      status(result) shouldBe FORBIDDEN
+    }
+
+
+    "BadRequest when a Bad Request response is returned from stub" in new Setup {
+
+      when(mockSubmissionService.submitAA(Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST,Some(Json.toJson(badRequestJs)))))
+
+      val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelBad)))
+      status(result) shouldBe BAD_REQUEST
+    }
+
+
+    "ServiceUnavailable when a ServiceUnavailable is returned from stub" in new Setup {
+
+      when(mockSubmissionService.submitAA(Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(SERVICE_UNAVAILABLE,Some(Json.toJson(serviceUnavilableJs)))))
+
+      val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelServiceUnavailable)))
+      status(result) shouldBe SERVICE_UNAVAILABLE
+    }
+
+    "Internal Server error when any other response is returned from stub" in new Setup {
+
+      when(mockSubmissionService.submitAA(Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR,Some(Json.toJson(internalServerErrorJs)))))
+
+      val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelInternalServerError)))
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+
+    "Bad request with malformed JSON" in new Setup {
+
+      val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(malformedJson)))
+      status(result) shouldBe BAD_REQUEST
     }
   }
 
-//  "The controller should return a  " should {
-//    "OK" in new Setup {
-//
-//      when(mockHttp.POST[JsValue, HttpResponse](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-//        .thenReturn(HttpResponse(OK))
-//
-//
-//      when(submissionService.submitAA(dummySubmissionRequestModelValid)(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
-//
-//      val result = TestController.submitAA().apply(FakeRequest().withBody(dummySubmissionRequestModelValid)).run
-//
-//      status(result) shouldBe OK
-//    }
-//  }
 
-//  "The stub should return a bad request if the email contains the text badrequest " should {
-//    "return a json package detailing the status" in new Setup {
-//
-//      val result = TestController.submitAdvancedAssuranceApplication().apply(FakeRequest().withBody(badRequestJs))
-//      status(result) shouldBe BAD_REQUEST
-//    }
-//  }
-//
-//
-//  "The stub should return an internal server error if the email contains the text internalservererror " should {
-//    "return a json package detailing the status" in new Setup {
-//
-//      val result = TestController.submitAdvancedAssuranceApplication().apply(FakeRequest().withBody(internalServerErrorJs))
-//      status(result) shouldBe INTERNAL_SERVER_ERROR
-//    }
-//  }
-//
-//  "The stub should return a service unavailable error if the email contains the text serviceunavailable " should {
-//    "return a json package detailing the status" in new Setup {
-//
-//      val result = TestController.submitAdvancedAssuranceApplication().apply(FakeRequest().withBody(serviceUnavilableJs))
-//      status(result) shouldBe SERVICE_UNAVAILABLE
-//    }
-//  }
-//
-//  "The stub should return a service unavailable error if the email contains the text forbidden " should {
-//    "return a json package detailing the status" in new Setup {
-//
-//      val result = TestController.submitAdvancedAssuranceApplication().apply(FakeRequest().withBody(forbiddenJs))
-//      status(result) shouldBe FORBIDDEN
-//    }
-//  }
 
 }
