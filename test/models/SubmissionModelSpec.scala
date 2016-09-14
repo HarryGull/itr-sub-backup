@@ -56,7 +56,6 @@ class SubmissionModelSpec extends UnitSpec{
     val response = SubmissionResponseModel(true, "FBUND98763284", "Submission Request Successful")
 
     val json = Json.toJson(response)
-    println(json)
     json.toString() shouldBe testResJson
 
   }
