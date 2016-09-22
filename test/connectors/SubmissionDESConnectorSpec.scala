@@ -16,11 +16,14 @@
 
 package connectors
 
+import config.WSHttp
+import helpers.Constants
+import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.test.WithFakeApplication
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import java.util.UUID
 
-import common.Constants._
+import Constants._
 import models.{ContactDetailsModel, SubmissionRequestModel, SubmissionResponseModel, YourCompanyNeedModel}
 import play.api.test.Helpers._
 import org.mockito.Matchers
@@ -46,6 +49,12 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFak
   }
 
   implicit val hc: HeaderCarrier = HeaderCarrier().withExtraHeaders("Accept" -> "application/vnd.hmrc.1.0+json", "Content-Type" -> "application/json")
+
+  "AuthConnector" should {
+    "use the correct http object" in {
+      SubmissionDESConnector.http shouldBe WSHttp
+    }
+  }
 
   "calling submitAA" should {
     "return a valid response" in new Setup {

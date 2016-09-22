@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package model
+package auth
 
-import play.api.libs.json.Json
-
-case class Error(message: String)
-
-object Error {
-  implicit val errorFormat = Json.format[Error]
-}
+sealed trait AuthorisationResult {}
+case object Authorised extends AuthorisationResult
+case object NotAuthorised extends AuthorisationResult

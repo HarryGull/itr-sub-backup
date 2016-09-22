@@ -27,7 +27,7 @@ import scala.concurrent.{Future, ExecutionContext}
 object SubmissionDESConnector extends SubmissionDESConnector with ServicesConfig {
 
   override val serviceUrl = baseUrl("investment-tax-relief-submission-dynamic-stub")
-  override def http = WSHttp
+  override def http: HttpGet with HttpPost with HttpPut = WSHttp
 }
 trait SubmissionDESConnector {
 
@@ -38,5 +38,4 @@ trait SubmissionDESConnector {
       val requestUrl = s"$serviceUrl/investment-tax-relief/advanced-assurance/submit"
       http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(submissionRequest))
   }
-
 }

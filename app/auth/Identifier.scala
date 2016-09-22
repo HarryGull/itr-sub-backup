@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package model
+package auth
 
 import play.api.libs.json.Json
 
-case class Error(message: String)
+case class Identifier(key: String, value: String)
 
-object Error {
-  implicit val errorFormat = Json.format[Error]
+object Identifier {
+  implicit val formats = Json.format[Identifier]
 }

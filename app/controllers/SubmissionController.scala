@@ -16,40 +16,50 @@
 
 package controllers
 
+import auth.{Authorisation, Authorised, NotAuthorised}
+import connectors.AuthConnector
 import model.Error
-import models.{SubmissionRequestModel}
+import models.SubmissionRequestModel
 import play.api.libs.json._
 import services.SubmissionService
 import uk.gov.hmrc.play.microservice.controller.BaseController
+
 import scala.concurrent.Future
 import play.api.mvc._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object SubmissionController extends SubmissionController{
   val submissionService: SubmissionService= SubmissionService
+  override val authConnector: AuthConnector = AuthConnector
 }
 
 
-trait SubmissionController extends BaseController {
+trait SubmissionController extends BaseController with Authorisation {
 
   val submissionService: SubmissionService
 
   def submitAA: Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
-    val submissionApplicationBodyJs = request.body.validate[SubmissionRequestModel]
-    submissionApplicationBodyJs.fold(
-      errors => Future.successful(BadRequest(Json.toJson(Error(message="Request to submit application failed with validation errors: " + errors)))),
-      submitRequest => {
-        submissionService.submitAA(submitRequest) map { responseReceived =>
-          responseReceived.status match {
-            case CREATED => Ok(responseReceived.body)
-            case FORBIDDEN => Forbidden(responseReceived.body)
-            case BAD_REQUEST => BadRequest(responseReceived.body)
-            case SERVICE_UNAVAILABLE => ServiceUnavailable(responseReceived.body)
-            case _ => InternalServerError(responseReceived.body)
+    authorised {
+      case Authorised => {
+        val submissionApplicationBodyJs = request.body.validate[SubmissionRequestModel]
+        submissionApplicationBodyJs.fold(
+          errors => Future.successful(BadRequest(Json.toJson(Error(message = "Request to submit application failed with validation errors: " + errors)))),
+          submitRequest => {
+            submissionService.submitAA(submitRequest) map { responseReceived =>
+              responseReceived.status match {
+                case CREATED => Ok(responseReceived.body)
+                case FORBIDDEN => Forbidden(responseReceived.body)
+                case BAD_REQUEST => BadRequest(responseReceived.body)
+                case SERVICE_UNAVAILABLE => ServiceUnavailable(responseReceived.body)
+                case _ => InternalServerError(responseReceived.body)
+              }
+            }
           }
-        }
+        )
       }
-    )
+      case NotAuthorised => Future.successful(Forbidden)
+    }
   }
 
 }

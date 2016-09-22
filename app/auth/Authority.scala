@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package model
+package auth
 
-import play.api.libs.json.Json
+import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
 
-case class Error(message: String)
-
-object Error {
-  implicit val errorFormat = Json.format[Error]
-}
+case class Authority(uri: String, oid: String, userDetailsLink: String, confidenceLevel: ConfidenceLevel)
