@@ -34,10 +34,9 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
   "validating the checkKICosts method with a TAVC account with status Activated and confidence level 50" when  {
 
-    setup()
-
     "calling with R and D costs all 0" should {
 
+      setup()
       val result = TestController.checkKICosts(rAndDCostsZero(0),rAndDCostsZero(1),rAndDCostsZero(2),
         rAndDCostsZero(3),rAndDCostsZero(4),rAndDCostsZero(5))(fakeRequest)
 
@@ -58,7 +57,8 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
     }
 
     "calling with R and D costs all above 10" should {
-
+      
+      setup()
       val result = TestController.checkKICosts(rAndDCostsTen(0),rAndDCostsTen(1),rAndDCostsTen(2),
         rAndDCostsTen(3),rAndDCostsTen(4),rAndDCostsTen(5))(fakeRequest)
 
