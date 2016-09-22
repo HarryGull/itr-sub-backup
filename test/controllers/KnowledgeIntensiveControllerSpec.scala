@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package contollers
+package controllers
 
-import controllers.KnowledgeIntensiveController._
+import helpers.AuthHelper._
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -24,20 +24,25 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication{
 
+  object TestController extends KnowledgeIntensiveController {
+    override val authConnector = mockAuthConnector
+  }
+
   val rAndDCostsZero = List(100, 100, 100, 0, 0, 0)
   val rAndDCostsTen = List(100, 100, 100, 10, 10, 10)
-
   val fakeRequest = FakeRequest()
 
-  "validating the checkKICosts method" when  {
+  "validating the checkKICosts method with a TAVC account with status Activated and confidence level 50" when  {
+
+    setup()
 
     "calling with R and D costs all 0" should {
 
-      val result = checkKICosts(rAndDCostsZero(0),rAndDCostsZero(1),rAndDCostsZero(2),
+      val result = TestController.checkKICosts(rAndDCostsZero(0),rAndDCostsZero(1),rAndDCostsZero(2),
         rAndDCostsZero(3),rAndDCostsZero(4),rAndDCostsZero(5))(fakeRequest)
 
-      "return status 200" in {
-        status(result) shouldBe 200
+      "return status OK" in {
+        status(result) shouldBe OK
       }
 
       "return a JSON result" in {
@@ -54,12 +59,11 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
     "calling with R and D costs all above 10" should {
 
-
-      val result = checkKICosts(rAndDCostsTen(0),rAndDCostsTen(1),rAndDCostsTen(2),
+      val result = TestController.checkKICosts(rAndDCostsTen(0),rAndDCostsTen(1),rAndDCostsTen(2),
         rAndDCostsTen(3),rAndDCostsTen(4),rAndDCostsTen(5))(fakeRequest)
 
-      "return status 200" in {
-        status(result) shouldBe 200
+      "return status OK" in {
+        status(result) shouldBe OK
       }
 
       "return a JSON result" in {
@@ -75,14 +79,15 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
     }
   }
 
-  "validating the checkSecondaryConditions method" when {
+  "validating the checkSecondaryConditions method with a TAVC account with status Activated and confidence level 50" when {
 
     "calling with (true,true)" should {
 
-      val result = checkSecondaryConditions(true, true)(fakeRequest)
+      setup()
+      val result = TestController.checkSecondaryConditions(true, true)(fakeRequest)
 
-      "return status 200" in {
-        status(result) shouldBe 200
+      "return status OK" in {
+        status(result) shouldBe OK
       }
 
       "return a JSON result" in {
@@ -99,10 +104,11 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
     "calling with (false,false)" should {
 
-      val result = checkSecondaryConditions(false, false)(fakeRequest)
+      setup()
+      val result = TestController.checkSecondaryConditions(false, false)(fakeRequest)
 
-      "return status 200" in {
-        status(result) shouldBe 200
+      "return status OK" in {
+        status(result) shouldBe OK
       }
 
       "return a JSON result" in {
@@ -114,6 +120,56 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
         val data = contentAsString(result)
         val json = Json.parse(data)
         json.as[Boolean] shouldBe false
+      }
+    }
+  }
+
+  "validating the checkKICosts method with a TAVC account with status NotYetActivated and confidence level 50" when  {
+
+    "calling with R and D costs all 0" should {
+
+      setup("NotYetActivated")
+      val result = TestController.checkKICosts(rAndDCostsZero(0),rAndDCostsZero(1),rAndDCostsZero(2),
+        rAndDCostsZero(3),rAndDCostsZero(4),rAndDCostsZero(5))(fakeRequest)
+
+      "return status FORBIDDEN" in {
+        status(result) shouldBe FORBIDDEN
+      }
+
+    }
+
+    "calling with R and D costs all above 10" should {
+
+      setup("NotYetActivated")
+      val result = TestController.checkKICosts(rAndDCostsTen(0),rAndDCostsTen(1),rAndDCostsTen(2),
+        rAndDCostsTen(3),rAndDCostsTen(4),rAndDCostsTen(5))(fakeRequest)
+
+      "return status FORBIDDEN" in {
+        status(result) shouldBe FORBIDDEN
+      }
+
+    }
+  }
+
+  "validating the checkSecondaryConditions method with a TAVC account with status NotYetActivated and confidence level 50" when {
+
+    "calling with (true,true)" should {
+
+      setup("NotYetActivated")
+      val result = TestController.checkSecondaryConditions(true, true)(fakeRequest)
+
+      "return status FORBIDDEN" in {
+        status(result) shouldBe FORBIDDEN
+      }
+    }
+
+    "calling with (false,false)" should {
+
+      setup("NotYetActivated")
+      val result = TestController.checkSecondaryConditions(false, false)(fakeRequest)
+
+      "return status FORBIDDEN" in {
+        status(result) shouldBe FORBIDDEN
       }
     }
   }

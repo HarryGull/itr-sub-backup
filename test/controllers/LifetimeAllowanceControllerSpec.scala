@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package contollers
+package controllers
 
-import controllers.LifetimeAllowanceController._
+import helpers.AuthHelper._
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -24,19 +24,23 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication{
 
+  object TestController extends LifetimeAllowanceController {
+    override val authConnector = mockAuthConnector
+  }
+
   val validAmount = 1
   val invalidAmount = 999999999
-
   val fakeRequest = FakeRequest()
 
-  "validating the checkLifetimeAllowanceExceeded method" when  {
+  "validating the checkLifetimeAllowanceExceeded method with a TAVC account with status Activated and confidence level 50" when  {
 
     "calling with a KI = true. a valid ProposedInvestment and a valid PreviousSchemesTotal" should {
 
-      val result = checkLifetimeAllowanceExceeded(true, true, validAmount,validAmount)(fakeRequest)
+      setup()
+      val result = TestController.checkLifetimeAllowanceExceeded(true, true, validAmount,validAmount)(fakeRequest)
 
-      "return status 200" in {
-        status(result) shouldBe 200
+      "return status OK" in {
+        status(result) shouldBe OK
       }
 
       "return a JSON result" in {
@@ -53,10 +57,11 @@ class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication{
 
     "calling with a KI = true. a valid ProposedInvestment and an invalid PreviousSchemesTotal" should {
 
-      val result = checkLifetimeAllowanceExceeded(true, true, invalidAmount,validAmount)(fakeRequest)
+      setup()
+      val result = TestController.checkLifetimeAllowanceExceeded(true, true, invalidAmount,validAmount)(fakeRequest)
 
-      "return status 200" in {
-        status(result) shouldBe 200
+      "return status OK" in {
+        status(result) shouldBe OK
       }
 
       "return a JSON result" in {
@@ -71,4 +76,26 @@ class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication{
       }
     }
   }
+
+  "validating the checkLifetimeAllowanceExceeded method with a TAVC account with status NotYetActivated and confidence level 50" when  {
+
+    "calling with a KI = true. a valid ProposedInvestment and a valid PreviousSchemesTotal" should {
+
+      "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        val result = TestController.checkLifetimeAllowanceExceeded(true, true, validAmount,validAmount)(fakeRequest)
+        status(result) shouldBe FORBIDDEN
+      }
+    }
+
+    "calling with a KI = true. a valid ProposedInvestment and an invalid PreviousSchemesTotal" should {
+
+      "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        val result = TestController.checkLifetimeAllowanceExceeded(true, true, invalidAmount,validAmount)(fakeRequest)
+        status(result) shouldBe FORBIDDEN
+      }
+    }
+  }
+
 }
