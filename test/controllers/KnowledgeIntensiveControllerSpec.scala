@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.AuthConnector
 import helpers.AuthHelper._
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.Json
@@ -36,6 +37,12 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
   before{
     reset(mockAuthConnector)
+  }
+
+  "KnowledgeIntensiveController" should {
+    "use the correct auth connector" in {
+      KnowledgeIntensiveController.authConnector shouldBe AuthConnector
+    }
   }
 
   "validating the checkKICosts method with a TAVC account with status Activated and confidence level 50" when  {

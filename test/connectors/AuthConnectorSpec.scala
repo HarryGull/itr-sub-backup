@@ -75,6 +75,12 @@ class AuthConnectorSpec extends FakeApplication with UnitSpec with MockitoSugar 
       val result = await(TestConnector.getTAVCEnrolment(uri))
       result shouldBe None
     }
+    "return None when a status other than OK is returned" in {
+      when(mockHttp.GET[HttpResponse](Matchers.eq(s"localhost$uri/enrolments"))(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(FORBIDDEN)))
+      val result = await(TestConnector.getTAVCEnrolment(uri))
+      result shouldBe None
+    }
   }
 
 }

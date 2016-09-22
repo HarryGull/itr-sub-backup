@@ -18,9 +18,11 @@ package auth
 
 import helpers.AuthHelper._
 import connectors.AuthConnector
+import org.mockito.Matchers
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
 import play.api.test.FakeApplication
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
 import org.mockito.Mockito._
@@ -102,6 +104,13 @@ class AuthorisationSpec extends FakeApplication with UnitSpec with MockitoSugar 
 
     "Return a NotAuthorised result when the user has a TAVC account with an unexpected status and confidenceLevel 50" in {
       setup("test", ConfidenceLevel.L50)
+      val result = authorised()
+      status(result) shouldBe FORBIDDEN
+    }
+
+    "Return a NotAuthorised result when no authority is found" in {
+      when(mockAuthConnector.getCurrentAuthority()(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(None))
+      when(mockAuthConnector.getTAVCEnrolment(Matchers.anyString())(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(None))
       val result = authorised()
       status(result) shouldBe FORBIDDEN
     }

@@ -16,7 +16,9 @@
 
 package controllers
 
+import connectors.AuthConnector
 import helpers.AuthHelper._
+import helpers.Constants
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
@@ -25,7 +27,7 @@ import org.mockito.Mockito._
 import play.api.test.Helpers._
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import common.Constants._
+import Constants._
 import models.SubmissionResponseModel
 import org.scalatest.BeforeAndAfter
 import services.SubmissionService
@@ -35,6 +37,8 @@ import scala.concurrent.Future
 class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfter {
 
   val mockSubmissionService = mock[SubmissionService]
+
+
   val submissionResponse = SubmissionResponseModel(true,"FBUND09889765", "Submission Request Successful")
 
   val malformedJson =
@@ -59,6 +63,15 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
 
   before {
     reset(mockAuthConnector)
+  }
+
+  "SubmissionController" should {
+    "use the correct auth connector" in {
+      SubmissionController.authConnector shouldBe AuthConnector
+    }
+    "use the correct submission service" in {
+      SubmissionController.submissionService shouldBe SubmissionService
+    }
   }
 
   "SubmissionController.submitAA with a TAVC account with status Activated and confidence level 50" when {

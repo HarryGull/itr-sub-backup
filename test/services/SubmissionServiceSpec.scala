@@ -18,11 +18,12 @@ package services
 
 import java.util.UUID
 
+import helpers.Constants
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneServerPerSuite
 import uk.gov.hmrc.play.test.UnitSpec
-import common.Constants._
+import Constants._
 import connectors.SubmissionDESConnector
 import org.mockito.Matchers
 import org.mockito.Mockito._

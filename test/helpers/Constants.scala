@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package common
+package helpers
 
 import models.{ContactDetailsModel, SubmissionRequestModel, YourCompanyNeedModel}
 import play.api.libs.json.{JsValue, Json}
@@ -23,11 +23,16 @@ object Constants extends Constants
 
 trait Constants {
 
-  val dummySubmissionRequestModelValid = SubmissionRequestModel(ContactDetailsModel("James", "Harris", "0872990915","harris@gmail.com"),YourCompanyNeedModel("AA"))
-  val dummySubmissionRequestModelBad = SubmissionRequestModel(ContactDetailsModel("James", "Harris", "0872990915","harris@badrequest.com"),YourCompanyNeedModel("AA"))
-  val dummySubmissionRequestModelInternalServerError = SubmissionRequestModel(ContactDetailsModel("James", "Harris", "0872990915","harris@internalservererrorrequestgmail.com"),YourCompanyNeedModel("AA"))
-  val dummySubmissionRequestModelForbidden = SubmissionRequestModel(ContactDetailsModel("James", "Harris", "0872990915","harris@forbiddengmail.com"),YourCompanyNeedModel("AA"))
-  val dummySubmissionRequestModelServiceUnavailable = SubmissionRequestModel(ContactDetailsModel("James", "Harris", "0872990915","harris@serviceunavailablerequestgmail.com"),YourCompanyNeedModel("AA"))
+  val dummySubmissionRequestModelValid = SubmissionRequestModel(
+    ContactDetailsModel("James", "Harris", "0872990915","harris@gmail.com"), YourCompanyNeedModel("AA"))
+  val dummySubmissionRequestModelBad = SubmissionRequestModel(
+    ContactDetailsModel("James", "Harris", "0872990915","harris@badrequest.com"), YourCompanyNeedModel("AA"))
+  val dummySubmissionRequestModelInternalServerError = SubmissionRequestModel(
+    ContactDetailsModel("James", "Harris", "0872990915","harris@internalservererrorrequestgmail.com"), YourCompanyNeedModel("AA"))
+  val dummySubmissionRequestModelForbidden = SubmissionRequestModel(
+    ContactDetailsModel("James", "Harris", "0872990915","harris@forbiddengmail.com"),YourCompanyNeedModel("AA"))
+  val dummySubmissionRequestModelServiceUnavailable = SubmissionRequestModel(
+    ContactDetailsModel("James", "Harris", "0872990915","harris@serviceunavailablerequestgmail.com"),YourCompanyNeedModel("AA"))
 
 
   implicit val formats = Json.format[SubmissionRequestModel]
@@ -35,10 +40,18 @@ trait Constants {
   val yourdetails = YourCompanyNeedModel("AA")
   lazy val validSubmissionData = new SubmissionRequestModel(companyDetails, yourdetails)
 
-  lazy val emailBadRequestJson = """{"contactDetails":{"forename":"gary","surname":"hull","telephoneNumber":"01952 256555","email":"badrequest@fred.com"},"yourCompanyNeedModel":{"needAAorCS":"AA"}}"""
-  lazy val emailInternalServererrorJson = """{"contactDetails":{"forename":"gary","surname":"hull","telephoneNumber":"01952 256555","email":"eminternalservererrorrequest@fred.com"},"yourCompanyNeedModel":{"needAAorCS":"AA"}}"""
-  lazy val emailserviceunavailablerRequestJson = """{"contactDetails":{"forename":"gary","surname":"hull","telephoneNumber":"01952 256555","email":"embserviceunavailablerequest@fred.com"},"yourCompanyNeedModel":{"needAAorCS":"AA"}}"""
-  lazy val emailforbiddenRequestJson = """{"contactDetails":{"forename":"gary","surname":"hull","telephoneNumber":"01952 256555","email":"emforbiddenrequest@fred.com"},"yourCompanyNeedModel":{"needAAorCS":"AA"}}"""
+  lazy val emailBadRequestJson =
+    """{"contactDetails":{"forename":"gary","surname":"hull","telephoneNumber":"01952 256555",
+      |"email":"badrequest@fred.com"},"yourCompanyNeedModel":{"needAAorCS":"AA"}}""".stripMargin
+  lazy val emailInternalServererrorJson =
+    """{"contactDetails":{"forename":"gary","surname":"hull","telephoneNumber":"01952 256555",
+      |"email":"eminternalservererrorrequest@fred.com"},"yourCompanyNeedModel":{"needAAorCS":"AA"}}""".stripMargin
+  lazy val emailserviceunavailablerRequestJson =
+    """{"contactDetails":{"forename":"gary","surname":"hull","telephoneNumber":"01952 256555",
+      |"email":"embserviceunavailablerequest@fred.com"},"yourCompanyNeedModel":{"needAAorCS":"AA"}}""".stripMargin
+  lazy val emailforbiddenRequestJson =
+    """{"contactDetails":{"forename":"gary","surname":"hull","telephoneNumber":"01952 256555",
+      |"email":"emforbiddenrequest@fred.com"},"yourCompanyNeedModel":{"needAAorCS":"AA"}}""".stripMargin
 
 
 

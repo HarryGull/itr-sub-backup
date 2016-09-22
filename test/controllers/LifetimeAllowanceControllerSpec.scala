@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.AuthConnector
 import helpers.AuthHelper._
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.Json
@@ -37,6 +38,13 @@ class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication 
   before {
     reset(mockAuthConnector)
   }
+  
+  "LifetimeAllowanceController" should {
+    "use the correct auth connector" in {
+      LifetimeAllowanceController.authConnector shouldBe AuthConnector
+    }
+  }
+  
 
   "validating the checkLifetimeAllowanceExceeded method with a TAVC account with status Activated and confidence level 50" when  {
 
