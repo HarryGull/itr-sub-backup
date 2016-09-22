@@ -27,11 +27,12 @@ import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import common.Constants._
 import models.SubmissionResponseModel
+import org.scalatest.BeforeAndAfter
 import services.SubmissionService
 
 import scala.concurrent.Future
 
-class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
+class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfter {
 
   val mockSubmissionService = mock[SubmissionService]
   val submissionResponse = SubmissionResponseModel(true,"FBUND09889765", "Submission Request Successful")
@@ -54,6 +55,10 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
       override val submissionService = mockSubmissionService
       override val authConnector = mockAuthConnector
     }
+  }
+
+  before {
+    reset(mockAuthConnector)
   }
 
   "SubmissionController.submitAA with a TAVC account with status Activated and confidence level 50" when {

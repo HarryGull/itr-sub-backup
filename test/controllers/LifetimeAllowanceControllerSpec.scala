@@ -17,12 +17,14 @@
 package controllers
 
 import helpers.AuthHelper._
+import org.scalatest.BeforeAndAfter
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import org.mockito.Mockito._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication{
+class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication with BeforeAndAfter {
 
   object TestController extends LifetimeAllowanceController {
     override val authConnector = mockAuthConnector
@@ -32,23 +34,29 @@ class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication{
   val invalidAmount = 999999999
   val fakeRequest = FakeRequest()
 
+  before {
+    reset(mockAuthConnector)
+  }
+
   "validating the checkLifetimeAllowanceExceeded method with a TAVC account with status Activated and confidence level 50" when  {
 
     "calling with a KI = true. a valid ProposedInvestment and a valid PreviousSchemesTotal" should {
 
-      setup()
-      val result = TestController.checkLifetimeAllowanceExceeded(true, true, validAmount,validAmount)(fakeRequest)
+      lazy val result = TestController.checkLifetimeAllowanceExceeded(true, true, validAmount,validAmount)(fakeRequest)
 
       "return status OK" in {
+        setup()
         status(result) shouldBe OK
       }
 
       "return a JSON result" in {
+        setup()
         contentType(result) shouldBe Some("application/json")
         charset(result) shouldBe Some("utf-8")
       }
 
       "return false" in {
+        setup()
         val data = contentAsString(result)
         val json = Json.parse(data)
         json.as[Boolean] shouldBe false
@@ -57,19 +65,21 @@ class LifetimeAllowanceControllerSpec extends UnitSpec with WithFakeApplication{
 
     "calling with a KI = true. a valid ProposedInvestment and an invalid PreviousSchemesTotal" should {
 
-      setup()
-      val result = TestController.checkLifetimeAllowanceExceeded(true, true, invalidAmount,validAmount)(fakeRequest)
+      lazy val result = TestController.checkLifetimeAllowanceExceeded(true, true, invalidAmount,validAmount)(fakeRequest)
 
       "return status OK" in {
+        setup()
         status(result) shouldBe OK
       }
 
       "return a JSON result" in {
+        setup()
         contentType(result) shouldBe Some("application/json")
         charset(result) shouldBe Some("utf-8")
       }
 
       "return true" in {
+        setup()
         val data = contentAsString(result)
         val json = Json.parse(data)
         json.as[Boolean] shouldBe true

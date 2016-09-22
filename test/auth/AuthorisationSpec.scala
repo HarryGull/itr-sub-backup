@@ -18,16 +18,18 @@ package auth
 
 import helpers.AuthHelper._
 import connectors.AuthConnector
+import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
 import play.api.test.FakeApplication
 import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
+import org.mockito.Mockito._
 import play.api.mvc.Results
 import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
 
 import scala.concurrent.Future
 
-class AuthorisationSpec extends FakeApplication with UnitSpec with MockitoSugar {
+class AuthorisationSpec extends FakeApplication with UnitSpec with MockitoSugar with BeforeAndAfter {
 
   private def authorised() = TestAuthorisation.authorised {
     case Authorised => Future.successful(Results.Ok)
@@ -36,6 +38,10 @@ class AuthorisationSpec extends FakeApplication with UnitSpec with MockitoSugar 
 
   object TestAuthorisation extends Authorisation {
     override val authConnector: AuthConnector = mockAuthConnector
+  }
+
+  before {
+    reset(mockAuthConnector)
   }
 
   "Authorisation.authorised" should {

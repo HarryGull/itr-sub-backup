@@ -17,12 +17,14 @@
 package controllers
 
 import helpers.AuthHelper._
+import org.scalatest.BeforeAndAfter
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import org.mockito.Mockito._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication{
+class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication with BeforeAndAfter {
 
   object TestController extends KnowledgeIntensiveController {
     override val authConnector = mockAuthConnector
@@ -32,24 +34,31 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
   val rAndDCostsTen = List(100, 100, 100, 10, 10, 10)
   val fakeRequest = FakeRequest()
 
+  before{
+    reset(mockAuthConnector)
+  }
+
   "validating the checkKICosts method with a TAVC account with status Activated and confidence level 50" when  {
 
     "calling with R and D costs all 0" should {
 
-      setup()
-      val result = TestController.checkKICosts(rAndDCostsZero(0),rAndDCostsZero(1),rAndDCostsZero(2),
+
+      lazy val result = TestController.checkKICosts(rAndDCostsZero(0),rAndDCostsZero(1),rAndDCostsZero(2),
         rAndDCostsZero(3),rAndDCostsZero(4),rAndDCostsZero(5))(fakeRequest)
 
       "return status OK" in {
+        setup()
         status(result) shouldBe OK
       }
 
       "return a JSON result" in {
+        setup()
         contentType(result) shouldBe Some("application/json")
         charset(result) shouldBe Some("utf-8")
       }
 
       "return false" in {
+        setup()
         val data = contentAsString(result)
         val json = Json.parse(data)
         json.as[Boolean] shouldBe false
@@ -57,21 +66,23 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
     }
 
     "calling with R and D costs all above 10" should {
-      
-      setup()
-      val result = TestController.checkKICosts(rAndDCostsTen(0),rAndDCostsTen(1),rAndDCostsTen(2),
+
+      lazy val result = TestController.checkKICosts(rAndDCostsTen(0),rAndDCostsTen(1),rAndDCostsTen(2),
         rAndDCostsTen(3),rAndDCostsTen(4),rAndDCostsTen(5))(fakeRequest)
 
       "return status OK" in {
+        setup()
         status(result) shouldBe OK
       }
 
       "return a JSON result" in {
+        setup()
         contentType(result) shouldBe Some("application/json")
         charset(result) shouldBe Some("utf-8")
       }
 
       "return true" in {
+        setup()
         val data = contentAsString(result)
         val json = Json.parse(data)
         json.as[Boolean] shouldBe true
@@ -83,19 +94,21 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
     "calling with (true,true)" should {
 
-      setup()
-      val result = TestController.checkSecondaryConditions(true, true)(fakeRequest)
+      lazy val result = TestController.checkSecondaryConditions(true, true)(fakeRequest)
 
       "return status OK" in {
+        setup()
         status(result) shouldBe OK
       }
 
       "return a JSON result" in {
+        setup()
         contentType(result) shouldBe Some("application/json")
         charset(result) shouldBe Some("utf-8")
       }
 
       "return true" in {
+        setup()
         val data = contentAsString(result)
         val json = Json.parse(data)
         json.as[Boolean] shouldBe true
@@ -104,19 +117,21 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
     "calling with (false,false)" should {
 
-      setup()
-      val result = TestController.checkSecondaryConditions(false, false)(fakeRequest)
+      lazy val result = TestController.checkSecondaryConditions(false, false)(fakeRequest)
 
       "return status OK" in {
+        setup()
         status(result) shouldBe OK
       }
 
       "return a JSON result" in {
+        setup()
         contentType(result) shouldBe Some("application/json")
         charset(result) shouldBe Some("utf-8")
       }
 
       "return false" in {
+        setup()
         val data = contentAsString(result)
         val json = Json.parse(data)
         json.as[Boolean] shouldBe false
@@ -128,11 +143,10 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
     "calling with R and D costs all 0" should {
 
-      setup("NotYetActivated")
-      val result = TestController.checkKICosts(rAndDCostsZero(0),rAndDCostsZero(1),rAndDCostsZero(2),
-        rAndDCostsZero(3),rAndDCostsZero(4),rAndDCostsZero(5))(fakeRequest)
-
       "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        val result = TestController.checkKICosts(rAndDCostsZero(0),rAndDCostsZero(1),rAndDCostsZero(2),
+          rAndDCostsZero(3),rAndDCostsZero(4),rAndDCostsZero(5))(fakeRequest)
         status(result) shouldBe FORBIDDEN
       }
 
@@ -140,11 +154,10 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
     "calling with R and D costs all above 10" should {
 
-      setup("NotYetActivated")
-      val result = TestController.checkKICosts(rAndDCostsTen(0),rAndDCostsTen(1),rAndDCostsTen(2),
-        rAndDCostsTen(3),rAndDCostsTen(4),rAndDCostsTen(5))(fakeRequest)
-
       "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        val result = TestController.checkKICosts(rAndDCostsTen(0),rAndDCostsTen(1),rAndDCostsTen(2),
+          rAndDCostsTen(3),rAndDCostsTen(4),rAndDCostsTen(5))(fakeRequest)
         status(result) shouldBe FORBIDDEN
       }
 
@@ -155,20 +168,18 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
 
     "calling with (true,true)" should {
 
-      setup("NotYetActivated")
-      val result = TestController.checkSecondaryConditions(true, true)(fakeRequest)
-
       "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        val result = TestController.checkSecondaryConditions(true, true)(fakeRequest)
         status(result) shouldBe FORBIDDEN
       }
     }
 
     "calling with (false,false)" should {
 
-      setup("NotYetActivated")
-      val result = TestController.checkSecondaryConditions(false, false)(fakeRequest)
-
       "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        val result = TestController.checkSecondaryConditions(false, false)(fakeRequest)
         status(result) shouldBe FORBIDDEN
       }
     }
