@@ -18,13 +18,10 @@ package models
 
 import play.api.libs.json.Json
 
-case class ContactDetailsModel(forename : String,
-                               surname : String,
-                               telephoneNumber: String,
-                               email : String ) {
+case class DateOfIncorporationModel(day:Option[Int], month:Option[Int], year:Option[Int])
+
+object DateOfIncorporationModel{
+  implicit val format = Json.format[DateOfIncorporationModel]
+  implicit val writes = Json.writes[DateOfIncorporationModel]
 }
 
-object ContactDetailsModel {
-  implicit val format = Json.format[ContactDetailsModel]
-  implicit val writes = Json.writes[ContactDetailsModel]
-}

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package models.submission
 
 import play.api.libs.json.Json
 
-case class ContactDetailsModel(forename : String,
-                               surname : String,
-                               telephoneNumber: String,
-                               email : String ) {
-}
+case class SchemeTypesModel (
+                              eis: Boolean = false,
+                              seis: Boolean = false,
+                              sitr: Boolean = false,
+                              vct: Boolean = false
+                            )
 
-object ContactDetailsModel {
-  implicit val format = Json.format[ContactDetailsModel]
-  implicit val writes = Json.writes[ContactDetailsModel]
+object SchemeTypesModel {
+  implicit val formatSt = Json.format[SchemeTypesModel]
 }

@@ -19,7 +19,7 @@ package controllers
 import auth.{Authorisation, Authorised, NotAuthorised}
 import connectors.AuthConnector
 import model.Error
-import models.SubmissionRequestModel
+import models.submission.DesSubmitAdvancedAssuranceModel
 import play.api.libs.json._
 import services.SubmissionService
 import uk.gov.hmrc.play.microservice.controller.BaseController
@@ -28,25 +28,27 @@ import scala.concurrent.Future
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.math._
 
 object SubmissionController extends SubmissionController{
   val submissionService: SubmissionService= SubmissionService
   override val authConnector: AuthConnector = AuthConnector
 }
 
-
 trait SubmissionController extends BaseController with Authorisation {
 
   val submissionService: SubmissionService
 
-  def submitAA: Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
+  def submitAA(tavcReferenceId: String): Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
     authorised {
       case Authorised => {
-        val submissionApplicationBodyJs = request.body.validate[SubmissionRequestModel]
+        val submissionApplicationBodyJs = request.body.validate[DesSubmitAdvancedAssuranceModel]
         submissionApplicationBodyJs.fold(
-          errors => Future.successful(BadRequest(Json.toJson(Error(message = "Request to submit application failed with validation errors: " + errors)))),
+          errors => Future.successful(BadRequest(Json.toJson(Error(
+            message = "Request to submit application failed with validation errors: " + errors)))),
           submitRequest => {
-            submissionService.submitAA(submitRequest) map { responseReceived =>
+            submissionService.submitAA(submitRequest.copy(acknowledgementReference =
+              Some(generateAcknowledgementRef(tavcReferenceId))), tavcReferenceId) map { responseReceived =>
               responseReceived.status match {
                 case CREATED => Ok(responseReceived.body)
                 case FORBIDDEN => Forbidden(responseReceived.body)
@@ -62,4 +64,9 @@ trait SubmissionController extends BaseController with Authorisation {
     }
   }
 
+  /** Randomly generate acknowledgementReference, must be between 1 and 32 characters long**/
+  private def generateAcknowledgementRef(tavcReferenceId: String): String =  {
+    val ackRef = tavcReferenceId concat  (System.currentTimeMillis / 1000).toString
+    ackRef.substring(0, min(ackRef.length(), 31));
+  }
 }

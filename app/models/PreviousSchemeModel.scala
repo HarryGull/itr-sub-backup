@@ -18,13 +18,18 @@ package models
 
 import play.api.libs.json.Json
 
-case class ContactDetailsModel(forename : String,
-                               surname : String,
-                               telephoneNumber: String,
-                               email : String ) {
-}
+case class PreviousSchemeModel (schemeTypeDesc : String,
+                                investmentAmount : Int,
+                                investmentSpent: Option[Int],
+                                otherSchemeName: Option[String],
+                                day: Option[Int],
+                                month: Option[Int],
+                                year: Option[Int],
+                                processingId: Option[Int]
+                               )
 
-object ContactDetailsModel {
-  implicit val format = Json.format[ContactDetailsModel]
-  implicit val writes = Json.writes[ContactDetailsModel]
+object PreviousSchemeModel{
+  implicit val format = Json.format[PreviousSchemeModel]
+  implicit val writes = Json.writes[PreviousSchemeModel]
+
 }

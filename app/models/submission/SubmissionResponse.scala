@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package models.submission
 
 import play.api.libs.json.Json
 
-case class ContactDetailsModel(forename : String,
-                               surname : String,
-                               telephoneNumber: String,
-                               email : String ) {
-}
+case class SubmissionResponse(processingDate: String, formBundleNumber: String)
 
-object ContactDetailsModel {
-  implicit val format = Json.format[ContactDetailsModel]
-  implicit val writes = Json.writes[ContactDetailsModel]
+object SubmissionResponse {
+  implicit val formats = Json.format[SubmissionResponse]
 }

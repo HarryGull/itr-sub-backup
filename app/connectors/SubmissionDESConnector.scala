@@ -16,26 +16,30 @@
 
 package connectors
 
+import com.typesafe.config.ConfigFactory
 import config.WSHttp
-import models.SubmissionRequestModel
+import models.submission.DesSubmitAdvancedAssuranceModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
-object SubmissionDESConnector extends SubmissionDESConnector with ServicesConfig {
+object SubmissionDESConnector extends SubmissionDESConnector {
 
   override val serviceUrl = baseUrl("investment-tax-relief-submission-dynamic-stub")
   override def http: HttpGet with HttpPost with HttpPut = WSHttp
 }
-trait SubmissionDESConnector {
+trait SubmissionDESConnector extends ServicesConfig{
 
   def http: HttpGet with HttpPost with HttpPut
   val serviceUrl: String
+  private lazy val config = ConfigFactory.load()
 
-  def submitAA(submissionRequest: SubmissionRequestModel)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-      val requestUrl = s"$serviceUrl/investment-tax-relief/advanced-assurance/submit"
-      http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(submissionRequest))
+  def submitAA(submissionRequest: DesSubmitAdvancedAssuranceModel, tavcReferenceId:String)
+              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val requestUrl = s"$serviceUrl/tax-assured-venture-capital/taxpayers/$tavcReferenceId/returns"
+    http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(submissionRequest),
+      Seq("Environment" -> config.getString("environment")))
   }
 }

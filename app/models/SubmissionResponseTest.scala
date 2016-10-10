@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package model
 
 import play.api.libs.json.Json
 
-case class ContactDetailsModel(forename : String,
-                               surname : String,
-                               telephoneNumber: String,
-                               email : String ) {
+case class SubmissionResponseTest(status: Boolean, nino: String, message: String)
+
+object Implicits {
+  implicit val persistedSubmissionTestResponseFormat = Json.format[SubmissionResponseTest]
 }
 
-object ContactDetailsModel {
-  implicit val format = Json.format[ContactDetailsModel]
-  implicit val writes = Json.writes[ContactDetailsModel]
+object SubmissionResponseTest {
+  implicit val formats = Json.format[SubmissionResponseTest]
 }
