@@ -16,18 +16,11 @@
 
 package models
 
-import play.api.libs.json.{Json}
+import play.api.libs.json.Json
 
-case class SubmissionRequestModel (contactDetails: ContactDetailsModel,
-                              yourCompanyNeedModel: YourCompanyNeedModel)
+case class NewGeographicalMarketModel (isNewGeographicalMarket: String)
 
-object SubmissionRequestModel{
-  implicit val format = Json.format[SubmissionRequestModel]
-  implicit val writes = Json.writes[SubmissionRequestModel]
-}
-
-case class SubmissionResponseModel(status: Boolean, formBundleId: String, message: String)
-
-object SubmissionResponseModel{
-  implicit val formats = Json.format[SubmissionResponseModel]
+object NewGeographicalMarketModel {
+  implicit val format = Json.format[NewGeographicalMarketModel]
+  implicit val writes = Json.writes[NewGeographicalMarketModel]
 }

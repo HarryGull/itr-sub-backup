@@ -18,13 +18,14 @@ package models
 
 import play.api.libs.json.Json
 
-case class ContactDetailsModel(forename : String,
-                               surname : String,
-                               telephoneNumber: String,
-                               email : String ) {
-}
+case class AddressModel(addressLine1 : String,
+                        addressLine2 : String,
+                        addressLine3 : Option[String],
+                        addressLine4 : Option[String],
+                        postCode : Option[String],
+                        countryCode : String = "GB")
 
-object ContactDetailsModel {
-  implicit val format = Json.format[ContactDetailsModel]
-  implicit val writes = Json.writes[ContactDetailsModel]
+object AddressModel {
+  implicit val format = Json.format[AddressModel]
+  implicit val writes = Json.writes[AddressModel]
 }

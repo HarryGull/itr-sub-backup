@@ -27,19 +27,19 @@ import org.mockito.Mockito._
 import play.api.test.Helpers._
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import Constants._
-import models.SubmissionResponseModel
+import fixtures.SubmissionFixture
+import models.submission.SubmissionResponse
 import org.scalatest.BeforeAndAfter
 import services.SubmissionService
 
 import scala.concurrent.Future
 
-class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfter {
+class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfter with SubmissionFixture {
 
   val mockSubmissionService = mock[SubmissionService]
 
 
-  val submissionResponse = SubmissionResponseModel(true,"FBUND09889765", "Submission Request Successful")
+  val submissionResponse = SubmissionResponse("2014-12-17","FBUND09889765")
 
   val malformedJson =
     """
@@ -53,7 +53,7 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
   implicit val hc = HeaderCarrier()
 
   class Setup(status: Int, response: JsValue) {
-    when(mockSubmissionService.submitAA(Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockSubmissionService.submitAA(Matchers.any(),Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(HttpResponse(status, Some(response))))
     object TestController extends SubmissionController {
       override val submissionService = mockSubmissionService
@@ -80,39 +80,39 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
 
       "return an OK when a CREATED response is returned from stub" in new Setup(CREATED, validJs) {
         setup()
-        val result = TestController.submitAA()(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelValid)))
+        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
         status(result) shouldBe OK
       }
 
-      "return a Forbidden when a Forbidden response is returned from stub" in new Setup(FORBIDDEN, Json.toJson(forbiddenJs)) {
+      "return a Forbidden when a Forbidden response is returned from stub" in new Setup(FORBIDDEN, Json.toJson(targetSubmissionModel)) {
         setup()
-        val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelForbidden)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
         status(result) shouldBe FORBIDDEN
       }
 
 
-      "return a BadRequest when a Bad Request response is returned from stub" in new Setup(BAD_REQUEST, Json.toJson(badRequestJs)) {
+      "return a BadRequest when a Bad Request response is returned from stub" in new Setup(BAD_REQUEST, Json.toJson(targetSubmissionModel)) {
         setup()
-        val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelBad)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
         status(result) shouldBe BAD_REQUEST
       }
 
 
-      "return a ServiceUnavailable when a ServiceUnavailable is returned from stub" in new Setup(SERVICE_UNAVAILABLE, Json.toJson(serviceUnavilableJs)) {
+      "return a ServiceUnavailable when a ServiceUnavailable is returned from stub" in new Setup(SERVICE_UNAVAILABLE, Json.toJson(targetSubmissionModel)) {
         setup()
-        val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelServiceUnavailable)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
         status(result) shouldBe SERVICE_UNAVAILABLE
       }
 
-      "return an Internal Server error when any other response is returned from stub" in new Setup(INTERNAL_SERVER_ERROR, Json.toJson(internalServerErrorJs)) {
+      "return an Internal Server error when any other response is returned from stub" in new Setup(INTERNAL_SERVER_ERROR, Json.toJson(targetSubmissionModel)) {
         setup()
-        val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelInternalServerError)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
       "return a Bad request with malformed JSON" in new Setup(CREATED, validJs) {
         setup()
-        val result = TestController.submitAA().apply(FakeRequest().withBody(Json.toJson(malformedJson)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(malformedJson)))
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -124,7 +124,7 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
 
       "return a FORBIDDEN response" in new Setup(CREATED, validJs) {
         setup("NotYetActivated")
-        val result = TestController.submitAA()(FakeRequest().withBody(Json.toJson(dummySubmissionRequestModelValid)))
+        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
         status(result) shouldBe FORBIDDEN
       }
     }

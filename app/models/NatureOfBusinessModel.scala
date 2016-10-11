@@ -18,13 +18,9 @@ package models
 
 import play.api.libs.json.Json
 
-case class ContactDetailsModel(forename : String,
-                               surname : String,
-                               telephoneNumber: String,
-                               email : String ) {
-}
+case class NatureOfBusinessModel(natureofbusiness : String)
 
-object ContactDetailsModel {
-  implicit val format = Json.format[ContactDetailsModel]
-  implicit val writes = Json.writes[ContactDetailsModel]
+object NatureOfBusinessModel {
+  implicit val format = Json.format[NatureOfBusinessModel]
+  implicit val writes = Json.writes[NatureOfBusinessModel]
 }

@@ -6,5 +6,4 @@ GET        /knowledge-intensive/check-secondary-conditions/has-percentage-with-m
 
 GET        /lifetime-allowance/lifetime-allowance-checker/had-previous-rfi/:hadPrevRFI/is-knowledge-intensive/:isKi/previous-schemes-total/:previousInvestmentSchemesTotal/proposed-amount/:proposedAmount                      controllers.LifetimeAllowanceController.checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int)
 
-POST       /advanced-assurance/submit                                                                                                                                                                                            controllers.SubmissionController.submitAA
-
+POST       /advanced-assurance/:tavcReferenceId/submit   controllers.SubmissionController.submitAA(tavcReferenceId: String)
