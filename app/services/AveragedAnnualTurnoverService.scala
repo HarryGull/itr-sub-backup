@@ -21,6 +21,6 @@ object AveragedAnnualTurnoverService extends AveragedAnnualTurnoverService
 trait AveragedAnnualTurnoverService {
 
   def checkAveragedAnnualTurnover(proposedInvestmentAmount: Double,  annualTurnOverYears: Double*)(percentage: Double = 0.50): Boolean =
-    proposedInvestmentAmount >= (annualTurnOverYears.sum / annualTurnOverYears.size) * percentage
+    if(annualTurnOverYears.nonEmpty) proposedInvestmentAmount >= (annualTurnOverYears.sum / annualTurnOverYears.size) * percentage else false
 
 }

@@ -28,6 +28,7 @@ class AveragedAnnualTurnoverServiceSpec extends UnitSpec with OneServerPerSuite 
   val  false49Point5Decimal= (50d,Seq(101d, 101d, 101d, 101d, 101d))
   val  randomTestFail = (6865d,Seq(9100d, 39999d, 603d, 8888d, 10061d))
   val  randomTestPass = (6865.1d,Seq(9100d, 39999d, 603d, 8888d, 10061d))
+  val  emptyAnnualTurnoverSeq = (50d,Seq())
 
   def averagedAnnualTurnoverCheck(proposedInvestmentAmount: Double, annualTurnOverXYear: Seq[Double])(test: Boolean => Any) {
     val result = AveragedAnnualTurnoverService.checkAveragedAnnualTurnover(proposedInvestmentAmount,annualTurnOverXYear:_*)()
@@ -88,6 +89,14 @@ class AveragedAnnualTurnoverServiceSpec extends UnitSpec with OneServerPerSuite 
       averagedAnnualTurnoverCheck(randomTestPass._1,randomTestPass._2)(
         result => {
           result shouldBe true
+        }
+      )
+    }
+
+    "return false when annual turnovers argument is empty" in {
+      averagedAnnualTurnoverCheck(emptyAnnualTurnoverSeq._1,emptyAnnualTurnoverSeq._2)(
+        result => {
+          result shouldBe false
         }
       )
     }
