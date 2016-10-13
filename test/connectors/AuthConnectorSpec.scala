@@ -17,6 +17,7 @@
 package connectors
 
 import auth.{Authority, Enrolment, Identifier}
+import config.WSHttp
 import helpers.AuthHelper._
 import org.mockito.Mockito._
 import org.mockito.Matchers
@@ -25,12 +26,13 @@ import play.api.libs.json.Json
 import play.api.test.FakeApplication
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
+import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.concurrent.Future
 
-class AuthConnectorSpec extends FakeApplication with UnitSpec with MockitoSugar {
+class AuthConnectorSpec extends UnitSpec with MockitoSugar with ServicesConfig with WithFakeApplication {
 
   object TestConnector extends AuthConnector {
     override def serviceUrl: String = "localhost"
@@ -46,6 +48,15 @@ class AuthConnectorSpec extends FakeApplication with UnitSpec with MockitoSugar 
     """[{"key":"IR-SA","identifiers":[{"key":"UTR","value":"12345"}],"state":"Activated"},""" +
       s"""{"key":"$key","identifiers":[{"key":"TAVCRef","value":"$tavcRef"},{"key":"Postcode","value":"$postcode"}],"state":"Activated"}]"""
   )
+
+  "AuthConnector" should {
+    "Use WSHttp" in {
+      AuthConnector.http shouldBe WSHttp
+    }
+    "Use the auth url from config" in {
+      AuthConnector.serviceUrl shouldBe baseUrl("auth")
+    }
+  }
 
   "AuthConnector.getCurrentAuthority" should {
     "return Some(Authority) when auth info is found" in {
