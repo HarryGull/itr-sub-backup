@@ -19,46 +19,46 @@ package services
 import java.util.UUID
 
 import connectors.SubmissionDESConnector
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
 import fixtures.SubmissionFixture
+import org.mockito.Matchers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.OneServerPerSuite
 import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.http.ws.WSHttp
+import org.mockito.Mockito._
+import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SubmissionServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite
-  with SubmissionFixture{
+  with SubmissionFixture {
 
   val sessionId = UUID.randomUUID.toString
-  val mockHttp : WSHttp = mock[WSHttp]
   val mockSubmissionDESConnector : SubmissionDESConnector = mock[SubmissionDESConnector]
-
   val tavcRef = "XADD00000001234"
+  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId.toString)))
 
-  class Setup {
-    object TestSubmissionService extends SubmissionService {
-      val submissionDESConnector = mockSubmissionDESConnector
-      val http = mockHttp
+  object TestSubmissionService extends SubmissionService {
+    val submissionDESConnector = mockSubmissionDESConnector
+  }
+
+  "SubmissionService" should {
+    "Use SubmissionDESConnector" in {
+      SubmissionService.submissionDESConnector shouldBe SubmissionDESConnector
     }
   }
 
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId.toString)))
+  "SubmissionService.submitAA" should {
 
-  "The submission service should" should {
-    "return a valid response" in new Setup {
+    lazy val result = TestSubmissionService.submitAA(targetSubmissionModel,tavcRef)
 
-//  when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(),
-      // Matchers.any(), Matchers.any()))
-//        .thenReturn(Future.successful(HttpResponse(CREATED)))
-//
-//      val result = TestSubmissionService.submitAA(Matchers.any(), Matchers.any())
-//
-//      await(result).status shouldBe CREATED
+    "return the response from the DES connector" in {
+      when(mockSubmissionDESConnector.submitAA(Matchers.eq(targetSubmissionModel),Matchers.eq(tavcRef))(Matchers.any(),Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(CREATED)))
+      await(result).status shouldBe CREATED
     }
   }
 
