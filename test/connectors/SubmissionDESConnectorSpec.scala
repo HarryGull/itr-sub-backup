@@ -17,19 +17,17 @@
 package connectors
 
 import config.WSHttp
-import helpers.Constants
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.test.WithFakeApplication
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import java.util.UUID
 
-import Constants._
 import fixtures.SubmissionFixture
 import play.api.test.Helpers._
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -62,7 +60,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFak
       when(mockHttp.POST[JsValue, HttpResponse](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(HttpResponse(OK))
 
-      val result = TestConnector.submitAA(targetSubmissionModel, dummyTavcRef)
+      val result = TestConnector.submitAA(validSubmissionJsVal, dummyTavcRef)
       await(result).status shouldBe OK
     }
   }
@@ -72,7 +70,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFak
 
       when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(OK)))
-      val result = TestConnector.submitAA(targetSubmissionModel, dummyTavcRef)
+      val result = TestConnector.submitAA(validSubmissionJsVal, dummyTavcRef)
       await(result).status shouldBe OK
     }
   }
@@ -82,7 +80,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFak
 
       when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
-      val result = TestConnector.submitAA(targetSubmissionModel, dummyTavcRef)
+      val result = TestConnector.submitAA(validSubmissionJsVal, dummyTavcRef)
       await(result).status shouldBe BAD_REQUEST
     }
   }
@@ -92,7 +90,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFak
 
       when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(FORBIDDEN)))
-      val result = TestConnector.submitAA(targetSubmissionModel, dummyTavcRef)
+      val result = TestConnector.submitAA(validSubmissionJsVal, dummyTavcRef)
       await(result).status shouldBe FORBIDDEN
     }
   }
@@ -103,7 +101,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFak
 
       when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(SERVICE_UNAVAILABLE)))
-      val result = TestConnector.submitAA(targetSubmissionModel, dummyTavcRef)
+      val result = TestConnector.submitAA(validSubmissionJsVal, dummyTavcRef)
       await(result).status shouldBe SERVICE_UNAVAILABLE
     }
   }
@@ -114,7 +112,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFak
 
       when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
-      val result = TestConnector.submitAA(targetSubmissionModel, dummyTavcRef)
+      val result = TestConnector.submitAA(validSubmissionJsVal, dummyTavcRef)
       await(result).status shouldBe INTERNAL_SERVER_ERROR
     }
   }
