@@ -18,9 +18,8 @@ package controllers
 
 import connectors.AuthConnector
 import helpers.AuthHelper._
-import helpers.Constants
 import play.api.libs.json.{JsValue, Json}
-import play.api.test.FakeRequest
+import play.api.test.{FakeHeaders, FakeRequest}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -28,7 +27,6 @@ import play.api.test.Helpers._
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import fixtures.SubmissionFixture
-import models.submission.SubmissionResponse
 import org.scalatest.BeforeAndAfter
 import services.SubmissionService
 
@@ -38,9 +36,6 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
 
   val mockSubmissionService = mock[SubmissionService]
 
-
-  val submissionResponse = SubmissionResponse("2014-12-17","FBUND09889765")
-
   val malformedJson =
     """
       |{
@@ -49,6 +44,37 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
       |  "message": "malformed"}'"
       |}
     """.stripMargin
+
+  val acknowledgemenRefJs =
+
+    """{
+                              |"acknowledgementReference": "XDTAVC000544444",
+                              |	"submissionType": {
+                              |		"agentReferenceNumber": "AARN1234567",
+                              |		"correspondenceDetails": {
+                              |			"contactName": {
+                              |				"name1": "John",
+                              |				"name2": "Smith"
+                              |			},
+                              |			"contactDetails": {
+                              |				"phoneNumber": "01214567896",
+                              |				"mobileNumber": "07999056789",
+                              |				"faxNumber": "01216754321",
+                              |				"emailAddress": "john.smith@gmail.com"
+                              |			},
+                              |			"contactAddress": {
+                              |				"addressLine1": "38 UpperMarshall Street",
+                              |				"addressLine2": "Post Box Aptms",
+                              |				"addressLine3": "Birmingham",
+                              |				"addressLine4": "WarwickShire",
+                              |				"postalCode": "B1 1LA",
+                              |				"countryCode": "GB"
+                              |			}
+                              |		}
+                              |	}
+                              |}""".stripMargin
+
+  val acknowledgemenRefJsVal = Json.parse(acknowledgemenRefJs)
 
   implicit val hc = HeaderCarrier()
 
@@ -78,42 +104,41 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
 
     "submitAA is called" should {
 
-      "return an OK when a CREATED response is returned from stub" in new Setup(CREATED, validJs) {
+      "return an Created when a CREATED response is returned from stub" in new Setup(CREATED, validSubmissionJsVal) {
         setup()
-        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
-        status(result) shouldBe OK
+        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(validSubmissionJsVal))
+        status(result) shouldBe CREATED
       }
 
-      "return a Forbidden when a Forbidden response is returned from stub" in new Setup(FORBIDDEN, Json.toJson(targetSubmissionModel)) {
+      "return a Bad request if valid JSON already contains an acknowledgementReference" in new Setup(CREATED, acknowledgemenRefJsVal) {
         setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(acknowledgemenRefJsVal))
+        status(result) shouldBe BAD_REQUEST
+      }
+
+      "return a Forbidden when a Forbidden response is returned from stub" in new Setup(FORBIDDEN, validSubmissionJsVal) {
+        setup()
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(validSubmissionJsVal))
         status(result) shouldBe FORBIDDEN
       }
 
 
-      "return a BadRequest when a Bad Request response is returned from stub" in new Setup(BAD_REQUEST, Json.toJson(targetSubmissionModel)) {
+      "return a BadRequest when a Bad Request response is returned from stub" in new Setup(BAD_REQUEST, validSubmissionJsVal) {
         setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(validSubmissionJsVal))
         status(result) shouldBe BAD_REQUEST
       }
 
-
-      "return a ServiceUnavailable when a ServiceUnavailable is returned from stub" in new Setup(SERVICE_UNAVAILABLE, Json.toJson(targetSubmissionModel)) {
+      "return a ServiceUnavailable when a ServiceUnavailable is returned from stub" in new Setup(SERVICE_UNAVAILABLE, validSubmissionJsVal) {
         setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(validSubmissionJsVal))
         status(result) shouldBe SERVICE_UNAVAILABLE
       }
 
-      "return an Internal Server error when any other response is returned from stub" in new Setup(INTERNAL_SERVER_ERROR, Json.toJson(targetSubmissionModel)) {
+      "return an Internal Server error when any other response is returned from stub" in new Setup(INTERNAL_SERVER_ERROR, validSubmissionJsVal) {
         setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(validSubmissionJsVal))
         status(result) shouldBe INTERNAL_SERVER_ERROR
-      }
-
-      "return a Bad request with malformed JSON" in new Setup(CREATED, validJs) {
-        setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(Json.toJson(malformedJson)))
-        status(result) shouldBe BAD_REQUEST
       }
     }
   }
@@ -122,9 +147,9 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
 
     "submitAA is called" should {
 
-      "return a FORBIDDEN response" in new Setup(CREATED, validJs) {
+      "return a FORBIDDEN response" in new Setup(CREATED, validSubmissionJsVal) {
         setup("NotYetActivated")
-        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(Json.toJson(targetSubmissionModel)))
+        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(validSubmissionJsVal))
         status(result) shouldBe FORBIDDEN
       }
     }

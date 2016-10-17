@@ -18,7 +18,6 @@ package connectors
 
 import com.typesafe.config.ConfigFactory
 import config.WSHttp
-import models.submission.DesSubmitAdvancedAssuranceModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
@@ -36,10 +35,10 @@ trait SubmissionDESConnector extends ServicesConfig{
   val serviceUrl: String
   private lazy val config = ConfigFactory.load()
 
-  def submitAA(submissionRequest: DesSubmitAdvancedAssuranceModel, tavcReferenceId:String)
+  def submitAA(jsonValue: JsValue, tavcReferenceId:String)
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val requestUrl = s"$serviceUrl/tax-assured-venture-capital/taxpayers/$tavcReferenceId/returns"
-    http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(submissionRequest),
+    http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(jsonValue),
       Seq("Environment" -> config.getString("environment")))
   }
 }

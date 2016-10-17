@@ -34,8 +34,9 @@ package services
 
 import connectors.SubmissionDESConnector
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+
 import scala.concurrent.{ExecutionContext, Future}
-import models.submission.DesSubmitAdvancedAssuranceModel
+import play.api.libs.json.JsValue
 
 
 object SubmissionService extends SubmissionService{
@@ -46,8 +47,8 @@ trait SubmissionService {
 
   val submissionDESConnector: SubmissionDESConnector
 
-  def submitAA(submissionRequest: DesSubmitAdvancedAssuranceModel, tavcReferenceId:String)
+  def submitAA(jsonValue:JsValue, tavcReferenceId:String)
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    submissionDESConnector.submitAA(submissionRequest, tavcReferenceId)
+    submissionDESConnector.submitAA(jsonValue, tavcReferenceId)
   }
 }

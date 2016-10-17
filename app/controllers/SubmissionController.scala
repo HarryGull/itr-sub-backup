@@ -19,14 +19,11 @@ package controllers
 import auth.{Authorisation, Authorised, NotAuthorised}
 import connectors.AuthConnector
 import model.Error
-import models.submission.DesSubmitAdvancedAssuranceModel
 import play.api.libs.json._
 import services.SubmissionService
 import uk.gov.hmrc.play.microservice.controller.BaseController
-
 import scala.concurrent.Future
 import play.api.mvc._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.math._
 
@@ -42,31 +39,39 @@ trait SubmissionController extends BaseController with Authorisation {
   def submitAA(tavcReferenceId: String): Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
     authorised {
       case Authorised => {
-        val submissionApplicationBodyJs = request.body.validate[DesSubmitAdvancedAssuranceModel]
-        submissionApplicationBodyJs.fold(
-          errors => Future.successful(BadRequest(Json.toJson(Error(
-            message = "Request to submit application failed with validation errors: " + errors)))),
-          submitRequest => {
-            submissionService.submitAA(submitRequest.copy(acknowledgementReference =
-              Some(generateAcknowledgementRef(tavcReferenceId))), tavcReferenceId) map { responseReceived =>
-              responseReceived.status match {
-                case CREATED => Ok(responseReceived.body)
-                case FORBIDDEN => Forbidden(responseReceived.body)
-                case BAD_REQUEST => BadRequest(responseReceived.body)
-                case SERVICE_UNAVAILABLE => ServiceUnavailable(responseReceived.body)
-                case _ => InternalServerError(responseReceived.body)
-              }
-            }
+        if (acknowledgementReferenceCheck(request.body)) {
+          val bodyWithRef = insertAcknowledgementRef(request.body.as[JsObject], generateAcknowledgementRef(tavcReferenceId))
+          submissionService.submitAA(bodyWithRef, tavcReferenceId) map { responseReceived =>
+            Status(responseReceived.status)(responseReceived.body)
           }
-        )
+        }
+        else {
+          Future.successful(BadRequest(Json.toJson(Error(
+            message = "Request to submit application failed with validation errors:" +
+              "acknowledgementReference should not be present in Json request"))))
+        }
       }
       case NotAuthorised => Future.successful(Forbidden)
     }
   }
 
-  /** Randomly generate acknowledgementReference, must be between 1 and 32 characters long**/
-  private def generateAcknowledgementRef(tavcReferenceId: String): String =  {
-    val ackRef = tavcReferenceId concat  (System.currentTimeMillis / 1000).toString
+  /** acknowledgementReference should not be present. It's generated and inserted. **/
+  private def acknowledgementReferenceCheck(requestBody: JsValue): Boolean = {
+    (requestBody \ "acknowledgementReference").asOpt[String] match {
+      case Some(data) => false
+      case None => true
+    }
+  }
+
+  /** Randomly generate acknowledgementReference, must be between 1 and 32 characters long **/
+  private def generateAcknowledgementRef(tavcReferenceId: String): String = {
+    val ackRef = tavcReferenceId concat (System.currentTimeMillis / 1000).toString
     ackRef.substring(0, min(ackRef.length(), 31));
+  }
+
+  /** Inject the generated acknowledgementReference into the Json Request **/
+  private def insertAcknowledgementRef(requestBody: JsObject, acknowledgementRef: String): JsValue = {
+    val ref = JsObject(Seq(("acknowledgementReference", JsString(acknowledgementRef))))
+    (ref ++ requestBody).as[JsValue]
   }
 }
