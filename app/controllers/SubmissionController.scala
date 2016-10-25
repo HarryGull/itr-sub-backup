@@ -18,30 +18,45 @@ package controllers
 
 import auth.{Authorisation, Authorised, NotAuthorised}
 import connectors.AuthConnector
+import metrics.MetricsEnum
 import model.Error
+import models.SubmissionDataForAuditModel
+import play.api.Logger
 import play.api.libs.json._
-import services.SubmissionService
+import services.{AuditService, SubmissionService}
 import uk.gov.hmrc.play.microservice.controller.BaseController
+
 import scala.concurrent.Future
 import play.api.mvc._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.math._
 
 object SubmissionController extends SubmissionController{
   val submissionService: SubmissionService= SubmissionService
   override val authConnector: AuthConnector = AuthConnector
+  val auditService = AuditService
 }
 
 trait SubmissionController extends BaseController with Authorisation {
 
   val submissionService: SubmissionService
+  val auditService : AuditService
 
   def submitAA(tavcReferenceId: String): Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
     authorised {
       case Authorised => {
         if (acknowledgementReferenceCheck(request.body)) {
-          val bodyWithRef = insertAcknowledgementRef(request.body.as[JsObject], generateAcknowledgementRef(tavcReferenceId))
+          val acknowledgementRef = generateAcknowledgementRef(tavcReferenceId)
+          val bodyWithRef = insertAcknowledgementRef(request.body.as[JsObject], acknowledgementRef)
+
+          val timerContext = AuditService.metrics.startTimer(MetricsEnum.TAVC_SUBMISSION)
+          val auditData = bodyWithRef.as[SubmissionDataForAuditModel]
+
           submissionService.submitAA(bodyWithRef, tavcReferenceId) map { responseReceived =>
+            auditService.sendTAVCSubmitAdvancedAssuranceEvent(auditData, tavcReferenceId, responseReceived, acknowledgementRef)
+            auditService.logSubscriptionResponse(responseReceived, "SubmissionController", "submitAA", tavcReferenceId)
+            val stopContext = timerContext.stop()
             Status(responseReceived.status)(responseReceived.body)
           }
         }
@@ -51,7 +66,10 @@ trait SubmissionController extends BaseController with Authorisation {
               "acknowledgementReference should not be present in Json request"))))
         }
       }
-      case NotAuthorised => Future.successful(Forbidden)
+      case NotAuthorised => {
+        Logger.warn(s"[SubmissionController] [subscribe] - Received an unauthorised request. tavcReferenceId is $tavcReferenceId")
+        Future.successful(Forbidden)
+      }
     }
   }
 
