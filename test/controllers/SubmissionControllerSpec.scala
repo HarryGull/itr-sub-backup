@@ -28,13 +28,14 @@ import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import fixtures.SubmissionFixture
 import org.scalatest.BeforeAndAfter
-import services.SubmissionService
+import services.{AuditService, SubmissionService}
 
 import scala.concurrent.Future
 
 class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfter with SubmissionFixture {
 
   val mockSubmissionService = mock[SubmissionService]
+  val mockAuditService = mock[AuditService]
 
   val malformedJson =
     """
@@ -84,6 +85,7 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
     object TestController extends SubmissionController {
       override val submissionService = mockSubmissionService
       override val authConnector = mockAuthConnector
+      override val auditService = mockAuditService
     }
   }
 
