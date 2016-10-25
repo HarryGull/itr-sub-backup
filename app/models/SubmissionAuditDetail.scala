@@ -27,6 +27,8 @@ case class SubmissionAuditDetail(
                                       failureReason: String,
                                       tavcReferenceNumber: String,
                                       acknowledgementReference: String,
+                                      companyName: String,
+                                      proposedInvestmentAmount: String,
                                       forename: String,
                                       surname: String,
                                       phoneNumber: String,

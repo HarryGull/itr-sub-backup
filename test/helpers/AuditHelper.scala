@@ -30,20 +30,13 @@ object AuditHelper extends AuditHelper
 trait AuditHelper {
 
 
-  val dummyValidSafeID = "XA0001234567890"
-  val dummyInvalidSafeID = "YA0001234567890"
-  val dummyValidPostcode = "SY76TA"
-  val dummyInvalidPostcode = "INVALID_POSTCODE"
-  val dummyValidTavcRegNumber = "XXTAVC000123456"
-  val dummyValidProcessingDate = "2016-10-05T09:30:47Z"
-
   val testRequestPath = "test/path"
   val responseReasonContent = (message: String) => s"""{"reason" : "$message"}"""
   val responseSuccessContent = s"""{"processingDate":"2014-12-17T09:30:47Z","formBundleNumber":"FBUND98763284"}"""
 
   // logging
   val reasonMessage = (message: String) => s"""{"reason" : "$message"}"""
-  val eventCaptor2 = ArgumentCaptor.forClass(classOf[DataEvent])
+  //val eventCaptor2 = ArgumentCaptor.forClass(classOf[DataEvent])
   val eventCaptor = ArgumentCaptor.forClass(classOf[Audit])
 
   val responseNonContent = HttpResponse(NO_CONTENT)
@@ -74,23 +67,6 @@ trait AuditHelper {
   val tavcRefNumber = "XLTAVC000823190"
   val acknowledgementReference = "XE00012345678901477052976"
 
-//  val fullContactNameModel = ContactNameModel("fred", Some("Smith"))
-//  val fullContactDetalsModel = ContactDetailsModel(Some("000001 00000002"),
-//    Some("100000 20000"), Some("300000 400000"), Some("fred@nowhere.com"))
-//  val fullContactAddress = ContactAddressModel("Line 1", "Line 2", Some("Line 3"), Some("Line 4"), "GB", Some("AA3 3AA"))
-//  val fullCorrespondenceDetails =
-//    CorrespondenceDetailsModel(Some(fullContactNameModel),Some(fullContactDetalsModel), Some(fullContactAddress))
-//
-//  val minContactNameModel = ContactNameModel("fred", None)
-//  val minContactDetailsModel = ContactDetailsModel(None, None, None, None)
-//  val minContactAddress = ContactAddressModel("Line 1", "Line 2", None, None, "GB", None)
-//  val minCorrespondenceDetails =
-//    CorrespondenceDetailsModel(Some(minContactNameModel),Some(minContactDetailsModel), Some(minContactAddress))
-//
-//  val noCorrespondenceModels =
-//    CorrespondenceDetailsModel(None,None, None)
-
-
   val fullAddress = AuditAddressModel(
     addressLine1 = Some("Line 1"),
     addressLine2 = Some("Line 2"),
@@ -100,67 +76,8 @@ trait AuditHelper {
     country = Some("GB")
   )
 
-  val fullAuditData =  SubmissionDataForAuditModel(forename = Some("Fred"), surname = Some("Smith"),phoneNumber = Some("000001 100000"),
+  val fullAuditData =  SubmissionDataForAuditModel(companyName = Some("Acme ltd."), proposedInvestmentAmount = Some("250"),
+    forename = Some("Fred"), surname = Some("Smith"),phoneNumber = Some("000001 100000"),
     mobileNumber = Some("000002 200000"),emailAddress = Some("fred@nowhere.no.place"), contactAddress = Some(fullAddress),
     registeredAddress = Some(fullAddress))
-
-//      addressLine1 : Option[String] = Some(AuditConstants.noValueProvided),
-//  addressLine2 : Option[String] = Some(AuditConstants.noValueProvided),
-//  addressline3 : Option[String] = Some(AuditConstants.noValueProvided),
-//  addressLine4 : Option[String] = Some(AuditConstants.noValueProvided),
-//  postCode : Option[String] = Some(AuditConstants.noValueProvided),
-//  country : Option[String] = Some(AuditConstants.noValueProvided)
-
-
-
-  //  case class SubmissionDataForAuditModel(
-//                                          forename: Option[String] = Some(AuditConstants.noValueProvided),
-//                                          surname: Option[String] = Some(AuditConstants.noValueProvided),
-//                                          phoneNumber:Option[String] = Some(AuditConstants.noValueProvided),
-//                                          mobileNumber: Option[String] = Some(AuditConstants.noValueProvided),
-//                                          emailAddress: Option[String] = Some(AuditConstants.noValueProvided),
-//                                          contactAddress: Option[AuditAddressModel] = Some(AuditAddressModel()),
-//                                          registeredAddress: Option[AuditAddressModel] = Some(AuditAddressModel())
-//                                        )
-
-  val etmpSuccessResponse = Json.parse(
-    s"""
-       |{
-       |  "processingDate": "$dummyValidProcessingDate",
-       |  "tavcRegNumber": "$dummyValidTavcRegNumber"
-       |}
-    """.stripMargin
-  )
-
-  val etmpFailureResponse = Json.parse(
-    """
-      |{
-      |  "Message": "An Error Message"
-      |}
-    """.stripMargin
-  )
-
-  val ggAdminFailureResponse = Json.parse(
-    """
-      |{
-      |  "Message": "An Error Message"
-      |}
-    """.stripMargin
-  )
-
-  val ggEnrolFailureResponse = Json.parse(
-    """
-      |{
-      |  "Message": "An Error Message"
-      |}
-    """.stripMargin
-  )
-
-  val authenticatorFailureResponse = Json.parse(
-    """
-      |{
-      |  "Message": "An Error Message"
-      |}
-    """.stripMargin
-  )
 }

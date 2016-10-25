@@ -61,6 +61,8 @@ trait AuditService {
       failureReason = failureReason,
       tavcReferenceNumber = tavcReferenceNumber,
       acknowledgementReference = acknowledgementRef,
+      companyName = submittedDataForAudit.companyName.fold(AuditConstants.noValueProvided)(_.toString),
+      proposedInvestmentAmount = submittedDataForAudit.proposedInvestmentAmount.fold(AuditConstants.noValueProvided)(_.toString),
       forename = submittedDataForAudit.forename.fold(AuditConstants.noValueProvided)(_.toString),
       surname = submittedDataForAudit.surname.fold(AuditConstants.noValueProvided)(_.toString),
       phoneNumber = submittedDataForAudit.phoneNumber.fold(AuditConstants.noValueProvided)(_.toString),
