@@ -27,6 +27,8 @@ case class SubmissionAuditDetail(
                                       failureReason: String,
                                       tavcReferenceNumber: String,
                                       acknowledgementReference: String,
+                                      companyName: String,
+                                      proposedInvestmentAmount: String,
                                       forename: String,
                                       surname: String,
                                       phoneNumber: String,
@@ -39,15 +41,4 @@ case class SubmissionAuditDetail(
 
 object SubmissionAuditDetail {
   implicit val auditSubmissionWrites = Json.format[SubmissionAuditDetail]
-
-  //  implicit val readsAuditAddress: Reads[SubmissionAuditDetail] = (
-  //    (__ \ "submissionType" \ "correspondenceDetails" \ "contactName" \ "emailAddress").readNullable[String] and
-  //      (__ \ "addressLine2").readNullable[String] and
-  //      (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "emailAddress").readNullable[String] and
-  //      (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "emailAddress").readNullable[String] and
-  //      (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "emailAddress").readNullable[String] and
-  //      (__ \ "addressLine4").readNullable[String] and
-  //      (__ \ "postalCode").readNullable[String] and
-  //      (__ \ "countryCode").readNullable[String]
-  //    ) (SubmissionAuditDetail.apply _)
 }

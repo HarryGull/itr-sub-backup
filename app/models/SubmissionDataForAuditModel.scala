@@ -21,6 +21,8 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 case class SubmissionDataForAuditModel(
+                            companyName: Option[String] = Some(AuditConstants.noValueProvided),
+                            proposedInvestmentAmount: Option[String] = Some(AuditConstants.noValueProvided),
                             forename: Option[String] = Some(AuditConstants.noValueProvided),
                             surname: Option[String] = Some(AuditConstants.noValueProvided),
                             phoneNumber:Option[String] = Some(AuditConstants.noValueProvided),
@@ -35,6 +37,8 @@ object SubmissionDataForAuditModel {
   implicit val submissionAuditDataWrites = Json.writes[SubmissionDataForAuditModel]
 
   implicit val submissionAuditDataReads: Reads[SubmissionDataForAuditModel] = (
+    (__ \ "submissionType" \ "submission" \ "advancedAssurance" \ "organisation" \ "orgDetails" \"organisationName").readNullable[String] and
+    (__ \ "submissionType" \ "submission" \ "advancedAssurance" \ "proposedInvestment" \ "investmentAmount" \"amount").readNullable[String] and
     (__ \ "submissionType" \ "correspondenceDetails" \ "contactName" \ "name1").readNullable[String] and
     (__ \ "submissionType" \ "correspondenceDetails" \ "contactName" \ "name2").readNullable[String] and
       (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "phoneNumber").readNullable[String] and
