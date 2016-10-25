@@ -41,9 +41,3 @@ object AuditAddressModel {
       (__ \ "countryCode").readNullable[String]
     ) (AuditAddressModel.apply _)
 }
-
-
-//implicit val readsAuditAddress: Reads[AuditAddressModel] = (
-//(__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "emailAddress").readNullable[String] and
-//(__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "nodata").readNullable[String]
-//) (AuditAddressModel.apply _)
