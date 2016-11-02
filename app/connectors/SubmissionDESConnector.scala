@@ -17,7 +17,7 @@
 package connectors
 
 import com.typesafe.config.ConfigFactory
-import config.WSHttp
+import config.{MicroserviceAppConfig, WSHttp}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
@@ -26,19 +26,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object SubmissionDESConnector extends SubmissionDESConnector {
 
-  override val serviceUrl = baseUrl("des")
+  override val serviceUrl = MicroserviceAppConfig.submissionURL
   override def http: HttpGet with HttpPost with HttpPut = WSHttp
 }
-trait SubmissionDESConnector extends ServicesConfig{
+trait SubmissionDESConnector {
 
   def http: HttpGet with HttpPost with HttpPut
   val serviceUrl: String
-  private lazy val config = ConfigFactory.load()
 
   def submitAA(jsonValue: JsValue, tavcReferenceId:String)
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val requestUrl = s"$serviceUrl/tax-assured-venture-capital/taxpayers/$tavcReferenceId/returns"
     http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(jsonValue),
-      Seq("Environment" -> config.getString("environment")))
+      Seq("Environment" -> MicroserviceAppConfig.environment))
   }
 }
