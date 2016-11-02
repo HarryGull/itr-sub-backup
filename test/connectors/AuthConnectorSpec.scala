@@ -17,7 +17,7 @@
 package connectors
 
 import auth.{Authority, Enrolment, Identifier}
-import config.WSHttp
+import config.{MicroserviceAppConfig, WSHttp}
 import helpers.AuthHelper._
 import org.mockito.Mockito._
 import org.mockito.Matchers
@@ -54,7 +54,7 @@ class AuthConnectorSpec extends UnitSpec with MockitoSugar with ServicesConfig w
       AuthConnector.http shouldBe WSHttp
     }
     "Use the auth url from config" in {
-      AuthConnector.serviceUrl shouldBe baseUrl("auth")
+      AuthConnector.serviceUrl shouldBe MicroserviceAppConfig.authURL
     }
   }
 

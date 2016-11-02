@@ -10,5 +10,7 @@ GET        /averaged-annual-turnover/check-averaged-annual-turnover/proposed-inv
 
 POST       /advanced-assurance/:tavcReferenceId/submit                                                                                                                                                                                                                             controllers.SubmissionController.submitAA(tavcReferenceId: String)
 
+GET        /registration/registration-details/safeid/:safeID                                                                                                                                                                                                                   controllers.RegistrationDetailsController.getRegistrationDetails(safeID: String)
+
 
 
