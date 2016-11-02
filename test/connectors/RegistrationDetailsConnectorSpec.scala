@@ -56,14 +56,14 @@ class RegistrationDetailsConnectorSpec extends UnitSpec with MockitoSugar with W
 
     "return the http GET response code" in {
       when(mockHttp.GET[HttpResponse](Matchers.eq(
-        s"${TestConnector.serviceUrl}${TestConnector.getRegistrationDetailsURL}?${TestConnector.safeIDQuery}$safeID"),Matchers.any())
+        s"${TestConnector.serviceUrl}${TestConnector.getRegistrationDetailsURL}?${TestConnector.safeIDQuery}$safeID"))
       (Matchers.any(),Matchers.any())).thenReturn(Future.successful(HttpResponse(OK,Some(responseJson))))
       await(result).status shouldBe OK
     }
 
     "return the http GET response json" in {
       when(mockHttp.GET[HttpResponse](Matchers.eq(
-        s"${TestConnector.serviceUrl}${TestConnector.getRegistrationDetailsURL}?${TestConnector.safeIDQuery}$safeID"),Matchers.any())
+        s"${TestConnector.serviceUrl}${TestConnector.getRegistrationDetailsURL}?${TestConnector.safeIDQuery}$safeID"))
         (Matchers.any(),Matchers.any())).thenReturn(Future.successful(HttpResponse(OK,Some(responseJson))))
       await(result).json shouldBe responseJson
     }

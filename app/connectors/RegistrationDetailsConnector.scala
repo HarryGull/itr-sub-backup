@@ -17,7 +17,7 @@
 package connectors
 
 import config.{MicroserviceAppConfig, WSHttp}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,6 +38,7 @@ trait RegistrationDetailsConnector {
   val environment: String
 
   def getRegistrationDetails(safeID: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.GET[HttpResponse](s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID", Seq("Environment" -> environment))
+    http.GET[HttpResponse](s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID")(HttpReads.readRaw,
+      hc.withExtraHeaders("Environment" -> environment))
   }
 }
