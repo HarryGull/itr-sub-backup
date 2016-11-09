@@ -42,6 +42,7 @@ class RegistrationDetailsConnectorSpec extends UnitSpec with MockitoSugar with W
     override lazy val getRegistrationDetailsURL: String = "/get-registration-details"
     override lazy val environment: String = "test"
     override lazy val serviceUrl: String = "test.service"
+    override lazy val token = "token"
   }
 
   "RegistrationDetailsConnector" should {
