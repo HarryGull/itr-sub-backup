@@ -41,8 +41,10 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFak
 
   class Setup {
     object TestConnector extends SubmissionDESConnector {
-      val serviceUrl = "dummy"
-      val http = mockHttp
+      override val serviceUrl = "dummy"
+      override val http = mockHttp
+      override val environment = "test"
+      override val token = "token"
     }
   }
 
