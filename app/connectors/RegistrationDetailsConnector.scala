@@ -42,7 +42,10 @@ trait RegistrationDetailsConnector {
 
   def getRegistrationDetails(safeID: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     Logger.info(s"[RegistrationDetailsConnector][getRegistrationDetails] - Testing connector called")
-    Logger.info(s"[RegistrationDetailsConnector][getRegistrationDetails] - " +  "URL: " + s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID")
+    Logger.info(s"[RegistrationDetailsConnector][getRegistrationDetails] - " +  "URL: safeId" + s"$safeID")
+    Logger.info(s"[RegistrationDetailsConnector][getRegistrationDetails] - " +  "URL: getRegDetailsURL" + s"$getRegistrationDetailsURL")
+    Logger.info(s"[RegistrationDetailsConnector][getRegistrationDetails] - " +  "URL: safeIdQuery" + s"$safeIDQuery")
+    Logger.info(s"[RegistrationDetailsConnector][getRegistrationDetails] - " +  "URL: serviceUrl" + s"$serviceUrl")
     http.GET[HttpResponse](s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID")(HttpReads.readRaw,
       hc.withExtraHeaders("Environment" -> environment, "Authorization" -> s"Bearer $token"))
   }
