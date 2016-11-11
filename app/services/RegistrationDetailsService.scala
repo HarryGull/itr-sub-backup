@@ -17,6 +17,7 @@
 package services
 
 import connectors.RegistrationDetailsConnector
+import play.Logger
 import play.api.mvc.Results._
 import play.api.mvc.Result
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -33,9 +34,16 @@ trait RegistrationDetailsService {
 
   def getRegistrationDetails(safeID: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
     registrationDetailsConnector.getRegistrationDetails(safeID).map {
-      result => Status(result.status)(result.json)
+      result => {
+        Logger.info(s"[RegistrationDetailsService][getRegistrationDetails] - Response is" + result.status + " Json is " + result.json)
+        Status(result.status)(result.json)
+      }
+
     }.recover {
-      case _ => InternalServerError
+      case _ => {
+        Logger.warn(s"[RegistrationDetailsService][getRegistrationDetails] - Failed to retrieve reg details")
+        InternalServerError
+      }
     }
   }
 
