@@ -17,6 +17,7 @@
 package connectors
 
 import config.{MicroserviceAppConfig, WSHttp}
+import play.Logger
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,6 +41,7 @@ trait RegistrationDetailsConnector {
   val token: String
 
   def getRegistrationDetails(safeID: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    Logger.info(s"[RegistrationDetailsConnector][getRegistrationDetails] - Testing connector called")
     http.GET[HttpResponse](s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID")(HttpReads.readRaw,
       hc.withExtraHeaders("Environment" -> environment, "Authorization" -> s"Bearer $token"))
   }
