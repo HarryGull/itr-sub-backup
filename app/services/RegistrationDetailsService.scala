@@ -35,7 +35,6 @@ trait RegistrationDetailsService {
   def getRegistrationDetails(safeID: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
     registrationDetailsConnector.getRegistrationDetails(safeID).map {
       result => {
-        Logger.info(s"[RegistrationDetailsService][getRegistrationDetails] - Response is" + result.status + " Json is " + result.json)
         Status(result.status)(result.json)
       }
 
