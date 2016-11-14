@@ -18,9 +18,10 @@ package connectors
 
 import com.typesafe.config.ConfigFactory
 import config.{MicroserviceAppConfig, WSHttp}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.logging.Authorization
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +42,7 @@ trait SubmissionDESConnector {
   def submitAA(jsonValue: JsValue, tavcReferenceId:String)
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val requestUrl = s"$serviceUrl/tax-assured-venture-capital/taxpayers/$tavcReferenceId/returns"
-    http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(jsonValue),
-      Seq("Environment" -> environment, "Authorization" -> s"Bearer $token"))
+    val desHeaders = hc.copy(authorization = Some(Authorization(s"Bearer $token"))).withExtraHeaders("Environment" -> environment)
+    http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(jsonValue))(implicitly[Writes[JsValue]],HttpReads.readRaw,desHeaders)
   }
 }
