@@ -24,7 +24,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object RegistrationDetailsConnector extends RegistrationDetailsConnector {
   override lazy val http = WSHttp
-  override lazy val serviceUrl = MicroserviceAppConfig.registrationURL
+  override lazy val serviceUrl = MicroserviceAppConfig.submissionURL
   override lazy val getRegistrationDetailsURL = MicroserviceAppConfig.getRegistrationDetailsURL
   override lazy val safeIDQuery = MicroserviceAppConfig.safeIDQuery
   override lazy val environment = MicroserviceAppConfig.desEnvironment
