@@ -18,7 +18,6 @@ package controllers
 
 import auth.{Authorisation, Authorised, NotAuthorised}
 import connectors.AuthConnector
-import play.Logger
 import play.api.mvc.{Action, AnyContent}
 import services.RegistrationDetailsService
 import uk.gov.hmrc.play.microservice.controller.BaseController
@@ -38,11 +37,9 @@ trait RegistrationDetailsController extends BaseController with Authorisation {
   def getRegistrationDetails(safeID: String): Action[AnyContent] = Action.async { implicit request =>
     authorised {
       case Authorised => {
-        Logger.info(s"[RegistrationDetailsController][getRegistrationDetails] - Authorised")
         registrationDetailsService.getRegistrationDetails(safeID)
       }
       case NotAuthorised => {
-        Logger.info(s"[RegistrationDetailsController][getRegistrationDetails] - UnAuthorised")
         Future.successful(Forbidden)
       }
     }
