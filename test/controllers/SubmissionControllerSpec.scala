@@ -54,21 +54,21 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
                               |		"agentReferenceNumber": "AARN1234567",
                               |		"correspondenceDetails": {
                               |			"contactName": {
-                              |				"name1": "John",
-                              |				"name2": "Smith"
+                              |				"name1": "test",
+                              |				"name2": "test"
                               |			},
                               |			"contactDetails": {
-                              |				"phoneNumber": "01214567896",
-                              |				"mobileNumber": "07999056789",
-                              |				"faxNumber": "01216754321",
-                              |				"emailAddress": "john.smith@gmail.com"
+                              |				"phoneNumber": "00000000000",
+                              |				"mobileNumber": "00000000000",
+                              |				"faxNumber": "00000000000",
+                              |				"emailAddress": "test@test.com"
                               |			},
                               |			"contactAddress": {
-                              |				"addressLine1": "38 UpperMarshall Street",
-                              |				"addressLine2": "Post Box Aptms",
-                              |				"addressLine3": "Birmingham",
-                              |				"addressLine4": "WarwickShire",
-                              |				"postalCode": "B1 1LA",
+                              |				"addressLine1": "addressOne",
+                              |				"addressLine2": "addressTwo",
+                              |				"addressLine3": "addressThree",
+                              |				"addressLine4": "addressFour",
+                              |				"postalCode": "AA1 1AA",
                               |				"countryCode": "GB"
                               |			}
                               |		}
