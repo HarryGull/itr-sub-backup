@@ -185,7 +185,7 @@ class FileUploadControllerSpec extends UnitSpec with WithFakeApplication with Be
       "return an OK" in {
         setup()
         when(mockFileUploadService.closeEnvelope(Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(HttpResponse(OK)))
+          .thenReturn(Future.successful(HttpResponse(CREATED)))
         status(result) shouldBe OK
       }
     }

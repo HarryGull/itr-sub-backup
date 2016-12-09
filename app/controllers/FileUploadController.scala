@@ -69,7 +69,7 @@ trait FileUploadController extends BaseController with Authorisation {
     authorised {
       case Authorised => fileUploadService.closeEnvelope(envelopeID).map {
         result => result.status match {
-          case OK => Ok
+          case CREATED => Ok
           case _ => InternalServerError
         }
       }.recover {
