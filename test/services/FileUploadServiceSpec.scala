@@ -99,11 +99,11 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
     }
   }
 
-  "checkEnvelopeStatus" when {
+  "getEnvelopeStatus" when {
 
     "connector returns OK" should {
 
-      lazy val result = TestService.checkEnvelopeStatus(envelopeID)
+      lazy val result = TestService.getEnvelopeStatus(envelopeID)
 
       "return the response from the connector" in {
         when(mockFileUploadConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
@@ -116,7 +116,7 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
     "connector returns non-OK" should {
 
-      lazy val result = TestService.checkEnvelopeStatus(envelopeID)
+      lazy val result = TestService.getEnvelopeStatus(envelopeID)
 
       "return the response from the connector" in {
         when(mockFileUploadConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))
@@ -128,7 +128,7 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
     "connector returns failed future" should {
 
-      lazy val result = TestService.checkEnvelopeStatus(envelopeID)
+      lazy val result = TestService.getEnvelopeStatus(envelopeID)
 
       "return an INTERNAL_SERVER_ERROR" in {
         when(mockFileUploadConnector.getEnvelopeStatus(Matchers.eq(envelopeID))(Matchers.any()))

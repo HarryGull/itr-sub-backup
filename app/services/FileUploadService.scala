@@ -42,7 +42,7 @@ trait FileUploadService {
     }
   }
 
-  def checkEnvelopeStatus(envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[HttpResponse] = {
+  def getEnvelopeStatus(envelopeID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[HttpResponse] = {
     fileUploadConnector.getEnvelopeStatus(envelopeID).map {
       result => result.status match {
         case OK => result
