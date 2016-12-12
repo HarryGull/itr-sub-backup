@@ -16,23 +16,8 @@
 
 package services
 
-import connectors.SubmissionDESConnector
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+object MarketCriteriaService extends MarketCriteriaService
 
-import scala.concurrent.{ExecutionContext, Future}
-import play.api.libs.json.JsValue
-
-
-object SubmissionService extends SubmissionService{
-  val submissionDESConnector: SubmissionDESConnector = SubmissionDESConnector
-}
-
-trait SubmissionService {
-
-  val submissionDESConnector: SubmissionDESConnector
-
-  def submitAA(jsonValue:JsValue, tavcReferenceId:String)
-              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    submissionDESConnector.submitAA(jsonValue, tavcReferenceId)
-  }
+trait MarketCriteriaService{
+  def checkMarketCriteria(newGeographical: Boolean, newProduct: Boolean): Boolean = newGeographical | newProduct
 }

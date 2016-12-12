@@ -16,33 +16,24 @@
 
 package controllers
 
-import auth.{Authorisation, Authorised, NotAuthorised}
+import auth.{NotAuthorised, Authorised, Authorisation}
 import connectors.AuthConnector
-import play.api.mvc.{Action, AnyContent}
-import services.RegistrationDetailsService
+import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, Action}
+import services.MarketCriteriaService
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
-object RegistrationDetailsController extends RegistrationDetailsController {
+object MarketCriteriaController extends MarketCriteriaController{
   override lazy val authConnector = AuthConnector
-  override lazy val registrationDetailsService = RegistrationDetailsService
 }
 
-trait RegistrationDetailsController extends BaseController with Authorisation {
-
-  val registrationDetailsService: RegistrationDetailsService
-
-  def getRegistrationDetails(safeID: String): Action[AnyContent] = Action.async { implicit request =>
+trait MarketCriteriaController extends BaseController with Authorisation {
+  def checkMarketCriteria(newGeographical: Boolean, newProduct: Boolean): Action[AnyContent] = Action.async { implicit request =>
     authorised {
-      case Authorised => {
-        registrationDetailsService.getRegistrationDetails(safeID)
-      }
-      case NotAuthorised => {
-        Future.successful(Forbidden)
-      }
+      case Authorised => Future.successful(Ok(Json.toJson(MarketCriteriaService.checkMarketCriteria(newGeographical,newProduct))))
+      case NotAuthorised => Future.successful(Forbidden)
     }
   }
-
 }

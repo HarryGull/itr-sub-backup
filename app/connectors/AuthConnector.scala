@@ -38,10 +38,8 @@ trait AuthConnector {
 
   def getCurrentAuthority()(implicit hc: HeaderCarrier): Future[Option[Authority]] = {
     val getUrl = s"""$serviceUrl/$authorityUri"""
-    Logger.debug(s"[AuthConnector][getCurrentAuthority] - GET $getUrl")
     http.GET[HttpResponse](getUrl).map {
       response =>
-        Logger.debug(s"[AuthConnector][getCurrentAuthority] - RESPONSE status: ${response.status}, body: ${response.body}")
         response.status match {
           case OK => {
             val uri = (response.json \ "uri").as[String]
