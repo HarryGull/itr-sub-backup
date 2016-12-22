@@ -35,6 +35,7 @@ class FileUploadControllerSpec extends UnitSpec with WithFakeApplication with Be
 
   val mockFileUploadService = mock[FileUploadService]
   val envelopeID = "00000000-0000-0000-0000-000000000000"
+  val fileID = "1"
   val envelopeStatusResponse = Json.parse("""{
     |  "id": "00000000-0000-0000-0000-000000000000",
     |  "callbackUrl": "http://absolute.callback.url",
@@ -178,7 +179,7 @@ class FileUploadControllerSpec extends UnitSpec with WithFakeApplication with Be
   "closeEnvelope" when {
 
     "calling the method with a TAVC account with status Activated and confidence level 50" +
-      " and a result with status OK is returned from the file upload service" should {
+      " and a result with status CREATED is returned from the file upload service" should {
 
       lazy val result = TestController.closeEnvelope(envelopeID)(FakeRequest())
 
@@ -191,7 +192,7 @@ class FileUploadControllerSpec extends UnitSpec with WithFakeApplication with Be
     }
 
     "calling the method with a TAVC account with status Activated and confidence level 50" +
-      " and a non-OK response is returned by the file upload service" should {
+      " and a non-CREATED response is returned by the file upload service" should {
 
       lazy val result = TestController.closeEnvelope(envelopeID)(FakeRequest())
 
@@ -212,6 +213,56 @@ class FileUploadControllerSpec extends UnitSpec with WithFakeApplication with Be
       "return an INTERNAL_SERVER_ERROR" in {
         setup()
         when(mockFileUploadService.closeEnvelope(Matchers.eq(envelopeID))(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.failed(new Exception))
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+
+    }
+
+    "calling the method with a TAVC account with status NotYetActivated and confidence level 50" should {
+      "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        val result = TestController.closeEnvelope(envelopeID)(FakeRequest())
+        status(result) shouldBe FORBIDDEN
+      }
+    }
+  }
+
+  "deleteFile" when {
+
+    "calling the method with a TAVC account with status Activated and confidence level 50" +
+      " and a result with status OK is returned from the file upload service" should {
+
+      lazy val result = TestController.deleteFile(envelopeID, fileID)(FakeRequest())
+
+      "return an OK" in {
+        setup()
+        when(mockFileUploadService.deleteFile(Matchers.eq(envelopeID), Matchers.eq(fileID))(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK)))
+        status(result) shouldBe OK
+      }
+    }
+
+    "calling the method with a TAVC account with status Activated and confidence level 50" +
+      " and a non-OK response is returned by the file upload service" should {
+
+      lazy val result = TestController.deleteFile(envelopeID, fileID)(FakeRequest())
+      "return an INTERNAL_SERVER_ERROR" in {
+        setup()
+        when(mockFileUploadService.deleteFile(Matchers.eq(envelopeID), Matchers.eq(fileID))(Matchers.any(), Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+
+    }
+
+    "calling the method with a TAVC account with status Activated and confidence level 50" +
+      " and the file upload service returns a failed future" should {
+
+      lazy val result = TestController.deleteFile(envelopeID, fileID)(FakeRequest())
+      "return an INTERNAL_SERVER_ERROR" in {
+        setup()
+        when(mockFileUploadService.deleteFile(Matchers.eq(envelopeID), Matchers.eq(fileID))(Matchers.any(), Matchers.any()))
           .thenReturn(Future.failed(new Exception))
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }

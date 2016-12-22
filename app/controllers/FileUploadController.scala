@@ -79,4 +79,18 @@ trait FileUploadController extends BaseController with Authorisation {
     }
   }
 
+  def deleteFile(envelopeID: String, fileID: String): Action[AnyContent] = Action.async { implicit request =>
+    authorised {
+      case Authorised => fileUploadService.deleteFile(envelopeID, fileID).map {
+        result => result.status match {
+          case OK => Ok
+          case _ => InternalServerError
+        }
+      }.recover {
+        case e: Exception => InternalServerError
+      }
+      case NotAuthorised => Future.successful(Forbidden)
+    }
+  }
+
 }

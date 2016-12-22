@@ -16,6 +16,7 @@
 
 package services
 
+import akka.dispatch.Envelope
 import connectors.FileUploadConnector
 import play.api.Logger
 import play.mvc.Http.Status._
@@ -69,4 +70,17 @@ trait FileUploadService {
     }
   }
 
+  def deleteFile(envelopeID: String, fileID: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[HttpResponse] = {
+    fileUploadConnector.deleteFile(envelopeID, fileID).map {
+      result => result.status match {
+        case OK =>
+          result
+        case _ => Logger.warn(s"[FileUploadService][deleteFile] Error ${result.status} received.")
+          result
+      }
+    }.recover {
+      case e: Exception => Logger.warn(s"[FileUploadService][deleteFile] Error ${e.getMessage} received.")
+        HttpResponse(INTERNAL_SERVER_ERROR)
+    }
+  }
 }

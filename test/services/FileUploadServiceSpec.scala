@@ -141,19 +141,19 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
 
   "closeEnvelope" when {
 
-    "connector returns OK" should {
+    "connector returns CREATED" should {
 
       lazy val result = TestService.closeEnvelope(envelopeID)
 
       "return the response from the connector" in {
         when(mockFileUploadConnector.closeEnvelope(Matchers.eq(envelopeID))(Matchers.any()))
-          .thenReturn(Future.successful(HttpResponse(OK)))
-        await(result).status shouldBe OK
+          .thenReturn(Future.successful(HttpResponse(CREATED)))
+        await(result).status shouldBe CREATED
       }
 
     }
 
-    "connector returns non-OK" should {
+    "connector returns non-CREATED" should {
 
       lazy val result = TestService.closeEnvelope(envelopeID)
 
@@ -178,4 +178,42 @@ class FileUploadServiceSpec extends UnitSpec with MockitoSugar with WithFakeAppl
     }
   }
 
+  "deleteFile" when {
+
+    "connector returns OK" should {
+
+      lazy val result = TestService.deleteFile(envelopeID, fileID)
+
+      "return the response from the connector" in {
+        when(mockFileUploadConnector.deleteFile(Matchers.eq(envelopeID),Matchers.eq(fileID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(OK)))
+        await(result).status shouldBe OK
+      }
+
+    }
+
+    "connector returns non-OK" should {
+
+      lazy val result = TestService.deleteFile(envelopeID, fileID)
+
+      "return the response from the connector" in {
+        when(mockFileUploadConnector.deleteFile(Matchers.eq(envelopeID),Matchers.eq(fileID))(Matchers.any()))
+          .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
+        await(result).status shouldBe INTERNAL_SERVER_ERROR
+      }
+
+    }
+
+    "connector returns failed future" should {
+
+      lazy val result = TestService.deleteFile(envelopeID, fileID)
+
+      "return an INTERNAL_SERVER_ERROR" in {
+        when(mockFileUploadConnector.deleteFile(Matchers.eq(envelopeID),Matchers.eq(fileID))(Matchers.any()))
+          .thenReturn(Future.failed(Upstream5xxResponse("", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
+        await(result).status shouldBe INTERNAL_SERVER_ERROR
+      }
+
+    }
+  }
 }
