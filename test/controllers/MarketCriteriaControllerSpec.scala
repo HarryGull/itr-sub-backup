@@ -20,11 +20,12 @@ import connectors.AuthConnector
 import helpers.AuthHelper._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
+import org.scalatestplus.play.OneAppPerSuite
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}
+import uk.gov.hmrc.play.test.UnitSpec
 
-class MarketCriteriaControllerSpec extends UnitSpec with WithFakeApplication with BeforeAndAfter{
+class MarketCriteriaControllerSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfter{
 
   object TestController extends MarketCriteriaController {
     override val authConnector = mockAuthConnector
@@ -53,7 +54,6 @@ class MarketCriteriaControllerSpec extends UnitSpec with WithFakeApplication wit
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
     }
 

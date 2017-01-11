@@ -21,7 +21,6 @@ import connectors.AuthConnector
 import org.mockito.Matchers
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
-import play.api.test.FakeApplication
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
@@ -31,7 +30,7 @@ import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
 
 import scala.concurrent.Future
 
-class AuthorisationSpec extends FakeApplication with UnitSpec with MockitoSugar with BeforeAndAfter {
+class AuthorisationSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {
 
   private def authorised() = TestAuthorisation.authorised {
     case Authorised => Future.successful(Results.Ok)

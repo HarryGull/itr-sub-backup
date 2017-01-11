@@ -23,9 +23,10 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import org.mockito.Mockito._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatestplus.play.OneAppPerSuite
 
-class AveragedAnnualTurnoverControllerSpec extends UnitSpec with WithFakeApplication with BeforeAndAfter {
+class AveragedAnnualTurnoverControllerSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfter {
 
   object TestController extends AveragedAnnualTurnoverController {
     override val authConnector = mockAuthConnector
@@ -58,7 +59,6 @@ class AveragedAnnualTurnoverControllerSpec extends UnitSpec with WithFakeApplica
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
 
       "return true" in {
@@ -80,7 +80,6 @@ class AveragedAnnualTurnoverControllerSpec extends UnitSpec with WithFakeApplica
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
 
       "return false" in {

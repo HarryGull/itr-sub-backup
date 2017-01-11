@@ -20,15 +20,16 @@ import connectors.RegistrationDetailsConnector
 import org.mockito.Matchers
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
+import org.scalatestplus.play.OneAppPerSuite
 import play.api.test.Helpers._
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, Upstream5xxResponse}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplication {
+class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
 
   val mockRegistrationDetailsConnector = mock[RegistrationDetailsConnector]
   val safeID = "XA0001234567890"
