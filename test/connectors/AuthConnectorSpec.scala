@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,17 @@ import org.mockito.Mockito._
 import org.mockito.Matchers
 import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
-import play.api.test.FakeApplication
+
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatestplus.play.OneAppPerSuite
 
 import scala.concurrent.Future
 
-class AuthConnectorSpec extends UnitSpec with MockitoSugar with ServicesConfig with WithFakeApplication {
+class AuthConnectorSpec extends UnitSpec with MockitoSugar with ServicesConfig with OneAppPerSuite {
 
   object TestConnector extends AuthConnector {
     override def serviceUrl: String = "localhost"

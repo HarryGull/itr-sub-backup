@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,10 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import org.mockito.Mockito._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatestplus.play.OneAppPerSuite
 
-class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication with BeforeAndAfter {
+class KnowledgeIntensiveControllerSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfter {
 
   object TestController extends KnowledgeIntensiveController {
     override val authConnector = mockAuthConnector
@@ -61,7 +62,6 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
 
       "return false" in {
@@ -85,7 +85,6 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
 
       "return true" in {
@@ -111,7 +110,6 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
 
       "return true" in {
@@ -134,7 +132,6 @@ class KnowledgeIntensiveControllerSpec extends UnitSpec with WithFakeApplication
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
 
       "return false" in {

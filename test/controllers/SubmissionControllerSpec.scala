@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,15 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import org.scalatest.mock.MockitoSugar
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 import fixtures.SubmissionFixture
 import org.scalatest.BeforeAndAfter
+import org.scalatestplus.play.OneAppPerSuite
 import services.{AuditService, SubmissionService}
 
 import scala.concurrent.Future
 
-class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfter with SubmissionFixture {
+class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPerSuite with BeforeAndAfter with SubmissionFixture {
 
   val mockSubmissionService = mock[SubmissionService]
   val mockAuditService = mock[AuditService]

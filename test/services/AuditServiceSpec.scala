@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.test.WithFakeApplication
 import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
@@ -34,13 +33,14 @@ import metrics.{Metrics, MetricsEnum}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.Inside._
 import org.scalatest.concurrent.Eventually
+import org.scalatestplus.play.OneAppPerSuite
 import uk.gov.hmrc.play.audit.EventKeys
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuditServiceSpec extends UnitSpec with MockitoSugar with AppName with WithFakeApplication with BeforeAndAfter with AuditHelper with Eventually {
+class AuditServiceSpec extends UnitSpec with MockitoSugar with AppName with OneAppPerSuite with BeforeAndAfter with AuditHelper with Eventually {
 
   val auditMock = mock[AuditConnector]
 
