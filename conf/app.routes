@@ -10,7 +10,6 @@ GET        /averaged-annual-turnover/check-averaged-annual-turnover/proposed-inv
 
 POST       /advanced-assurance/:tavcReferenceId/submit                                                                                                                                                                                                                             controllers.SubmissionController.submitAA(tavcReferenceId: String)
 
-GET        /registration/registration-details/safeid/:safeID                                                                                                                                                                                                                   controllers.RegistrationDetailsController.getRegistrationDetails(safeID: String)
+GET        /registration/registration-details/safeid/:safeID                                                                                                                                                                                                                       controllers.RegistrationDetailsController.getRegistrationDetails(safeID: String)
 
-
-
+GET        /trade-start-date/validate-trade-start-date/trade-start-day/:tradeStartDay/trade-start-month/:tradeStartMonth/trade-start-year/:tradeStartYear                                                                                                                          controllers.TradeStartDateController.validateTradeStartDate(tradeStartDay: Int, tradeStartMonth: Int, tradeStartYear: Int)

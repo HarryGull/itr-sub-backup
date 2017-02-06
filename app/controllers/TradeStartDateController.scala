@@ -16,26 +16,25 @@
 
 package controllers
 
-import auth.{NotAuthorised, Authorised, Authorisation}
+import auth.{Authorisation, Authorised, NotAuthorised}
 import connectors.AuthConnector
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Action}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import services.AveragedAnnualTurnoverService
+import services.{AveragedAnnualTurnoverService, TradeStartDateService}
+
 import scala.concurrent.Future
 
-object AveragedAnnualTurnoverController extends AveragedAnnualTurnoverController{
+object TradeStartDateController extends TradeStartDateController{
   override val authConnector: AuthConnector = AuthConnector
 }
 
-trait AveragedAnnualTurnoverController extends BaseController with Authorisation{
+trait TradeStartDateController extends BaseController with Authorisation{
 
-  def checkAveragedAnnualTurnover(proposedInvestmentAmount: Int, annualTurnOver1stYear: Int,annualTurnOver2ndYear: Int,annualTurnOver3rdYear: Int,
-                                  annualTurnOver4thYear:Int, annualTurnOver5thYear:Int): Action[AnyContent] = Action.async {
+  def validateTradeStartDate(tradeStartDay: Int, tradeStartMonth: Int,tradeStartYear: Int): Action[AnyContent] = Action.async {
     implicit request => authorised {
       case Authorised => Future.successful(Ok(Json.toJson{
-        AveragedAnnualTurnoverService.checkAveragedAnnualTurnover(proposedInvestmentAmount,annualTurnOver1stYear,annualTurnOver2ndYear,annualTurnOver3rdYear,
-          annualTurnOver4thYear,annualTurnOver5thYear)()
+        TradeStartDateService.validateTradeStartDate(tradeStartDay,tradeStartMonth,tradeStartYear)
       }))
       case NotAuthorised => Future.successful(Forbidden)
     }
