@@ -19,29 +19,24 @@ package controllers
 import auth.{Authorisation, Authorised, NotAuthorised}
 import connectors.AuthConnector
 import play.api.libs.json._
-import services.LifetimeAllowanceService
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
 import scala.concurrent.Future
 import play.api.mvc._
+import services.SeisAllowanceService
 
-object LifetimeAllowanceController extends LifetimeAllowanceController {
+object SeisAllowanceController extends SeisAllowanceController {
   override val authConnector: AuthConnector = AuthConnector
 }
 
-trait LifetimeAllowanceController extends BaseController with Authorisation {
+trait SeisAllowanceController extends BaseController with Authorisation {
 
-  def checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean,
-                                     previousInvestmentSchemesTotal: Int,
-                                     proposedAmount: Int): Action[AnyContent] = Action.async {
+  def checkSeisAllowanceExceeded(investmentsTotalSinceStartDate: Int): Action[AnyContent] = Action.async {
     implicit request => authorised {
       case Authorised => Future.successful(Ok(Json.toJson(
-        LifetimeAllowanceService.checkLifetimeAllowanceExceeded(hadPrevRFI, isKi, previousInvestmentSchemesTotal, proposedAmount)
+        SeisAllowanceService.checkSeisAllowanceExceeded(investmentsTotalSinceStartDate)
       )))
-      case NotAuthorised => {
-        println("========================FORBIDDEN===========================")
-        Future.successful(Forbidden)
-      }
+      case NotAuthorised => Future.successful(Forbidden)
     }
   }
 
