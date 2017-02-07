@@ -22,6 +22,9 @@ API
 |```/knowledge-intensive/check-ki-costs/operating-costs/:operatingCosts1stYear/:operatingCosts2ndYear/:operatingCosts3rdYear/rd-costs/:rAndDCosts1stYear/:rAndDCosts2ndYear/:rAndDCosts3rdYear``` | GET |
 |Perform an eligibility check for applying as knowledge intensive for the secondary conditions specified:|
 |```/knowledge-intensive/check-secondary-conditions/has-percentage-with-masters/:hasPercentageWithMasters/has-ten-year-plan/:hasTenYearPlan``` | GET |
+|Perform a trade start date check to determine if eligible to apply:|
+|```/trade-start-date/validate-trade-start-date/trade-start-day/:tradeStartDay/trade-start-month/:tradeStartMonth/trade-start-year/:tradeStartYear``` | GET |
+
 
 
 Requirements
