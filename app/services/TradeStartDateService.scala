@@ -23,28 +23,17 @@ import org.joda.time.DateTime
 import play.api.Logger
 
 object TradeStartDateService extends TradeStartDateService{
-  val years = 2
+  val numberOfYears = 2
 }
 
 trait TradeStartDateService{
-  val years: Int
+
+  val numberOfYears: Int
+  lazy val yearsAgo = DateTime.now().minusYears(numberOfYears) ;
 
   def validateTradeStartDate(day: Int, month: Int, year: Int): Boolean = {
-    val cal = Calendar.getInstance();
-    cal.add(Calendar.YEAR, -(years)); // to get previous year add -1
-    val dateYearsAgo = cal.getTime();
-    lazy val tradeStartDate = getDateFromCalendar()
-
-    def getDateFromCalendar(): Date = {
-      val cal = Calendar.getInstance();
-      cal.set(Calendar.YEAR, year);
-      cal.set(Calendar.MONTH, month);
-      cal.set(Calendar.DAY_OF_MONTH, day);
-      cal.getTime()
-    }
-    Logger.warn("TRADESTARTDATESERVICE: " + "Date Two years ago: " + dateYearsAgo)
-    Logger.warn("TRADESTARTDATESERVICE: " + "Trade sTART dATE: " + tradeStartDate)
-    tradeStartDate.after(dateYearsAgo)
+    val tradeStartDate = new DateTime(year,month,day,0,0)
+    tradeStartDate.isAfter(yearsAgo) || tradeStartDate.isEqual(yearsAgo)
   }
 
 }

@@ -19,36 +19,58 @@ package controllers
 import connectors.AuthConnector
 import helpers.AuthHelper._
 import org.scalatest.BeforeAndAfter
+import org.scalatestplus.play.{OneAppPerTest, OneAppPerSuite}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import org.mockito.Mockito._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class AveragedAnnualTurnoverControllerSpec extends UnitSpec with WithFakeApplication with BeforeAndAfter {
+class TradeStartDateControllerSpec extends UnitSpec with OneAppPerTest with BeforeAndAfter {
 
-  object TestController extends AveragedAnnualTurnoverController {
+  object TestController extends TradeStartDateController {
     override val authConnector = mockAuthConnector
   }
 
-  val fakeRequest = FakeRequest()
-
-  before{
+  before {
     reset(mockAuthConnector)
   }
 
-  "AveragedAnnualTurnoverController" should {
+  "TradeStartDateController" should {
     "use the correct auth connector" in {
-      AveragedAnnualTurnoverController.authConnector shouldBe AuthConnector
+      TradeStartDateController.authConnector shouldBe AuthConnector
     }
   }
 
-  "calculating whether the proposed investment is at least 50% of the mean annual turnovers" +
-    " with a TAVC account with status Activated and confidence level 50" when  {
 
-    "calling with proposed investment of 50 and annual turnover mean of 100" should {
+  "validating the trade start date method with a TAVC account with status Activated and confidence level 50" when  {
 
-      lazy val result = TestController.checkAveragedAnnualTurnover(50,100,100,100,100,100)(fakeRequest)
+    "calling with a date more than two years in the past" should {
+
+      lazy val result = TestController.validateTradeStartDate(1,1,2000)(FakeRequest())
+
+      "return status OK" in {
+        setup()
+        status(result) shouldBe OK
+      }
+
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+        charset(result) shouldBe Some("utf-8")
+      }
+
+      "return false" in {
+        setup()
+        val data = contentAsString(result)
+        val json = Json.parse(data)
+        json.as[Boolean] shouldBe false
+      }
+    }
+
+    "calling with a date less than two years in the past" should {
+
+      lazy val result = TestController.validateTradeStartDate(1,1,2016)(FakeRequest())
 
       "return status OK" in {
         setup()
@@ -68,42 +90,15 @@ class AveragedAnnualTurnoverControllerSpec extends UnitSpec with WithFakeApplica
         json.as[Boolean] shouldBe true
       }
     }
-
-    "calling with proposed investment of 49 and annual turnover mean of 100" should {
-
-      lazy val result = TestController.checkAveragedAnnualTurnover(49,100,100,100,100,100)(fakeRequest)
-      "return status OK" in {
-        setup()
-        status(result) shouldBe OK
-      }
-
-      "return a JSON result" in {
-        setup()
-        contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
-      }
-
-      "return false" in {
-        setup()
-        val data = contentAsString(result)
-        val json = Json.parse(data)
-        json.as[Boolean] shouldBe false
-      }
-    }
   }
 
-  "calculating whether the proposed investment is at least 50% of the mean annual turnovers" +
-    "with a TAVC account with status NotYetActivated and confidence level 50" when {
+  "validating the checkLifetimeAllowanceExceeded method with a TAVC account with status NotYetActivated and confidence level 50" should {
 
-    "calling with proposed investment of 50 and annual turnover mean of 100" should {
-
-      lazy val result = TestController.checkAveragedAnnualTurnover(50,100,100,100,100,100)(fakeRequest)
-
-      "return status Forbidden" in {
+      "return status FORBIDDEN" in {
         setup("NotYetActivated")
+        lazy val result = TestController.validateTradeStartDate(1,1,2016)(FakeRequest())
         status(result) shouldBe FORBIDDEN
       }
-    }
   }
 
 }
