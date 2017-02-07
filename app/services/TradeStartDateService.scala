@@ -19,6 +19,7 @@ package services
 import java.time.{LocalDate, ZoneId}
 import java.util.{Calendar, Date}
 
+import org.apache.commons.lang3.time.DateUtils
 import org.joda.time.DateTime
 import play.api.Logger
 
@@ -29,11 +30,11 @@ object TradeStartDateService extends TradeStartDateService{
 trait TradeStartDateService{
 
   val numberOfYears: Int
-  lazy val yearsAgo = DateTime.now().minusYears(numberOfYears) ;
 
   def validateTradeStartDate(day: Int, month: Int, year: Int): Boolean = {
-    val tradeStartDate = new DateTime(year,month,day,0,0)
-    tradeStartDate.isAfter(yearsAgo) || tradeStartDate.isEqual(yearsAgo)
+    val dateYearsAgo = DateTime.now().minusYears(numberOfYears);
+    val tradeStartDate = new DateTime(year,month,day, 0, 0)
+    tradeStartDate.isAfter(dateYearsAgo) || DateUtils.isSameDay(tradeStartDate.toDate, dateYearsAgo.toDate)
   }
 
 }

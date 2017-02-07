@@ -18,6 +18,7 @@ package controllers
 
 import connectors.AuthConnector
 import helpers.AuthHelper._
+import org.joda.time.DateTime
 import org.scalatest.BeforeAndAfter
 import org.scalatestplus.play.{OneAppPerTest, OneAppPerSuite}
 import play.api.libs.json.Json
@@ -47,7 +48,8 @@ class TradeStartDateControllerSpec extends UnitSpec with OneAppPerSuite with Bef
 
     "calling with a date more than two years in the past" should {
 
-      lazy val result = TestController.validateTradeStartDate(1,1,2000)(FakeRequest())
+      lazy val result = TestController.validateTradeStartDate(DateTime.now().dayOfMonth().get(),
+        DateTime.now().monthOfYear().get(),DateTime.now().minusYears(3).year().get)(FakeRequest())
 
       "return status OK" in {
         setup()
@@ -69,7 +71,8 @@ class TradeStartDateControllerSpec extends UnitSpec with OneAppPerSuite with Bef
 
     "calling with a date less than two years in the past" should {
 
-      lazy val result = TestController.validateTradeStartDate(1,1,2016)(FakeRequest())
+      lazy val result = TestController.validateTradeStartDate(DateTime.now().dayOfMonth().get(),
+        DateTime.now().monthOfYear().get(),DateTime.now().minusYears(1).year().get)(FakeRequest())
 
       "return status OK" in {
         setup()
