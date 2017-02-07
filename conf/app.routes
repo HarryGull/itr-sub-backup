@@ -12,4 +12,6 @@ POST       /advanced-assurance/:tavcReferenceId/submit                          
 
 GET        /registration/registration-details/safeid/:safeID                                                                                                                                                                                                                       controllers.RegistrationDetailsController.getRegistrationDetails(safeID: String)
 
+GET        /market-criteria/new-geographical/:newGeographical/new-product/:newProduct                                                                                                                                                                                              controllers.MarketCriteriaController.checkMarketCriteria(newGeographical: Boolean, newProduct: Boolean)
+
 GET        /trade-start-date/validate-trade-start-date/trade-start-day/:tradeStartDay/trade-start-month/:tradeStartMonth/trade-start-year/:tradeStartYear                                                                                                                          controllers.TradeStartDateController.validateTradeStartDate(tradeStartDay: Int, tradeStartMonth: Int, tradeStartYear: Int)

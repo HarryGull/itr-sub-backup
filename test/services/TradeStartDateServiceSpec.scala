@@ -38,10 +38,10 @@ import org.joda.time.DateTime
 import uk.gov.hmrc.play.http.{HeaderCarrier}
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
-import org.scalatestplus.play.{OneAppPerTest}
+import org.scalatestplus.play.{OneAppPerSuite}
 import uk.gov.hmrc.play.http.logging.SessionId
 
-class TradeStartDateServiceSpec extends UnitSpec with MockitoSugar with OneAppPerTest {
+class TradeStartDateServiceSpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
 
   val sessionId = UUID.randomUUID.toString
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId.toString)))

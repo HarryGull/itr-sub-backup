@@ -76,8 +76,8 @@ trait AuditHelper {
     country = Some("GB")
   )
 
-  val fullAuditData =  SubmissionDataForAuditModel(companyName = Some("Acme ltd."), proposedInvestmentAmount = Some("250"),
-    forename = Some("Fred"), surname = Some("Smith"),phoneNumber = Some("000001 100000"),
-    mobileNumber = Some("000002 200000"),emailAddress = Some("fred@nowhere.no.place"), contactAddress = Some(fullAddress),
+  val fullAuditData =  SubmissionDataForAuditModel(companyName = Some("Test ltd."), proposedInvestmentAmount = Some("250"),
+    forename = Some("nameOne"), surname = Some("nameTwo"),phoneNumber = Some("000001 100000"),
+    mobileNumber = Some("000002 200000"),emailAddress = Some("test@test.com"), contactAddress = Some(fullAddress),
     registeredAddress = Some(fullAddress))
 }

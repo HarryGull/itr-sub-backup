@@ -16,9 +16,8 @@
 
 package connectors
 
-import config.WSHttp
+import config.{MicroserviceAppConfig, WSHttp}
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.test.WithFakeApplication
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import java.util.UUID
 
@@ -27,22 +26,25 @@ import play.api.test.Helpers._
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
+import org.scalatestplus.play.OneAppPerSuite
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with WithFakeApplication with SubmissionFixture {
+class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppPerSuite with SubmissionFixture {
 
   val mockHttp : WSHttp = mock[WSHttp]
   val sessionId = UUID.randomUUID.toString
 
   class Setup {
     object TestConnector extends SubmissionDESConnector {
-      val serviceUrl = "dummy"
-      val http = mockHttp
+      override val serviceUrl = "dummy"
+      override val http = mockHttp
+      override val environment = "test"
+      override val token = "token"
     }
   }
 

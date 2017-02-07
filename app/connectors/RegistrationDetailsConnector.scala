@@ -17,16 +17,19 @@
 package connectors
 
 import config.{MicroserviceAppConfig, WSHttp}
+import play.Logger
+import uk.gov.hmrc.play.http.logging.Authorization
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 object RegistrationDetailsConnector extends RegistrationDetailsConnector {
   override lazy val http = WSHttp
-  override lazy val serviceUrl = MicroserviceAppConfig.registrationURL
+  override lazy val serviceUrl = MicroserviceAppConfig.submissionURL
   override lazy val getRegistrationDetailsURL = MicroserviceAppConfig.getRegistrationDetailsURL
   override lazy val safeIDQuery = MicroserviceAppConfig.safeIDQuery
-  override lazy val environment = MicroserviceAppConfig.environment
+  override lazy val environment = MicroserviceAppConfig.desEnvironment
+  override lazy val token = MicroserviceAppConfig.desToken
 }
 
 trait RegistrationDetailsConnector {
@@ -36,9 +39,10 @@ trait RegistrationDetailsConnector {
   val getRegistrationDetailsURL: String
   val safeIDQuery: String
   val environment: String
+  val token: String
 
   def getRegistrationDetails(safeID: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.GET[HttpResponse](s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID")(HttpReads.readRaw,
-      hc.withExtraHeaders("Environment" -> environment))
+    val desHeaders = hc.copy(authorization = Some(Authorization(s"Bearer $token"))).withExtraHeaders("Environment" -> environment)
+    http.GET[HttpResponse](s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID")(HttpReads.readRaw,desHeaders)
   }
 }

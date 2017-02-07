@@ -21,16 +21,17 @@ import helpers.AuthHelper._
 import org.mockito.Matchers
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
+import org.scalatestplus.play.OneAppPerSuite
 import play.api.libs.json.Json
 import services.RegistrationDetailsService
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class RegistrationDetailsControllerSpec extends UnitSpec with WithFakeApplication with MockitoSugar {
+class RegistrationDetailsControllerSpec extends UnitSpec with OneAppPerSuite with MockitoSugar {
 
   val mockRegistrationDetailsService = mock[RegistrationDetailsService]
   val safeID = "XA0001234567890"

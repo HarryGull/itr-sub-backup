@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 import org.mockito.Mockito._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class TradeStartDateControllerSpec extends UnitSpec with OneAppPerTest with BeforeAndAfter {
+class TradeStartDateControllerSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfter {
 
   object TestController extends TradeStartDateController {
     override val authConnector = mockAuthConnector
@@ -57,7 +57,6 @@ class TradeStartDateControllerSpec extends UnitSpec with OneAppPerTest with Befo
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
 
       "return false" in {
@@ -80,7 +79,6 @@ class TradeStartDateControllerSpec extends UnitSpec with OneAppPerTest with Befo
       "return a JSON result" in {
         setup()
         contentType(result) shouldBe Some("application/json")
-        charset(result) shouldBe Some("utf-8")
       }
 
       "return true" in {

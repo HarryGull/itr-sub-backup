@@ -20,10 +20,10 @@ import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
-  val registrationURL: String
   val getRegistrationDetailsURL: String
   val safeIDQuery: String
-  val environment: String
+  val desEnvironment: String
+  val desToken: String
   val submissionURL: String
   val authURL: String
   val authorityURL: String
@@ -32,10 +32,10 @@ trait AppConfig {
 object MicroserviceAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
-  override lazy val registrationURL = baseUrl("registration")
   override lazy val getRegistrationDetailsURL = loadConfig("get-registration-details.url")
   override lazy val safeIDQuery = loadConfig("get-registration-details.safeid")
-  override lazy val environment = loadConfig("environment")
+  override lazy val desEnvironment = loadConfig("microservice.services.des.environment")
+  override lazy val desToken = loadConfig("microservice.services.des.token")
   override lazy val submissionURL = baseUrl("des")
   override lazy val authURL = baseUrl("auth")
   override lazy val authorityURL = loadConfig("authority.url")

@@ -25,14 +25,15 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import org.scalatest.mock.MockitoSugar
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 import fixtures.SubmissionFixture
 import org.scalatest.BeforeAndAfter
+import org.scalatestplus.play.OneAppPerSuite
 import services.{AuditService, SubmissionService}
 
 import scala.concurrent.Future
 
-class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfter with SubmissionFixture {
+class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPerSuite with BeforeAndAfter with SubmissionFixture {
 
   val mockSubmissionService = mock[SubmissionService]
   val mockAuditService = mock[AuditService]
@@ -54,21 +55,21 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with WithFakeA
                               |		"agentReferenceNumber": "AARN1234567",
                               |		"correspondenceDetails": {
                               |			"contactName": {
-                              |				"name1": "John",
-                              |				"name2": "Smith"
+                              |				"name1": "nameOne",
+                              |				"name2": "nameTwo"
                               |			},
                               |			"contactDetails": {
-                              |				"phoneNumber": "01214567896",
-                              |				"mobileNumber": "07999056789",
-                              |				"faxNumber": "01216754321",
-                              |				"emailAddress": "john.smith@gmail.com"
+                              |				"phoneNumber": "00000000001",
+                              |				"mobileNumber": "00000000002",
+                              |				"faxNumber": "00000000003",
+                              |				"emailAddress": "test@test.com"
                               |			},
                               |			"contactAddress": {
-                              |				"addressLine1": "38 UpperMarshall Street",
-                              |				"addressLine2": "Post Box Aptms",
-                              |				"addressLine3": "Birmingham",
-                              |				"addressLine4": "WarwickShire",
-                              |				"postalCode": "B1 1LA",
+                              |				"addressLine1": "addressOne",
+                              |				"addressLine2": "addressTwo",
+                              |				"addressLine3": "addressThree",
+                              |				"addressLine4": "addressFour",
+                              |				"postalCode": "AA1 1AA",
                               |				"countryCode": "GB"
                               |			}
                               |		}

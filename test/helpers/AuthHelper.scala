@@ -32,7 +32,7 @@ object AuthHelper extends MockitoSugar {
   val oid = "1234567890"
   val uri = s"auth/oid/$oid"
   val tavcRef = "AA1234567890000"
-  val postcode = "ACB123"
+  val postcode = "AA1 1AA"
   val userDetailsLink = s"localhost/user-details/id/$oid"
   val authority = (confidenceLevel: ConfidenceLevel) => Some(Authority(uri,oid,userDetailsLink,confidenceLevel))
   val enrolment = (status: String) => Some(Enrolment("HMRC-TAVC-ORG",Seq(Identifier("TAVCRef",tavcRef),Identifier("Postcode",postcode)),status))

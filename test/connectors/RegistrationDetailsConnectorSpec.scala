@@ -24,12 +24,13 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatestplus.play.OneAppPerSuite
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RegistrationDetailsConnectorSpec extends UnitSpec with MockitoSugar with WithFakeApplication {
+class RegistrationDetailsConnectorSpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
 
   val mockHttp = mock[WSHttp]
   val safeID = "XA0001234567890"
@@ -42,6 +43,7 @@ class RegistrationDetailsConnectorSpec extends UnitSpec with MockitoSugar with W
     override lazy val getRegistrationDetailsURL: String = "/get-registration-details"
     override lazy val environment: String = "test"
     override lazy val serviceUrl: String = "test.service"
+    override lazy val token = "token"
   }
 
   "RegistrationDetailsConnector" should {
