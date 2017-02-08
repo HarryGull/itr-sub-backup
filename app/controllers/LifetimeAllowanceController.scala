@@ -38,10 +38,7 @@ trait LifetimeAllowanceController extends BaseController with Authorisation {
       case Authorised => Future.successful(Ok(Json.toJson(
         LifetimeAllowanceService.checkLifetimeAllowanceExceeded(hadPrevRFI, isKi, previousInvestmentSchemesTotal, proposedAmount)
       )))
-      case NotAuthorised => {
-        println("========================FORBIDDEN===========================")
-        Future.successful(Forbidden)
-      }
+      case NotAuthorised => Future.successful(Forbidden)
     }
   }
 
