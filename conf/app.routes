@@ -8,6 +8,8 @@ GET        /lifetime-allowance/lifetime-allowance-checker/had-previous-rfi/:hadP
 
 GET        /averaged-annual-turnover/check-averaged-annual-turnover/proposed-investment-amount/:proposedInvestmentAmount/annual-turn-over/:annualTurnOver1stYear/:annualTurnOver2ndYear/:annualTurnOver3rdYear/:annualTurnOver4thYear/:annualTurnOver5thYear                       controllers.AveragedAnnualTurnoverController.checkAveragedAnnualTurnover(proposedInvestmentAmount: Int, annualTurnOver1stYear: Int, annualTurnOver2ndYear: Int, annualTurnOver3rdYear: Int, annualTurnOver4thYear:Int, annualTurnOver5thYear:Int)
 
+GET        /seis/previous-investments-checker/investments-since-trade-start-date/:investmentsTotalSinceStartDate/is-total-exceeded                                                                                                                                                 controllers.SeisAllowanceController.checkSeisAllowanceExceeded(investmentsTotalSinceStartDate: Int)
+
 POST       /advanced-assurance/:tavcReferenceId/submit                                                                                                                                                                                                                             controllers.SubmissionController.submitAA(tavcReferenceId: String)
 
 GET        /registration/registration-details/safeid/:safeID                                                                                                                                                                                                                       controllers.RegistrationDetailsController.getRegistrationDetails(safeID: String)
