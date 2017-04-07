@@ -23,12 +23,13 @@ import play.api.test.{FakeHeaders, FakeRequest}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import play.api.test.Helpers._
+import play.api.test.Helpers.{FORBIDDEN, _}
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
 import fixtures.SubmissionFixture
 import org.scalatest.BeforeAndAfter
 import org.scalatestplus.play.OneAppPerSuite
+import scala.concurrent.ExecutionContext.Implicits.global
 import services.{AuditService, SubmissionService}
 
 import scala.concurrent.Future
@@ -76,13 +77,59 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
                               |	}
                               |}""".stripMargin
 
+  val getSubmissionDetails =
+
+    """{
+      |"processingDate":"2015-09-22T10:30:06Z",
+      |    "countReturned":"2",
+      |    "countTotal":"2",
+      |    "submissions":[
+      |    {
+      |      "formBundleNumber":"000000123456",
+      |      "submissionType":"Compliance Statement",
+      |      "submissionDate":"2015-09-22",
+      |      "schemeType":[
+      |      {
+      |        "scheme":"EIS"
+      |      },
+      |      {
+      |        "scheme":"UCT"
+      |      }
+      |      ],
+      |      "status":"Received",
+      |      "contactNoteReference":"003333333333"
+      |    },
+      |    {
+      |      "formBundleNumber":"000000000000",
+      |      "submissionType":"Advance Assurance",
+      |      "submissionDate":"2015-09-22",
+      |      "schemeType":[
+      |      {
+      |        "scheme":"EIS"
+      |      },
+      |      {
+      |        "scheme":"UCT"
+      |      }
+      |      ],
+      |      "status":"Rejected",
+      |      "contactNoteReference":"003333333334"
+      |    }
+      |    ]
+      |  }""".stripMargin
+
+
+
   val acknowledgemenRefJsVal = Json.parse(acknowledgemenRefJs)
+  val getSubmissionDetailsJsVal = Json.parse(getSubmissionDetails)
 
   implicit val hc = HeaderCarrier()
 
   class Setup(status: Int, response: JsValue) {
     when(mockSubmissionService.submitAA(Matchers.any(),Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(HttpResponse(status, Some(response))))
+    when(mockSubmissionService.getAASubmissionDetails(Matchers.any())(Matchers.any(), Matchers.any()))
+      .thenReturn(Future.successful(HttpResponse(status, Some(response))))
+
     object TestController extends SubmissionController {
       override val submissionService = mockSubmissionService
       override val authConnector = mockAuthConnector
@@ -157,5 +204,27 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
       }
     }
   }
+
+  "SubmissionController.getAASubmissionDetails with a TAVC account authorized" should {
+
+    "return a response" in new Setup(OK, getSubmissionDetailsJsVal) {
+      setup()
+      val result = TestController.getAASubmissionDetails(tavcRef)(FakeRequest())
+      status(result) shouldBe OK
+      result map { response =>
+        assertResult(getSubmissionDetailsJsVal)(response.body)
+      }
+    }
+  }
+
+  "SubmissionController.getAASubmissionDetails with a TAVC account not authorized" should {
+
+    "return a response" in new Setup(FORBIDDEN, getSubmissionDetailsJsVal) {
+      setup()
+      val result = TestController.getAASubmissionDetails(tavcRef)(FakeRequest())
+      status(result) shouldBe FORBIDDEN
+    }
+  }
+
 
 }
