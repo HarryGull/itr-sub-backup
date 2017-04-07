@@ -16,6 +16,8 @@
 
 package connectors
 
+import java.io.FileInputStream
+
 import com.typesafe.config.ConfigFactory
 import config.{MicroserviceAppConfig, WSHttp}
 import play.api.libs.json.{JsValue, Json, Writes}
@@ -45,4 +47,12 @@ trait SubmissionDESConnector {
     val desHeaders = hc.copy(authorization = Some(Authorization(s"Bearer $token"))).withExtraHeaders("Environment" -> environment)
     http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(jsonValue))(implicitly[Writes[JsValue]],HttpReads.readRaw,desHeaders)
   }
+
+  def getAASubmissionDetails(tavcReferenceId:String)
+              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val requestUrl = s"$serviceUrl/tax-assured-venture-capital/taxpayers/$tavcReferenceId/returns/summary"
+    val desHeaders = hc.copy(authorization = Some(Authorization(s"Bearer $token"))).withExtraHeaders("Environment" -> environment)
+    http.GET[HttpResponse](requestUrl)(HttpReads.readRaw,desHeaders)
+  }
+
 }

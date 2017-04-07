@@ -73,6 +73,19 @@ trait SubmissionController extends BaseController with Authorisation {
     }
   }
 
+
+  def getAASubmissionDetails(tavcReferenceNumber: String):Action[AnyContent] = Action.async { implicit request =>
+    authorised {
+      case Authorised => {
+        Logger.info(s"[SubmissionController][getAASubmissionSummary]")
+        submissionService.getAASubmissionDetails(tavcReferenceNumber) map { responseReceived =>
+          Status(responseReceived.status)(responseReceived.body)
+        }
+      }
+      case NotAuthorised => Future.successful(Forbidden)
+    }
+  }
+
   /** acknowledgementReference should not be present. It's generated and inserted. **/
   private def acknowledgementReferenceCheck(requestBody: JsValue): Boolean = {
     (requestBody \ "acknowledgementReference").asOpt[String] match {
