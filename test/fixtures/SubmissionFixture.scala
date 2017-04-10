@@ -24,4 +24,45 @@ trait SubmissionFixture {
   val dummyTavcRef = "XDTAVC000544444"
   //lazy val validJs: JsValue = Json.toJson(targetSubmissionModel)
 
+  val validSubmissionDetails =
+
+    """{
+      |"processingDate":"2015-09-22T10:30:06Z",
+      |    "countReturned":"2",
+      |    "countTotal":"2",
+      |    "submissions":[
+      |    {
+      |      "formBundleNumber":"000000123456",
+      |      "submissionType":"Compliance Statement",
+      |      "submissionDate":"2015-09-22",
+      |      "schemeType":[
+      |      {
+      |        "scheme":"EIS"
+      |      },
+      |      {
+      |        "scheme":"UCT"
+      |      }
+      |      ],
+      |      "status":"Received",
+      |      "contactNoteReference":"003333333333"
+      |    },
+      |    {
+      |      "formBundleNumber":"000000000000",
+      |      "submissionType":"Advance Assurance",
+      |      "submissionDate":"2015-09-22",
+      |      "schemeType":[
+      |      {
+      |        "scheme":"EIS"
+      |      },
+      |      {
+      |        "scheme":"UCT"
+      |      }
+      |      ],
+      |      "status":"Rejected",
+      |      "contactNoteReference":"003333333334"
+      |    }
+      |    ]
+      |  }""".stripMargin
+
+  val validSubmissionDetailsJsVal = Json.parse(validSubmissionDetails)
 }

@@ -226,5 +226,4 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
     }
   }
 
-
 }

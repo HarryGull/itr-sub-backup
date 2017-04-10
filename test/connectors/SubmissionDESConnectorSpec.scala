@@ -16,19 +16,18 @@
 
 package connectors
 
-import config.{MicroserviceAppConfig, WSHttp}
-import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import java.util.UUID
 
+import config.WSHttp
 import fixtures.SubmissionFixture
-import play.api.test.Helpers._
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.api.libs.json.JsValue
 import org.scalatestplus.play.OneAppPerSuite
+import play.api.libs.json.{JsValue, Json}
+import play.api.test.Helpers.{BAD_REQUEST, _}
 import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -116,6 +115,34 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppP
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
       val result = TestConnector.submitAA(validSubmissionJsVal, dummyTavcRef)
       await(result).status shouldBe INTERNAL_SERVER_ERROR
+    }
+  }
+
+  "Calling getAASubmissionDetails with a TAVC account authorized" should {
+
+    "return a valid response" in new Setup {
+      when(mockHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(OK, Some(validSubmissionDetailsJsVal))))
+      val result = TestConnector.getAASubmissionDetails(dummyTavcRef)
+      await(result) match {
+        case response => {
+          response.status shouldBe OK
+        }
+      }
+    }
+  }
+
+  "SubmissionController.getAASubmissionDetails with a TAVC account not authorized" should {
+
+    "return a response" in new Setup {
+      when(mockHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, None)))
+      val result = TestConnector.getAASubmissionDetails(dummyTavcRef)
+      await(result) match {
+        case response => {
+          response.status shouldBe BAD_REQUEST
+        }
+      }
     }
   }
 }
