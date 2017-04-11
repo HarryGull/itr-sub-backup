@@ -35,4 +35,9 @@ trait SubmissionService {
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     submissionDESConnector.submitAA(jsonValue, tavcReferenceId)
   }
+
+  def getAASubmissionDetails(tavcReferenceId:String)
+              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    submissionDESConnector.getAASubmissionDetails(tavcReferenceId)
+  }
 }
