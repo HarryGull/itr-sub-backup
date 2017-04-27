@@ -21,5 +21,6 @@ object MetricsEnum extends Enumeration {
   type MetricsEnum = Value
 
   val TAVC_SUBMISSION = Value
+  val TAVC_USERACCESS = Value
 
 }
