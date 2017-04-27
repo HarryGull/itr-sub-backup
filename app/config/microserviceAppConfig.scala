@@ -27,6 +27,7 @@ trait AppConfig {
   val submissionURL: String
   val authURL: String
   val authorityURL: String
+  val throttleThreshold: Int
 }
 
 object MicroserviceAppConfig extends AppConfig with ServicesConfig {
@@ -39,4 +40,5 @@ object MicroserviceAppConfig extends AppConfig with ServicesConfig {
   override lazy val submissionURL = baseUrl("des")
   override lazy val authURL = baseUrl("auth")
   override lazy val authorityURL = loadConfig("authority.url")
+  override lazy val throttleThreshold = getConfInt("throttle.threshold", throw new Exception("throttle-threshold not found in config"))
 }

@@ -19,17 +19,11 @@ package services
 import org.joda.time.DateTime
 import repositories.{Repositories, ThrottleMongoRepository}
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.time.DateTimeUtils
 
 import scala.concurrent.Future
 
-sealed trait ThrottleResponse
-case class ThrottleSuccessResponse(registrationID: String) extends ThrottleResponse
-case object ThrottleTooManyRequestsResponse extends ThrottleResponse
-
-
-class ThrottleServiceImp extends ThrottleService with ServicesConfig {
+object ThrottleService extends ThrottleService with ServicesConfig {
   val throttleMongoRepository = Repositories.throttleRepository
   //$COVERAGE-OFF$
   def dateTime = DateTimeUtils.now
@@ -37,7 +31,7 @@ class ThrottleServiceImp extends ThrottleService with ServicesConfig {
   //$COVERAGE-ON$
 }
 
-trait ThrottleService extends BaseController {
+trait ThrottleService  {
   val throttleMongoRepository : ThrottleMongoRepository
   def dateTime: DateTime
   val threshold: Int
