@@ -20,20 +20,21 @@ package services
 import org.joda.time.DateTime
 import org.mockito.Matchers
 import org.scalatest.mock.MockitoSugar
-//TODO: import repositories.{Repositories, ThrottleMongoRepository}
+import repositories.ThrottleMongoRepository
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import org.mockito.Mockito._
-
+import scala.concurrent.Future
 
 class ThrottleServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
 
-  //TODO: val mockThrottleMongoRepository = mock[ThrottleMongoRepository]
+  val mockThrottleMongoRepository = mock[ThrottleMongoRepository]
+  val thresholdLimit = 10
 
   trait Setup {
     val service = new ThrottleService {
-      //TODO:val throttleMongoRepository = mockThrottleMongoRepository
+      val throttleMongoRepository = mockThrottleMongoRepository
       override def dateTime = DateTime.parse("2000-02-01")
-      val threshold = 10
+      val threshold = thresholdLimit
     }
   }
 
@@ -43,32 +44,21 @@ class ThrottleServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplic
     }
 
     //TODO: Need to modify when repositiry created in seperate task
-//    "updateUserCount" should {
-//
-//      "return true when updating user count on a new collection" in new Setup {
-//        when(mockThrottleMongoRepository.update(Matchers.eq("2000-02-01"), Matchers.eq(10)))
-//          .thenReturn(Future.successful(1))
-//
-//        await(service.checkUserAccess) shouldBe true
-//      }
-//
-//      "return true when user threshold is reached" in new Setup {
-//        when(mockThrottleMongoRepository.update(Matchers.eq("2000-02-01"), Matchers.eq(10)))
-//          .thenReturn(Future.successful(10))
-//        when(mockThrottleMongoRepository.compensate(Matchers.eq("2000-02-01"), Matchers.eq(10)))
-//          .thenReturn(Future.successful(10))
-//
-//        await(service.checkUserAccess) shouldBe true
-//      }
-//
-//      "return false when user threshold is over the limit" in new Setup {
-//        when(mockThrottleMongoRepository.update(Matchers.eq("2000-02-01"), Matchers.eq(10))
-//          .thenReturn(Future.successful(15))
-//        when(mockThrottleMongoRepository.compensate(Matchers.eq("2000-02-01"), Matchers.eq(10)))
-//          .thenReturn(Future.successful(10))
-//
-//        await(service.checkUserAccess) shouldBe false
-//      }
-//    }
+    "updateUserCount" should {
+
+      "return true when updating user count on a new collection" in new Setup {
+        when(mockThrottleMongoRepository.checkUserAndUpdate(Matchers.eq("2000-02-01"), Matchers.eq(thresholdLimit)))
+          .thenReturn(Future.successful(true))
+
+        await(service.checkUserAccess) shouldBe true
+      }
+
+      "return true when user threshold is reached" in new Setup {
+        when(mockThrottleMongoRepository.checkUserAndUpdate(Matchers.eq("2000-02-01"), Matchers.eq(thresholdLimit)))
+          .thenReturn(Future.successful(false))
+        await(service.checkUserAccess) shouldBe false
+      }
+
+    }
   }
 }

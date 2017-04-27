@@ -17,49 +17,31 @@
 package services
 
 import org.joda.time.DateTime
-import uk.gov.hmrc.time.DateTimeUtils
+import repositories.{Repositories, ThrottleMongoRepository}
 import uk.gov.hmrc.play.config.ServicesConfig
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.time.DateTimeUtils
 
 import scala.concurrent.Future
-//TODO: import repositories.{Repositories, ThrottleMongoRepository}
 
-object ThrottleService extends ThrottleService with ServicesConfig{
-  //TODO:uncomment when available  lazy val throttleMongoRepository = repositories.throttleRepository
-
+object ThrottleService extends ThrottleService with ServicesConfig {
+  val throttleMongoRepository = Repositories.throttleRepository
   //$COVERAGE-OFF$
   def dateTime = DateTimeUtils.now
-  lazy val threshold = getConfInt("throttle-threshold", throw new Exception("throttle-threshold not found in config"))
+  val threshold = getConfInt("throttle-threshold", throw new Exception("throttle-threshold not found in config"))
   //$COVERAGE-ON$
 }
 
-trait ThrottleService{
-
-  //TODO:uncomment when available
-  // val throttleMongoRepository: ThrottleMongoRepository
-
+trait ThrottleService  {
+  val throttleMongoRepository : ThrottleMongoRepository
   def dateTime: DateTime
-
   val threshold: Int
 
-  def checkUserAccess():  Future[Boolean] = {
-
-    //TODO: call this:
-    //  throttleMongoRepository.update(getCurrentDay, threshold)
-    // hardcoded for now
-    Future(true)
+  def checkUserAccess: Future[Boolean] = {
+    val date = getCurrentDay
+    throttleMongoRepository.checkUserAndUpdate(date, threshold)
   }
 
   private[services] def getCurrentDay: String = {
     dateTime.toString("yyyy-MM-dd")
   }
-
-  //TODO: add in drop db option for testign etc
-  //  def dropDb: Future[Unit] = {
-  //    implicit val checkUserAccessLoggingConfig: Option[LoggingConfig] = ThrottleService.dropDbLoggingConfig
-  //    logging.debug(s"Request: dropDb")
-  //    throttleMongoRepository.dropDb
-  //  }
-
-
 }

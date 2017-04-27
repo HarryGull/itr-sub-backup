@@ -16,8 +16,6 @@
 
 package controllers
 
-import auth.{Authorisation, Authorised, NotAuthorised}
-import connectors.AuthConnector
 import metrics.MetricsEnum
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
@@ -29,17 +27,19 @@ import scala.concurrent.Future
 
 object ThrottleController extends ThrottleController{
   val auditService = AuditService
+  override val throttleService = ThrottleService
 }
 
 trait ThrottleController extends BaseController{
 
   val auditService : AuditService
+  val throttleService : ThrottleService
 
   def checkUserAccess(): Action[AnyContent] = Action.async {
     implicit request =>
       val timerContext = AuditService.metrics.startTimer(MetricsEnum.TAVC_USERACCESS)
 
-      ThrottleService.checkUserAccess() map{
+      throttleService.checkUserAccess map{
         timerContext.stop()
         result => Ok(Json.toJson(result))
       }
