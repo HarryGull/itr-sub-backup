@@ -16,7 +16,7 @@
 
 package repositories
 
-import models.{TemporaryToken, UserCount}
+import models.TemporaryToken
 import play.api.libs.json.Format
 import play.api.libs.json.Reads.StringReads
 import play.api.libs.json.Writes.StringWrites
@@ -24,9 +24,9 @@ import reactivemongo.api.DB
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Random
-import scala.concurrent.ExecutionContext.Implicits.global
 
 trait TokenRepository extends Repository[TemporaryToken, String]{
   def generateTemporaryToken(expireAt: Int) : Future[TemporaryToken]
@@ -49,7 +49,7 @@ class TokenMongoRepository(implicit mongo: () => DB)
   def validateTemporaryToken(id: String): Future[Boolean] = {
     val selector = BSONDocument("_id" -> id)
     collection.find(selector = selector).cursor[TemporaryToken]().collect[List]().flatMap {
-      case h => Future.successful(true)
+      case h :: _ if h.id == id => Future.successful(true)
       case Nil => Future.successful(false)
     }
   }
