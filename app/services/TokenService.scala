@@ -24,7 +24,9 @@ import scala.concurrent.Future
 
 object TokenService extends TokenService with ServicesConfig {
   val tokenMongoRepository = Repositories.tokenRepository
+  //$COVERAGE-OFF$
   val expireAfterSeconds = getConfInt("token-expiry", throw new Exception("token-expiry not found in config"))
+  //$COVERAGE-ON$
 }
 
 trait TokenService  {

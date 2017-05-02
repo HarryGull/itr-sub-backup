@@ -19,6 +19,7 @@ package controllers
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import models.TemporaryToken
+import org.joda.time.DateTime
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
@@ -46,7 +47,7 @@ class TokenControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplic
       override val tokenService = mockTokenService
       override val auditService = mockAuditService
     }
-    val temporaryToken = TemporaryToken("590855a2640000d000592d3e","é\u008F‚ê¿ ã®”ã·¶è§·", 30)
+    val temporaryToken = TemporaryToken("590855a2640000d000592d3e","TOKEN", DateTime.now())
    // val httpResponse = HttpResponse(OK, Some(Json.toJson(temporaryToken)))
   }
 

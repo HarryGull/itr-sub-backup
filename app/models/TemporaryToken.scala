@@ -25,19 +25,19 @@ case class TemporaryToken(id: String, token : String, expireAt: DateTime)
 object TemporaryToken {
   import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.dateTimeFormats
 
-  val mongoWrites = OWrites[TemporaryToken] { temporarytoken =>
+  implicit val mongoWrites = OWrites[TemporaryToken] { temporarytoken =>
     Json.obj(
       "_id" -> temporarytoken.id,
-      "secret" -> temporarytoken.token,
+      "token" -> temporarytoken.token,
       "expireAt" -> temporarytoken.expireAt
     )
   }
 
-  val mongoReads: Reads[TemporaryToken] = (
+  implicit val mongoReads: Reads[TemporaryToken] = (
     (JsPath \ "_id").read[String] and
-      (JsPath \ "secret").read[String] and
+      (JsPath \ "token").read[String] and
       (JsPath \ "expireAt").read[DateTime]
-    ) ((id, secret, expireAt) => TemporaryToken(id, secret, expireAt))
+    ) ((id, token, expireAt) => TemporaryToken(id, token, expireAt))
 
   val mongoFormats = Format(mongoReads, mongoWrites)
 
