@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package repositories
+package models
 
-import play.modules.reactivemongo.MongoDbConnection
+import play.api.libs.json.Json
 
-object Repositories {
-  private implicit val mongo = new MongoDbConnection {}.db
+case class TemporaryToken(id: String, token : String, expireAfterSeconds: Int)
 
-  lazy val throttleRepository = new ThrottleMongoRepository()
-
-  lazy val tokenRepository = new TokenMongoRepository()
+object TemporaryToken {
+  implicit val formats = Json.format[TemporaryToken]
 }
