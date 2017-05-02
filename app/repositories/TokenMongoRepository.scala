@@ -21,6 +21,7 @@ import play.api.libs.json.Format
 import play.api.libs.json.Reads.StringReads
 import play.api.libs.json.Writes.StringWrites
 import reactivemongo.api.DB
+import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
@@ -34,23 +35,27 @@ trait TokenRepository extends Repository[TemporaryToken, String]{
 }
 
 class TokenMongoRepository(implicit mongo: () => DB)
-  extends ReactiveRepository[TemporaryToken, String]("token", mongo, TemporaryToken.formats, Format(StringReads, StringWrites))
+  extends ReactiveRepository[TemporaryToken, String]("token", mongo, TemporaryToken.mongoFormats, Format(StringReads, StringWrites))
     with TokenRepository {
 
 
   def dropDb: Future[Unit] = collection.drop()
 
-  def generateTemporaryToken(expireAfterSeconds: Int): Future[TemporaryToken] = {
-    val token = Random.nextString(5)
-    val temporaryToken = TemporaryToken(BSONObjectID.generate.stringify, token, expireAfterSeconds)
-    insert(temporaryToken).map(_ => temporaryToken)
+  override def indexes = Seq(
+    Index(key = Seq("expireAt" -> IndexType.Ascending), name = Some("expireAtIndex"), options = BSONDocument("expireAfterSeconds" -> 0))
+  )
+
+  def generateTemporaryToken(expireAt: Int): Future[TemporaryToken] = {
+      val timeBasedTemporarySecret = TemporaryToken.from(BSONObjectID.generate.stringify, "TOKEN", expireAt)
+      insert(timeBasedTemporarySecret).map(_ => timeBasedTemporarySecret)
   }
 
+  def getTemporarySecret(id: String) = findById(id)
+
   def validateTemporaryToken(id: String): Future[Boolean] = {
-    val selector = BSONDocument("_id" -> id)
-    collection.find(selector = selector).cursor[TemporaryToken]().collect[List]().flatMap {
-      case h :: _ if h.id == id => Future.successful(true)
-      case Nil => Future.successful(false)
+    getTemporarySecret(id).flatMap{
+      case Some(token) => Future.successful(true)
+      case None => Future.successful(false)
     }
   }
 }

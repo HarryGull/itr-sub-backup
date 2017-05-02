@@ -29,7 +29,7 @@ class TokenServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplicati
 
   val mockTokenMongoRepository = mock[TokenMongoRepository]
   val tokenexpiry = 10
-  val temporaryToken = TemporaryToken("123", "TEST", tokenexpiry)
+  val temporaryToken = TemporaryToken.from("123", "TEST", tokenexpiry)
 
   trait Setup {
     val service = new TokenService {
@@ -42,7 +42,7 @@ class TokenServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplicati
 
     "return TemporaryToken with the provided expireAfterSeconds" in new Setup {
       when(mockTokenMongoRepository.generateTemporaryToken(Matchers.eq(tokenexpiry)))
-        .thenReturn(Future.successful(TemporaryToken("123", "TEST", tokenexpiry)))
+        .thenReturn(Future.successful(temporaryToken))
 
       await(service.generateTemporaryToken) shouldBe temporaryToken
     }
