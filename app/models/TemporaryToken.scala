@@ -16,10 +16,31 @@
 
 package models
 
-import play.api.libs.json.Json
-
-case class TemporaryToken(id: String, token : String, expireAfterSeconds: Int)
+import org.joda.time.DateTime
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import uk.gov.hmrc.time.DateTimeUtils
+case class TemporaryToken(id: String, token : String, expireAt: DateTime)
 
 object TemporaryToken {
-  implicit val formats = Json.format[TemporaryToken]
+  import uk.gov.hmrc.mongo.json.ReactiveMongoFormats.dateTimeFormats
+
+  val mongoWrites = OWrites[TemporaryToken] { temporarytoken =>
+    Json.obj(
+      "_id" -> temporarytoken.id,
+      "secret" -> temporarytoken.token,
+      "expireAt" -> temporarytoken.expireAt
+    )
+  }
+
+  val mongoReads: Reads[TemporaryToken] = (
+    (JsPath \ "_id").read[String] and
+      (JsPath \ "secret").read[String] and
+      (JsPath \ "expireAt").read[DateTime]
+    ) ((id, secret, expireAt) => TemporaryToken(id, secret, expireAt))
+
+  val mongoFormats = Format(mongoReads, mongoWrites)
+
+  def from(id:String, token: String, expireAt: Int) = TemporaryToken(id, token, DateTimeUtils.now.plusMinutes(expireAt))
+
 }
