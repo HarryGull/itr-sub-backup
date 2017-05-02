@@ -21,4 +21,8 @@ GET        /market-criteria/new-geographical/:newGeographical/new-product/:newPr
 GET        /trade-start-date/validate-trade-start-date/trade-start-day/:tradeStartDay/trade-start-month/:tradeStartMonth/trade-start-year/:tradeStartYear                                                                                                                          controllers.TradeStartDateController.validateTradeStartDate(tradeStartDay: Int, tradeStartMonth: Int, tradeStartYear: Int)
 
 
-GET        /throttle/check-user-access   controllers.ThrottleController.checkUserAccess()
+GET        /throttle/check-user-access                                                                                                                                                                                                                                             controllers.ThrottleController.checkUserAccess()
+
+POST       /token/generate-temporary-token                                                                                                                                                                                                                                         controllers.TokenController.generateTemporaryToken()
+
+GET        /token/validate-temporary-token/:id                                                                                                                                                                                                                                  controllers.TokenController.validateTemporaryToken(id: String)

@@ -26,7 +26,7 @@ import scala.concurrent.Future
 object ThrottleService extends ThrottleService with ServicesConfig {
   val throttleMongoRepository = Repositories.throttleRepository
   //$COVERAGE-OFF$
-  def dateTime = DateTimeUtils.now
+  def dateTime: DateTime = DateTimeUtils.now
   val threshold = getConfInt("throttle-threshold", throw new Exception("throttle-threshold not found in config"))
   //$COVERAGE-ON$
 }

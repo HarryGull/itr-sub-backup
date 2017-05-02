@@ -35,7 +35,7 @@ trait TokenService  {
     tokenMongoRepository.generateTemporaryToken(expireAfterSeconds)
   }
 
-  def validateTemporaryToken(token : String): Future[Boolean] = {
-    tokenMongoRepository.validateTemporaryToken(token)
+  def validateTemporaryToken(id : String): Future[Boolean] = {
+    tokenMongoRepository.validateTemporaryToken(id)
   }
 }
