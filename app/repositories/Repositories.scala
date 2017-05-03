@@ -23,4 +23,5 @@ object Repositories {
 
   lazy val throttleRepository = new ThrottleMongoRepository()
 
+  lazy val tokenRepository = new TokenMongoRepository()
 }
