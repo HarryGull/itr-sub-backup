@@ -148,6 +148,9 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
     "use the correct submission service" in {
       SubmissionController.submissionService shouldBe SubmissionService
     }
+    "use the correct audit service" in {
+      SubmissionController.auditService shouldBe AuditService
+    }
   }
 
   "SubmissionController.submitAA with a TAVC account with status Activated and confidence level 50" when {

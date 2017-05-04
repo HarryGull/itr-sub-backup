@@ -37,7 +37,7 @@ object Metrics extends Metrics {
   )
 
   val successCounters = Map(
-    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("tavc-sunmission-success-counter")
+    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("tavc-submission-success-counter")
   )
 
   val failedCounters = Map(

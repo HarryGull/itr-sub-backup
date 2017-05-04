@@ -49,6 +49,16 @@ class ThrottleControllerSpec extends UnitSpec with MockitoSugar with WithFakeApp
   }
 
 
+  "ThrottleController" should {
+    "use the correct throttle sevice" in {
+      ThrottleController.throttleService shouldBe ThrottleService
+    }
+    "use the correct auditService" in {
+      ThrottleController.auditService shouldBe AuditService
+    }
+  }
+
+
   "checkThrottle" should {
 
     "return a 200 when true" in new Setup {
