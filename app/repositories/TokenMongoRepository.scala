@@ -27,7 +27,6 @@ import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.Random
 
 trait TokenRepository extends Repository[TemporaryToken, String]{
   def generateTemporaryToken(expireAt: Int) : Future[TemporaryToken]
@@ -46,8 +45,8 @@ class TokenMongoRepository(implicit mongo: () => DB)
   )
 
   def generateTemporaryToken(expireAt: Int): Future[TemporaryToken] = {
-      val timeBasedTemporarySecret = TemporaryToken.from(BSONObjectID.generate.stringify, "TOKEN", expireAt)
-      insert(timeBasedTemporarySecret).map(_ => timeBasedTemporarySecret)
+      val timeBasedTemporaryToken = TemporaryToken.from(BSONObjectID.generate.stringify, "TOKEN", expireAt)
+      insert(timeBasedTemporaryToken).map(_ => timeBasedTemporaryToken)
   }
 
   def getTemporarySecret(id: String) = findById(id)
