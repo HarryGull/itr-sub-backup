@@ -20,12 +20,13 @@ package services
 import org.joda.time.DateTime
 import org.mockito.Matchers
 import org.scalatest.mock.MockitoSugar
+import org.scalatestplus.play.OneAppPerSuite
 import repositories.ThrottleMongoRepository
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 import org.mockito.Mockito._
 import scala.concurrent.Future
 
-class ThrottleServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
+class ThrottleServiceSpec extends UnitSpec with MockitoSugar with OneAppPerSuite{
 
   val mockThrottleMongoRepository = mock[ThrottleMongoRepository]
   val thresholdLimit = 10

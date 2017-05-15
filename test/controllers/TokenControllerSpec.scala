@@ -22,16 +22,17 @@ import models.TemporaryToken
 import org.joda.time.DateTime
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
+import org.scalatestplus.play.OneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import services.{AuditService, TokenService}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.{HttpResponse, HeaderCarrier}
 
 import scala.concurrent.Future
 
-class TokenControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication {
+class TokenControllerSpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
 
   implicit val system = ActorSystem("CR")
   implicit val materializer = ActorMaterializer()

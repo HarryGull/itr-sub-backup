@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import org.mockito.Mockito._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 
 class TradeStartDateControllerSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfter {
 

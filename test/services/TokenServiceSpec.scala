@@ -20,12 +20,13 @@ import models.TemporaryToken
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
+import org.scalatestplus.play.OneAppPerSuite
 import repositories.TokenMongoRepository
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class TokenServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
+class TokenServiceSpec extends UnitSpec with MockitoSugar with OneAppPerSuite{
 
   val mockTokenMongoRepository = mock[TokenMongoRepository]
   val tokenexpiry = 10
