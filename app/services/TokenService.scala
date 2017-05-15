@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import scala.concurrent.Future
 
 object TokenService extends TokenService with ServicesConfig {
-  val tokenMongoRepository = Repositories.tokenRepository
+  lazy val tokenMongoRepository = Repositories.tokenRepository
   //$COVERAGE-OFF$
   val expireAfterSeconds = getConfInt("token-expiry", throw new Exception("token-expiry not found in config"))
   //$COVERAGE-ON$
@@ -40,8 +40,9 @@ trait TokenService  {
   def validateTemporaryToken(id : String): Future[Boolean] = {
     tokenMongoRepository.validateTemporaryToken(id)
   }
-
+  //$COVERAGE-OFF$just for acceptance tests
   def resetTokens: Future[Unit] = {
     tokenMongoRepository.dropCollection
   }
+  //$COVERAGE-ON$
 }

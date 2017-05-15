@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class TokenServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
 
-  val mockTokenMongoRepository = mock[TokenMongoRepository]
+  lazy val mockTokenMongoRepository = mock[TokenMongoRepository]
   val tokenexpiry = 10
   val temporaryToken = TemporaryToken.from("123", "TEST", tokenexpiry)
 

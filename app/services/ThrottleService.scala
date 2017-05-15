@@ -24,7 +24,7 @@ import uk.gov.hmrc.time.DateTimeUtils
 import scala.concurrent.Future
 
 object ThrottleService extends ThrottleService with ServicesConfig {
-  val throttleMongoRepository = Repositories.throttleRepository
+  lazy val throttleMongoRepository = Repositories.throttleRepository
   //$COVERAGE-OFF$
   def dateTime: DateTime = DateTimeUtils.now
   val threshold = getConfInt("throttle-threshold", throw new Exception("throttle-threshold not found in config"))
@@ -45,7 +45,9 @@ trait ThrottleService  {
     throttleMongoRepository.dropCollection
   }
 
+  //$COVERAGE-OFF$just for acceptance tests
   private[services] def getCurrentDay: String = {
     dateTime.toString("yyyy-MM-dd")
   }
+  //$COVERAGE-ON$
 }

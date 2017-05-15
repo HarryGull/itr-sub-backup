@@ -27,7 +27,7 @@ import scala.concurrent.Future
 
 class ThrottleServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
 
-  val mockThrottleMongoRepository = mock[ThrottleMongoRepository]
+  lazy val mockThrottleMongoRepository = mock[ThrottleMongoRepository]
   val thresholdLimit = 10
 
   trait Setup {
