@@ -41,6 +41,10 @@ trait ThrottleService  {
     throttleMongoRepository.checkUserAndUpdate(date, threshold)
   }
 
+  def resetThrottle: Future[Unit] = {
+    throttleMongoRepository.dropCollection
+  }
+
   private[services] def getCurrentDay: String = {
     dateTime.toString("yyyy-MM-dd")
   }

@@ -38,10 +38,7 @@ class TokenMongoRepository(implicit mongo: () => DB)
   extends ReactiveRepository[TemporaryToken, String]("token", mongo, TemporaryToken.mongoFormats, Format(StringReads, StringWrites))
     with TokenRepository {
 
-
-  def dropDb: Future[Unit] = collection.drop()
-
-  override def indexes = Seq(
+  override def indexes: Seq[Index] = Seq(
     Index(key = Seq("expireAt" -> IndexType.Ascending), name = Some("expireAtIndex"), options = BSONDocument("expireAfterSeconds" -> 0))
   )
 
@@ -58,4 +55,6 @@ class TokenMongoRepository(implicit mongo: () => DB)
       case None => Future.successful(false)
     }
   }
+
+  def dropCollection: Future[Unit] = collection.drop()
 }

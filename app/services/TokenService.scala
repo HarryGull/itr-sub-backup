@@ -40,4 +40,8 @@ trait TokenService  {
   def validateTemporaryToken(id : String): Future[Boolean] = {
     tokenMongoRepository.validateTemporaryToken(id)
   }
+
+  def resetTokens: Future[Unit] = {
+    tokenMongoRepository.dropCollection
+  }
 }
