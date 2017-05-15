@@ -49,5 +49,5 @@ class ThrottleMongoRepository(implicit mongo: () => DB)
     }
   }
 
-  def dropDb: Future[Unit] = collection.drop()
+  def dropCollection: Future[Unit] = collection.drop()
 }
