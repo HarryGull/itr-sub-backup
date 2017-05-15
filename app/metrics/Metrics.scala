@@ -31,18 +31,19 @@ trait Metrics extends MicroserviceMetrics {
 object Metrics extends Metrics {
 
   val timers = Map(
-    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.timer("tavc-submission-response-timer"),
-    MetricsEnum.TAVC_USERACCESS -> metrics.defaultRegistry.timer("tavc-useraccess-response-timer")
+    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.timer("itr-submission-response-timer"),
+    MetricsEnum.TAVC_USERACCESS -> metrics.defaultRegistry.timer("itr-useraccess-response-timer")
 
   )
 
   val successCounters = Map(
-    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("tavc-sunmission-success-counter")
+    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("itr-submission-success-counter"),
+    MetricsEnum.TAVC_USERACCESS -> metrics.defaultRegistry.counter("itr-useraccess-success-counter")
   )
 
   val failedCounters = Map(
-    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("tavc-submission-failed-counter"),
-    MetricsEnum.TAVC_USERACCESS -> metrics.defaultRegistry.counter("tavc-useraccess-failed-counter")
+    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("itr-submission-failed-counter"),
+    MetricsEnum.TAVC_USERACCESS -> metrics.defaultRegistry.counter("itr-useraccess-failed-counter")
   )
 
   override def startTimer(api: MetricsEnum): Context = timers(api).time()
