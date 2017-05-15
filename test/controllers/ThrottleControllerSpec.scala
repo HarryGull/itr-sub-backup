@@ -20,6 +20,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import org.mockito.Matchers.{any, anyString}
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -30,7 +31,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class ThrottleControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication {
+class ThrottleControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfterEach {
 
   implicit val system = ActorSystem("CR")
   implicit val materializer = ActorMaterializer()
@@ -48,6 +49,9 @@ class ThrottleControllerSpec extends UnitSpec with MockitoSugar with WithFakeApp
     }
   }
 
+  override def beforeEach = {
+    reset(mockAuditService)
+  }
 
   "checkThrottle" should {
 
