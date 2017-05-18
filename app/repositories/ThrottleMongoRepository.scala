@@ -37,9 +37,9 @@ class ThrottleMongoRepository(implicit mongo: () => DB)
 
   def checkUserAndUpdate(date: String, threshold: Int): Future[Boolean] = {
     val selector = BSONDocument("_id" -> date)
-    val token = Random.nextString(5)
+    val throttle = "THROTTLE"
     //TODO change this so that we query the db for the size of the users rather than returning it
-    lazy val modifier = BSONDocument("$push" -> BSONDocument("users" -> token), "$set" -> BSONDocument("threshold" -> threshold))
+    lazy val modifier = BSONDocument("$push" -> BSONDocument("users" -> throttle), "$set" -> BSONDocument("threshold" -> threshold))
     lazy val insertUser = collection.findAndUpdate(selector, modifier, fetchNewObject = false, upsert = true).map(_ => true)
 
     collection.find(selector = selector).cursor[UserCount]().collect[List]().flatMap {
