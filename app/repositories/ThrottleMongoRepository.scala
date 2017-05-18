@@ -16,6 +16,8 @@
 
 package repositories
 
+import java.util.UUID
+
 import models.UserCount
 import reactivemongo.api.DB
 import reactivemongo.bson._
@@ -37,7 +39,7 @@ class ThrottleMongoRepository(implicit mongo: () => DB)
 
   def checkUserAndUpdate(date: String, threshold: Int): Future[Boolean] = {
     val selector = BSONDocument("_id" -> date)
-    val throttle = "THROTTLE"
+    val throttle =  UUID.randomUUID().toString
     //TODO change this so that we query the db for the size of the users rather than returning it
     lazy val modifier = BSONDocument("$push" -> BSONDocument("users" -> throttle), "$set" -> BSONDocument("threshold" -> threshold))
     lazy val insertUser = collection.findAndUpdate(selector, modifier, fetchNewObject = false, upsert = true).map(_ => true)
