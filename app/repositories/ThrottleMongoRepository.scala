@@ -38,6 +38,7 @@ class ThrottleMongoRepository(implicit mongo: () => DB)
 
 
   def checkUserAndUpdate(date: String, threshold: Int): Future[Boolean] = {
+    
     val selector = BSONDocument("_id" -> date)
     val throttle =  UUID.randomUUID().toString
     //TODO change this so that we query the db for the size of the users rather than returning it
