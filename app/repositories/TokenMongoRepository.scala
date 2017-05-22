@@ -16,7 +16,10 @@
 
 package repositories
 
+import java.util.UUID
+
 import models.TemporaryToken
+import play.api.Logger
 import play.api.libs.json.Format
 import play.api.libs.json.Reads.StringReads
 import play.api.libs.json.Writes.StringWrites
@@ -27,7 +30,6 @@ import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.Random
 
 trait TokenRepository extends Repository[TemporaryToken, String]{
   def generateTemporaryToken(expireAt: Int) : Future[TemporaryToken]
@@ -43,16 +45,21 @@ class TokenMongoRepository(implicit mongo: () => DB)
   )
 
   def generateTemporaryToken(expireAt: Int): Future[TemporaryToken] = {
-      val timeBasedTemporarySecret = TemporaryToken.from(BSONObjectID.generate.stringify, "TOKEN", expireAt)
-      insert(timeBasedTemporarySecret).map(_ => timeBasedTemporarySecret)
+    val token =  UUID.randomUUID().toString
+    val timeBasedTemporarySecret = TemporaryToken.from(BSONObjectID.generate.stringify, token, expireAt)
+    insert(timeBasedTemporarySecret).map(_ => timeBasedTemporarySecret)
   }
 
   def getTemporarySecret(id: String) = findById(id)
 
   def validateTemporaryToken(id: String): Future[Boolean] = {
     getTemporarySecret(id).flatMap{
-      case Some(token) => Future.successful(true)
-      case None => Future.successful(false)
+      case Some(token) => {
+        Logger.warn(" TESTING IN QA AND DEV have some issues 123------ "+token.id)
+        Future.successful(true)}
+      case None => {
+        Logger.warn(" TESTING IN QA AND DEV have some issues 456------ "+id)
+        Future.successful(false)}
     }
   }
 
