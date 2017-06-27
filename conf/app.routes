@@ -20,6 +20,7 @@ GET        /market-criteria/new-geographical/:newGeographical/new-product/:newPr
 
 GET        /trade-start-date/validate-trade-start-date/trade-start-day/:tradeStartDay/trade-start-month/:tradeStartMonth/trade-start-year/:tradeStartYear                                                                                                                          controllers.TradeStartDateController.validateTradeStartDate(tradeStartDay: Int, tradeStartMonth: Int, tradeStartYear: Int)
 
+GET        /gross-assets/gross-assets-checker/check-total/gross-amount/:grossAmount                                                                                                                                                                                                controllers.GrossAssetsController.checkGrossAssetsExceeded(grossAmount: Int)
 
 GET        /throttle/check-user-access                                                                                                                                                                                                                                             controllers.ThrottleController.checkUserAccess()
 
