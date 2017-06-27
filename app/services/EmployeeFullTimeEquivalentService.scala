@@ -36,7 +36,7 @@ trait EmployeeFullTimeEquivalenceService{
     Try(BigDecimal(numberOfFullTimeEquivalentEmployees)) match{
       case Success(fte) => {
         if(fte.signum!= -1)
-          Status(OK)(Json.toJson(fte <= fullTimeEquivalenceLimit))
+          Status(OK)(Json.toJson(checkFTE(fte)))
         else
           Status(INTERNAL_SERVER_ERROR)(Json.toJson(Map("error" -> "Invalid URL parameter",  "reason" -> "Negative Number")))
       }
@@ -46,5 +46,7 @@ trait EmployeeFullTimeEquivalenceService{
       }
     }
   }
+
+  private def checkFTE(numOfFullTimeEquivalence: BigDecimal): Boolean = numOfFullTimeEquivalence <= fullTimeEquivalenceLimit
 
 }
