@@ -30,7 +30,7 @@ class EmployeeFullTimeEquivalenceServiceSpec extends UnitSpec{
   val invalidNumberMessage = "Invalid Number"
 
   val successResponse: Boolean => Result = bool => Status(OK)(Json.toJson(bool))
-  val failedResponse: String => Result = reason => Status(INTERNAL_SERVER_ERROR)(Json.toJson(Map("error"->"Invalid URL parameter",
+  val failedResponse: String => Result = reason => Status(BAD_REQUEST)(Json.toJson(Map("error"->"Invalid URL parameter",
     "reason" -> reason)))
 
   "EmployeeFullTimeEquivalenceService fullTimeEquivalenceLimit" should {

@@ -38,11 +38,11 @@ trait EmployeeFullTimeEquivalenceService{
         if(fte.signum!= -1)
           Status(OK)(Json.toJson(checkFTE(fte)))
         else
-          Status(INTERNAL_SERVER_ERROR)(Json.toJson(Map("error" -> "Invalid URL parameter",  "reason" -> "Negative Number")))
+          Status(BAD_REQUEST)(Json.toJson(Map("error" -> "Invalid URL parameter",  "reason" -> "Negative Number")))
       }
       case Failure(_) => {
         Logger.warn(s"[EmployeeFullTimeEquivalentService] [checkFullTimeEquivalence] - Error converting URL parameter to 'BigDecimal'")
-        Status(INTERNAL_SERVER_ERROR)(Json.toJson(Map("error" -> "Invalid URL parameter", "reason" -> "Invalid Number")))
+        Status(BAD_REQUEST)(Json.toJson(Map("error" -> "Invalid URL parameter", "reason" -> "Invalid Number")))
       }
     }
   }
