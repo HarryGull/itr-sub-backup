@@ -52,13 +52,13 @@ class EmployeeFullTimeEquivalenceControllerSpec extends UnitSpec with MockitoSug
     reset(mockAuthConnector)
   }
 
-  "MarketCriteriaController" should {
+  "EmployeeFullTimeEquivalenceController" should {
     "use the correct auth connector" in {
       EmployeeFullTimeEquivalentController.authConnector shouldBe AuthConnector
     }
   }
 
-  "sending a GET request to the MarketCriteriaController" when {
+  "sending a GET request to the EmployeeFullTimeEquivalenceController" when {
     "Authenticated and enrolled" should {
       when(TestController.employeeFullTimeEquivalenceService.checkFullTimeEquivalence(Matchers.any())).thenReturn(successResponse(true))
       lazy val result = TestController.checkFullTimeEquivalence("25")(fakeRequest)
