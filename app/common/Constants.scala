@@ -15,7 +15,9 @@
  */
 
 package common
-
+object Constants{
+  val fullTimeEquivalenceLimit = 25
+}
 object ResponseConstants {
   val success = "Success"
   val defaultNotFound = "The remote endpoint has indicated that no data can be found"

@@ -26,4 +26,8 @@ GET        /throttle/check-user-access                                          
 
 POST       /token/generate-temporary-token                                                                                                                                                                                                                                         controllers.TokenController.generateTemporaryToken()
 
-GET        /token/validate-temporary-token/:id                                                                                                                                                                                                                                  controllers.TokenController.validateTemporaryToken(id: String)
+GET        /token/validate-temporary-token/:id                                                                                                                                                                                                                                     controllers.TokenController.validateTemporaryToken(id: String)
+
+
+#########Compliance Statement###########
+GET        /compliance-statement/full-time-equivalence-check/:numberOfFullTimeEquivalentEmployees                                                                                                                                                                                         controllers.EmployeeFullTimeEquivalentController.checkFullTimeEquivalence(numberOfFullTimeEquivalentEmployees: String)
