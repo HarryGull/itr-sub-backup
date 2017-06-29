@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.microservice.controller.BaseController
 
 import scala.concurrent.Future
 
-object HasInvestmentTradeStartedController extends HasInvestmentTradeStartedController{
+object        HasInvestmentTradeStartedController extends HasInvestmentTradeStartedController{
   override val authConnector: AuthConnector = AuthConnector
 }
 

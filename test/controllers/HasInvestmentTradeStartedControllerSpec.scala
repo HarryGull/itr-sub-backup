@@ -47,9 +47,9 @@ class HasInvestmentTradeStartedControllerSpec extends UnitSpec with OneAppPerSui
   "validating the investment trade start date method with a TAVC account with status Activated and confidence level 50" when  {
 
     "calling with a date more than four months in the past" should {
-
-      lazy val result = TestController.validateHasInvestmentTradeStarted(DateTime.now().dayOfMonth().get(),
-        DateTime.now().minusMonths(5).monthOfYear().get(),DateTime.now().year().get)(FakeRequest())
+      val base = DateTime.now().minusMonths(5)
+      lazy val result = TestController.validateHasInvestmentTradeStarted(base.dayOfMonth().get(),
+        base.monthOfYear().get(),DateTime.now().year().get)(FakeRequest())
 
       "return status OK" in {
         setup()
@@ -72,7 +72,7 @@ class HasInvestmentTradeStartedControllerSpec extends UnitSpec with OneAppPerSui
     "calling with a date less than four months in the past" should {
 
       lazy val result = TestController.validateHasInvestmentTradeStarted(DateTime.now().dayOfMonth().get(),
-        DateTime.now().minusMonths(1).monthOfYear().get(),DateTime.now().year().get)(FakeRequest())
+        DateTime.now().monthOfYear().get(),DateTime.now().year().get)(FakeRequest())
 
       "return status OK" in {
         setup()
@@ -93,7 +93,7 @@ class HasInvestmentTradeStartedControllerSpec extends UnitSpec with OneAppPerSui
     }
   }
 
-  "validating the checkLifetimeAllowanceExceeded method with a TAVC account with status NotYetActivated and confidence level 50" should {
+  "calling the validateHasInvestmentTradeStarted method with a TAVC account with status NotYetActivated and confidence level 50" should {
 
     "return status FORBIDDEN" in {
       setup("NotYetActivated")

@@ -43,29 +43,49 @@ class HasInvestmentTradeStartedServiceSpec extends UnitSpec with MockitoSugar wi
 
   "HasInvestmentTradeStartedService.validateHasInvestmentTradeStarted" should {
 
+    "return false if the date is today" in {
+      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(DateTime.now().dayOfMonth().get(),
+        DateTime.now().monthOfYear().get(),DateTime.now().year().get)
+      await(result) shouldBe false
+    }
+
     "return false if the date is within the last four months" in {
-      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(DateTime.now().dayOfMonth().get(),
-        DateTime.now().minusMonths(1).monthOfYear().get(),DateTime.now().year().get)
+      val base = DateTime.now().minusMonths(1)
+      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(base.dayOfMonth().get(),
+        base.monthOfYear().get(), base.year().get)
       await(result) shouldBe false
     }
 
-    "return true if the date is within the last four months 1 day before the boundary date" in {
-      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(DateTime.now().plusDays(1).dayOfMonth().get(),
-        DateTime.now().minusMonths(1).monthOfYear().get(),DateTime.now().year().get)
+    "return false if the date is within the last four months 1 day before the boundary date" in {
+      val base = DateTime.now().minusMonths(4).plusDays(1)
+      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(base.dayOfMonth().get(),
+        base.monthOfYear().get(),base.year().get)
       await(result) shouldBe false
     }
 
-    "return true if the date is within the last four months on the boundary" in {
-      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(DateTime.now().dayOfMonth().get(),
-        DateTime.now().minusMonths(4).monthOfYear().get(),DateTime.now().year().get)
+
+    "return true if the date is over four months old" in {
+      val base = DateTime.now().minusMonths(5)
+      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(base.dayOfMonth().get(),
+        base.monthOfYear().get(),base.year().get)
       await(result) shouldBe true
     }
+
+    "return true if the date is exactly four months old" in {
+      val base = DateTime.now().minusMonths(4)
+      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(base.dayOfMonth().get(),
+        base.monthOfYear().get(),base.year().get)
+      await(result) shouldBe true
+    }
+
 
     "return true if the date is outside the last four months 1 day after the boundary date" in {
-      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(DateTime.now().minusDays(1).dayOfMonth().get(),
-        DateTime.now().minusMonths(4).monthOfYear().get(),DateTime.now().year().get)
+      val base = DateTime.now().minusMonths(4).minusDays(1)
+      lazy val result = TestHasInvestmentTradeStartedServiceFourMonths.validateHasInvestmentTradeStarted(base.dayOfMonth().get(),
+        base.monthOfYear().get(), base.year().get)
       await(result) shouldBe true
     }
+
 
   }
 
