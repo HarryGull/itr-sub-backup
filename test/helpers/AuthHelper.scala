@@ -24,6 +24,7 @@ import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.http.HeaderCarrier
 
+
 import scala.concurrent.Future
 
 object AuthHelper extends MockitoSugar {
