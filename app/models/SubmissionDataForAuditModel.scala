@@ -28,6 +28,7 @@ case class SubmissionDataForAuditModel(
                             phoneNumber:Option[String] = Some(AuditConstants.noValueProvided),
                             mobileNumber: Option[String] = Some(AuditConstants.noValueProvided),
                             emailAddress: Option[String] = Some(AuditConstants.noValueProvided),
+                            schemeTypes: SchemeTypesModel,
                             contactAddress: Option[AuditAddressModel] = Some(AuditAddressModel()),
                             registeredAddress: Option[AuditAddressModel] = Some(AuditAddressModel())
                             )
@@ -44,6 +45,7 @@ object SubmissionDataForAuditModel {
       (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "phoneNumber").readNullable[String] and
       (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "mobileNumber").readNullable[String] and
       (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "emailAddress").readNullable[String] and
+      (__ \ "submissionType" \ "submission" \ "advancedAssurance" \ "schemeTypes").read[SchemeTypesModel] and
       (__ \ "submissionType" \ "correspondenceDetails" \ "contactAddress").readNullable[AuditAddressModel] and
       (__ \ "submissionType" \ "correspondenceDetails" \ "contactAddress").readNullable[AuditAddressModel]
     ) (SubmissionDataForAuditModel.apply _)

@@ -18,7 +18,7 @@ package helpers
 
 import common.AuditConstants
 import model._
-import models.{AuditAddressModel, SubmissionDataForAuditModel}
+import models.{AuditAddressModel, SchemeTypesModel, SubmissionDataForAuditModel}
 import org.mockito.ArgumentCaptor
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -78,6 +78,7 @@ trait AuditHelper {
 
   val fullAuditData =  SubmissionDataForAuditModel(companyName = Some("Test ltd."), proposedInvestmentAmount = Some("250"),
     forename = Some("nameOne"), surname = Some("nameTwo"),phoneNumber = Some("000001 100000"),
-    mobileNumber = Some("000002 200000"),emailAddress = Some("test@test.com"), contactAddress = Some(fullAddress),
+    mobileNumber = Some("000002 200000"),emailAddress = Some("test@test.com"),
+    schemeTypes = SchemeTypesModel(true, true, false, true), contactAddress = Some(fullAddress),
     registeredAddress = Some(fullAddress))
 }
