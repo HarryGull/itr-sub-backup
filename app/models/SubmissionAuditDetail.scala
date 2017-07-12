@@ -15,12 +15,7 @@
  */
 
 package models
-
-import java.awt.font.FontRenderContext
-
-import common.AuditConstants
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 case class SubmissionAuditDetail(
                                       statusCode: String,
@@ -34,6 +29,7 @@ case class SubmissionAuditDetail(
                                       phoneNumber: String,
                                       mobileNumber: String,
                                       emailAddress: String,
+                                      schemeTypes: SchemeTypesModel,
                                       contactAddress: Option[AuditAddressModel],
                                       registeredAddress: Option[AuditAddressModel]
                                 )

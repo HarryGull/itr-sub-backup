@@ -68,6 +68,7 @@ trait AuditService {
       phoneNumber = submittedDataForAudit.phoneNumber.fold(AuditConstants.noValueProvided)(_.toString),
       mobileNumber = submittedDataForAudit.mobileNumber.fold(AuditConstants.noValueProvided)(_.toString),
       emailAddress = submittedDataForAudit.emailAddress.fold(AuditConstants.noValueProvided)(_.toString),
+      schemeTypes = submittedDataForAudit.schemeTypes,
       registeredAddress = submittedDataForAudit.registeredAddress,
       contactAddress = submittedDataForAudit.contactAddress)
 
