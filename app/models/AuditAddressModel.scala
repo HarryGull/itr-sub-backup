@@ -16,20 +16,22 @@
 
 package models
 
-import common.AuditConstants
+import AuditAddressModel._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 
-case class AuditAddressModel(addressLine1 : Option[String] = Some(AuditConstants.noValueProvided),
-                             addressLine2 : Option[String] = Some(AuditConstants.noValueProvided),
-                             addressLine3 : Option[String] = Some(AuditConstants.noValueProvided),
-                             addressLine4 : Option[String] = Some(AuditConstants.noValueProvided),
-                             postCode : Option[String] = Some(AuditConstants.noValueProvided),
-                             country : Option[String] = Some(AuditConstants.noValueProvided)
+case class AuditAddressModel(addressLine1 : Option[String] = Some(noValueProvided),
+                             addressLine2 : Option[String] = Some(noValueProvided),
+                             addressLine3 : Option[String] = Some(noValueProvided),
+                             addressLine4 : Option[String] = Some(noValueProvided),
+                             postCode : Option[String] = Some(noValueProvided),
+                             country : Option[String] = Some(noValueProvided)
                             )
 
 object AuditAddressModel {
+  private val noValueProvided =  "Not Provided"
+
   implicit val writesAuditAddress = Json.writes[AuditAddressModel]
 
   implicit val readsAuditAddress: Reads[AuditAddressModel] = (

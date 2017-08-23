@@ -32,17 +32,20 @@ object Metrics extends Metrics {
 
   val timers = Map(
     MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.timer("itr-submission-response-timer"),
+    MetricsEnum.TAVC_SUBMISSION_CS -> metrics.defaultRegistry.timer("itr-submission-cs-response-timer"),
     MetricsEnum.TAVC_USERACCESS -> metrics.defaultRegistry.timer("itr-useraccess-response-timer")
 
   )
 
   val successCounters = Map(
     MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("itr-submission-success-counter"),
+    MetricsEnum.TAVC_SUBMISSION_CS -> metrics.defaultRegistry.counter("itr-submission-cs-success-counter"),
     MetricsEnum.TAVC_USERACCESS -> metrics.defaultRegistry.counter("itr-useraccess-success-counter")
   )
 
   val failedCounters = Map(
-    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("ite-submission-failed-counter"),
+    MetricsEnum.TAVC_SUBMISSION -> metrics.defaultRegistry.counter("itr-submission-failed-counter"),
+    MetricsEnum.TAVC_SUBMISSION_CS -> metrics.defaultRegistry.counter("itr-submission-cs-failed-counter"),
     MetricsEnum.TAVC_USERACCESS -> metrics.defaultRegistry.counter("itr-useraccess-failed-counter")
   )
 
