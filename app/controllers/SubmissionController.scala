@@ -37,8 +37,6 @@ object SubmissionController extends SubmissionController{
   val submissionService: SubmissionService= SubmissionService
   override val authConnector: AuthConnector = AuthConnector
   val auditService = AuditService
-  val list = List()
-  list.fold()
 }
 
 trait SubmissionController extends BaseController with Authorisation {

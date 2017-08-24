@@ -53,20 +53,21 @@ class SubmissionServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
 
   "SubmissionService.submitAA" should {
 
-    lazy val result = TestSubmissionService.submitAA(validSubmissionJsVal,tavcRef)
+    lazy val result = TestSubmissionService.submitAA(validSubmissionJsValAA, tavcRef)
 
     "return the response from the DES connector" in {
-      when(mockSubmissionDESConnector.submit(Matchers.eq(validSubmissionJsVal),Matchers.eq(tavcRef))(Matchers.any(),Matchers.any()))
+      when(mockSubmissionDESConnector.submit(Matchers.eq(validSubmissionJsValAA), Matchers.eq(tavcRef))(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(CREATED)))
       await(result).status shouldBe CREATED
     }
+  }
 
     "SubmissionService.submitCS" should {
 
-      lazy val result = TestSubmissionService.submitCS(validSubmissionJsVal,tavcRef)
+      lazy val result = TestSubmissionService.submitCS(validSubmissionJsValCS,tavcRef)
 
       "return the response from the DES connector" in {
-        when(mockSubmissionDESConnector.submit(Matchers.eq(validSubmissionJsVal),Matchers.eq(tavcRef))(Matchers.any(),Matchers.any()))
+        when(mockSubmissionDESConnector.submit(Matchers.eq(validSubmissionJsValCS),Matchers.eq(tavcRef))(Matchers.any(),Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(CREATED)))
         await(result).status shouldBe CREATED
       }

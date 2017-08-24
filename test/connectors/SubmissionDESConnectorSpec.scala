@@ -55,66 +55,23 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppP
     }
   }
 
-  "calling submitAA" should {
-    "return a valid response" in new Setup {
+  "calling submit" should {
+    "return a valid response for an AA request" in new Setup {
 
       when(mockHttp.POST[JsValue, HttpResponse](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(HttpResponse(OK))
 
-      val result = TestConnector.submit(validSubmissionJsVal, dummyTavcRef)
+      val result = TestConnector.submit(validSubmissionJsValAA, dummyTavcRef)
       await(result).status shouldBe OK
     }
-  }
 
-  "Calling submitAdvancedAssurance with a email with a valid model" should {
-    "return a OK" in new Setup {
+    "return a valid response for a CS request" in new Setup {
 
-      when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(HttpResponse(OK)))
-      val result = TestConnector.submit(validSubmissionJsVal, dummyTavcRef)
-      await(result).status shouldBe OK
-    }
-  }
+      when(mockHttp.POST[JsValue, HttpResponse](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+        .thenReturn(HttpResponse(SERVICE_UNAVAILABLE))
 
-  "Calling submitAdvancedAssurance with a email containing 'badrequest'" should {
-    "return a BAD_REQUEST error" in new Setup{
-
-      when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
-      val result = TestConnector.submit(validSubmissionJsVal, dummyTavcRef)
-      await(result).status shouldBe BAD_REQUEST
-    }
-  }
-
-  "Calling submitAdvancedAssurance with a email containing 'forbidden'" should {
-    "return a FORBIDDEN Error" in new Setup {
-
-      when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(HttpResponse(FORBIDDEN)))
-      val result = TestConnector.submit(validSubmissionJsVal, dummyTavcRef)
-      await(result).status shouldBe FORBIDDEN
-    }
-  }
-
-  "Calling submitAdvancedAssurance with a email containing 'serviceunavailable'" should {
-
-    "return a SERVICE UNAVAILABLE ERROR" in new Setup  {
-
-      when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(HttpResponse(SERVICE_UNAVAILABLE)))
-      val result = TestConnector.submit(validSubmissionJsVal, dummyTavcRef)
+      val result = TestConnector.submit(validSubmissionJsValCS, dummyTavcRef)
       await(result).status shouldBe SERVICE_UNAVAILABLE
-    }
-  }
-
-  "Calling submitAdvancedAssurance with a email containing 'internalservererror'" should {
-
-    "return a INTERNAL SERVER ERROR" in new Setup  {
-
-      when(mockHttp.POST[JsValue, HttpResponse](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
-      val result = TestConnector.submit(validSubmissionJsVal, dummyTavcRef)
-      await(result).status shouldBe INTERNAL_SERVER_ERROR
     }
   }
 

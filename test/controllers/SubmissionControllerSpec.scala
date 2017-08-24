@@ -48,7 +48,7 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
       |}
     """.stripMargin
 
-  val acknowledgemenRefJs =
+  val acknowledgemenRefJsAA =
 
     """{
                               |"acknowledgementReference": "XDTAVC000544444",
@@ -76,6 +76,113 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
                               |		}
                               |	}
                               |}""".stripMargin
+
+  val acknowledgemenRefJsCS = """{
+                            |"acknowledgementReference": "XDTAVC000544444",
+                            |  "submissionType": {
+                            |    "correspondenceDetails": {
+                            |      "contactName": {
+                            |        "name1": "Gerald McCaw"
+                            |      },
+                            |      "contactDetails": {
+                            |        "emailAddress": "Gerald.McCaw@FunkyTown.com"
+                            |      },
+                            |      "contactAddress": {
+                            |        "addressLine1": "38 UpperMarshall Street",
+                            |        "addressLine2": "Post Box Aptms",
+                            |        "postalCode": "SY4 9BN",
+                            |        "countryCode": "GB"
+                            |      }
+                            |    },
+                            |    "organisationType": "Limited",
+                            |    "submission": {
+                            |      "complianceStatement": {
+                            |        "schemeType": "SEIS",
+                            |        "trade": {
+                            |          "businessActivity": "Preparing To Trade",
+                            |          "baDescription": "Florist",
+                            |          "dateTradeCommenced": "2017-01-21"
+                            |        },
+                            |        "investment": {
+                            |          "growthJustification": "Investment Growth Justification",
+                            |          "unitIssue": {
+                            |            "description": "Investment Unit Issue description",
+                            |            "dateOfIssue": "2012-12-11",
+                            |            "unitType": "Shares",
+                            |            "nominalValue": {
+                            |              "amount": "55000",
+                            |              "currency": "GBP"
+                            |            },
+                            |            "numberUnitsIssued": 3321,
+                            |            "totalAmount": {
+                            |              "amount": "213",
+                            |              "currency": "GBP"
+                            |            }
+                            |          },
+                            |          "organisationStatus": {
+                            |            "numberOfFTEmployees": 100,
+                            |            "shareOrLoanCapitalChanges": "Share Or Loan Capital Change",
+                            |            "grossAssetBefore": {
+                            |              "amount": "2450",
+                            |              "currency": "GBP"
+                            |            },
+                            |            "grossAssetAfter": {
+                            |              "amount": "3450",
+                            |              "currency": "GBP"
+                            |            }
+                            |          }
+                            |        },
+                            |        "investorDetails": {
+                            |          "investor": [
+                            |            {
+                            |              "investorType": "Named Investor",
+                            |              "investorInfo": {
+                            |                "investorDetails": {
+                            |                  "companyDetails": {
+                            |                    "organisationName": "Terry Tate's Automobiles",
+                            |                    "companyAddress": {
+                            |                      "addressLine1": "1 Weston Street",
+                            |                      "addressLine2": "GrangeHall",
+                            |                      "postalCode": "GH23 4WE",
+                            |                      "countryCode": "GB"
+                            |                    }
+                            |                  }
+                            |                },
+                            |                "numberOfUnitsHeld": 324,
+                            |                "investmentAmount": {
+                            |                  "amount": "2356",
+                            |                  "currency": "GBP"
+                            |                }
+                            |              }
+                            |            }
+                            |          ]
+                            |        },
+                            |        "repayments": {
+                            |          "repayment": [
+                            |            {
+                            |              "repaymentDate": "2013-12-12",
+                            |              "repaymentAmount": {
+                            |                "amount": "2342",
+                            |                "currency": "GBP"
+                            |              },
+                            |              "unitType": "Debentures",
+                            |              "holdersName": {
+                            |                "name1": "Jeffery Turner"
+                            |              },
+                            |              "subsidiaryName": "Sub name 1"
+                            |            }
+                            |          ]
+                            |        },
+                            |        "organisation": {
+                            |          "startDate": "2012-03-31",
+                            |          "orgDetails": {
+                            |            "organisationName": "Sub name 1"
+                            |          }
+                            |        }
+                            |      }
+                            |    }
+                            |  }
+                            |}""".stripMargin
 
   val getSubmissionDetails =
 
@@ -119,13 +226,16 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
 
 
 
-  val acknowledgemenRefJsVal = Json.parse(acknowledgemenRefJs)
+  val acknowledgementRefJsValAA = Json.parse(acknowledgemenRefJsAA)
+  val acknowledgementRefJsValCS = Json.parse(acknowledgemenRefJsCS)
   val getSubmissionDetailsJsVal = Json.parse(getSubmissionDetails)
 
   implicit val hc = HeaderCarrier()
 
   class Setup(status: Int, response: JsValue) {
     when(mockSubmissionService.submitAA(Matchers.any(),Matchers.any())(Matchers.any(), Matchers.any()))
+      .thenReturn(Future.successful(HttpResponse(status, Some(response))))
+    when(mockSubmissionService.submitCS(Matchers.any(),Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(HttpResponse(status, Some(response))))
     when(mockSubmissionService.getAASubmissionDetails(Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(HttpResponse(status, Some(response))))
@@ -154,41 +264,16 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
 
     "submitAA is called" should {
 
-      "return an Created when a CREATED response is returned from stub" in new Setup(CREATED, validSubmissionJsVal) {
+      "return an Created when a CREATED response is returned from service" in new Setup(CREATED, validSubmissionJsValAA) {
         setup()
-        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(validSubmissionJsVal))
+        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(validSubmissionJsValAA))
         status(result) shouldBe CREATED
       }
 
-      "return a Bad request if valid JSON already contains an acknowledgementReference" in new Setup(CREATED, acknowledgemenRefJsVal) {
+      "return a Bad request if valid JSON already contains an acknowledgementReference" in new Setup(CREATED, acknowledgementRefJsValAA) {
         setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(acknowledgemenRefJsVal))
+        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(acknowledgementRefJsValAA))
         status(result) shouldBe BAD_REQUEST
-      }
-
-      "return a Forbidden when a Forbidden response is returned from stub" in new Setup(FORBIDDEN, validSubmissionJsVal) {
-        setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(validSubmissionJsVal))
-        status(result) shouldBe FORBIDDEN
-      }
-
-
-      "return a BadRequest when a Bad Request response is returned from stub" in new Setup(BAD_REQUEST, validSubmissionJsVal) {
-        setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(validSubmissionJsVal))
-        status(result) shouldBe BAD_REQUEST
-      }
-
-      "return a ServiceUnavailable when a ServiceUnavailable is returned from stub" in new Setup(SERVICE_UNAVAILABLE, validSubmissionJsVal) {
-        setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(validSubmissionJsVal))
-        status(result) shouldBe SERVICE_UNAVAILABLE
-      }
-
-      "return an Internal Server error when any other response is returned from stub" in new Setup(INTERNAL_SERVER_ERROR, validSubmissionJsVal) {
-        setup()
-        val result = TestController.submitAA(tavcRef).apply(FakeRequest().withBody(validSubmissionJsVal))
-        status(result) shouldBe INTERNAL_SERVER_ERROR
       }
     }
   }
@@ -197,9 +282,40 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
 
     "submitAA is called" should {
 
-      "return a FORBIDDEN response" in new Setup(CREATED, validSubmissionJsVal) {
+      "return a FORBIDDEN response" in new Setup(CREATED, validSubmissionJsValAA) {
         setup("NotYetActivated")
-        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(validSubmissionJsVal))
+        val result = TestController.submitAA(tavcRef)(FakeRequest().withBody(validSubmissionJsValAA))
+        status(result) shouldBe FORBIDDEN
+      }
+    }
+  }
+
+
+  "SubmissionController.submitCS with a TAVC account with status Activated and confidence level 50" when {
+
+    "submitCS is called" should {
+
+      "return an Created when a CREATED response is returned from service" in new Setup(CREATED, validSubmissionJsValCS) {
+        setup()
+        val result = TestController.submitCS(tavcRef)(FakeRequest().withBody(validSubmissionJsValCS))
+        status(result) shouldBe CREATED
+      }
+
+      "return a Bad request if valid JSON already contains an acknowledgementReference" in new Setup(CREATED, acknowledgementRefJsValCS) {
+        setup()
+        val result = TestController.submitCS(tavcRef).apply(FakeRequest().withBody(acknowledgementRefJsValCS))
+        status(result) shouldBe BAD_REQUEST
+      }
+    }
+  }
+
+  "SubmissionController.submitCS with a TAVC account with status NotYetActivated and confidence level 50" when {
+
+    "submitCS is called" should {
+
+      "return a FORBIDDEN response" in new Setup(CREATED, validSubmissionJsValCS) {
+        setup("NotYetActivated")
+        val result = TestController.submitCS(tavcRef)(FakeRequest().withBody(validSubmissionJsValCS))
         status(result) shouldBe FORBIDDEN
       }
     }
