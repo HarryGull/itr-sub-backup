@@ -17,10 +17,11 @@
 package controllers
 
 import auth.{Authorisation, Authorised, NotAuthorised}
+import common.{CSAuditConstants, AAAuditConstants}
 import connectors.AuthConnector
 import metrics.MetricsEnum
 import model.Error
-import models.SubmissionDataForAuditModel
+import models.{AASubmissionDataForAuditModel, CSSubmissionDataForAuditModel}
 import play.api.Logger
 import play.api.libs.json._
 import services.{AuditService, SubmissionService}
@@ -51,11 +52,11 @@ trait SubmissionController extends BaseController with Authorisation {
           val bodyWithRef = insertAcknowledgementRef(request.body.as[JsObject], acknowledgementRef)
 
           val timerContext = AuditService.metrics.startTimer(MetricsEnum.TAVC_SUBMISSION)
-          val auditData = bodyWithRef.as[SubmissionDataForAuditModel]
+          val auditData = bodyWithRef.as[AASubmissionDataForAuditModel]
 
           submissionService.submitAA(bodyWithRef, tavcReferenceId) map { responseReceived =>
-            auditService.sendTAVCSubmitAdvancedAssuranceEvent(auditData, tavcReferenceId, responseReceived, acknowledgementRef)
-            auditService.logSubscriptionResponse(responseReceived, "SubmissionController", "submitAA", tavcReferenceId)
+            auditService.sendTAVCAdvancedAssuranceEvent(auditData, tavcReferenceId, responseReceived, acknowledgementRef)
+            auditService.logSubscriptionResponseAA(responseReceived, "SubmissionController", "submitAA", tavcReferenceId)
             val stopContext = timerContext.stop()
             Status(responseReceived.status)(responseReceived.body)
           }
@@ -67,11 +68,42 @@ trait SubmissionController extends BaseController with Authorisation {
         }
       }
       case NotAuthorised => {
-        Logger.warn(s"[SubmissionController] [subscribe] - Received an unauthorised request. tavcReferenceId is $tavcReferenceId")
+        Logger.warn(s"[SubmissionController] [submitAA] - Received an unauthorised request. tavcReferenceId is $tavcReferenceId")
         Future.successful(Forbidden)
       }
     }
   }
+
+  def submitCS(tavcReferenceId: String): Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
+    authorised {
+      case Authorised => {
+        if (acknowledgementReferenceCheck(request.body)) {
+          val acknowledgementRef = generateAcknowledgementRef(tavcReferenceId)
+          val bodyWithRef = insertAcknowledgementRef(request.body.as[JsObject], acknowledgementRef)
+
+          val timerContext = AuditService.metrics.startTimer(MetricsEnum.TAVC_SUBMISSION_CS)
+          val auditData = bodyWithRef.as[CSSubmissionDataForAuditModel]
+
+          submissionService.submitCS(bodyWithRef, tavcReferenceId) map { responseReceived =>
+            auditService.sendTAVCSubmitComplianceStatementEvent(auditData, tavcReferenceId, responseReceived, acknowledgementRef)
+            auditService.logSubscriptionResponseCS(responseReceived, "SubmissionController", "submitCS", tavcReferenceId)
+            val stopContext = timerContext.stop()
+            Status(responseReceived.status)(responseReceived.body)
+          }
+        }
+        else {
+          Future.successful(BadRequest(Json.toJson(Error(
+            message = "Request to submit application failed with validation errors:" +
+              "acknowledgementReference should not be present in Json request"))))
+        }
+      }
+      case NotAuthorised => {
+        Logger.warn(s"[SubmissionController] [submitAA] - Received an unauthorised request. tavcReferenceId is $tavcReferenceId")
+        Future.successful(Forbidden)
+      }
+    }
+  }
+
 
 
   def getAASubmissionDetails(tavcReferenceNumber: String):Action[AnyContent] = Action.async { implicit request =>

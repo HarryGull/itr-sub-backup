@@ -17,7 +17,7 @@
 package models
 import play.api.libs.json._
 
-case class SubmissionAuditDetail(
+case class AASubmissionAuditDetail(
                                       statusCode: String,
                                       failureReason: String,
                                       tavcReferenceNumber: String,
@@ -35,6 +35,28 @@ case class SubmissionAuditDetail(
                                 )
 
 
-object SubmissionAuditDetail {
-  implicit val auditSubmissionWrites = Json.format[SubmissionAuditDetail]
+object AASubmissionAuditDetail {
+  implicit val aaAuditSubmissionFormats = Json.format[AASubmissionAuditDetail]
+}
+
+case class CSSubmissionAuditDetail(
+                                  statusCode: String,
+                                  failureReason: String,
+                                  tavcReferenceNumber: String,
+                                  acknowledgementReference: String,
+                                  companyName: String,
+                                  totalAmountRaised: String,
+                                  forename: String,
+                                  surname: String,
+                                  phoneNumber: String,
+                                  mobileNumber: String,
+                                  emailAddress: String,
+                                  schemeType: String,
+                                  contactAddress: Option[AuditAddressModel],
+                                  registeredAddress: Option[AuditAddressModel]
+                                )
+
+
+object CSSubmissionAuditDetail {
+  implicit val csAuditSubmissionFormats = Json.format[CSSubmissionAuditDetail]
 }

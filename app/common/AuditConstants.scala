@@ -16,9 +16,19 @@
 
 package common
 
-object AuditConstants {
-  val transactionName =  "submit-advanced-assurance"
-  val submitAdvancesAssuranceAuditType =  "SubmitAdvancedAssurance"
+trait AuditConstants {
   val noValueProvided =  "Not Provided"
   val notApplicable =  "NA"
+  val transactionName: String
+  val submitAuditType: String
+}
+
+object AAAuditConstants extends AuditConstants{
+  val submitAuditType =  "SubmitAdvancedAssurance"
+  val transactionName = "submit-advanced-assurance"
+}
+
+object CSAuditConstants extends AuditConstants{
+  val submitAuditType =  "SubmitComplianceStatement"
+  val transactionName = "submit-compliance-statement"
 }

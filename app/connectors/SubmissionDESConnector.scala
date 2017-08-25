@@ -41,7 +41,7 @@ trait SubmissionDESConnector {
   val environment: String
   val token: String
 
-  def submitAA(jsonValue: JsValue, tavcReferenceId:String)
+  def submit(jsonValue: JsValue, tavcReferenceId:String)
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val requestUrl = s"$serviceUrl/tax-assured-venture-capital/taxpayers/$tavcReferenceId/returns"
     val desHeaders = hc.copy(authorization = Some(Authorization(s"Bearer $token"))).withExtraHeaders("Environment" -> environment)
