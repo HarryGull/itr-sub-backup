@@ -60,7 +60,7 @@ trait AuditService {
     val np = AAAuditConstants.noValueProvided
 
     val detailData = AASubmissionAuditDetail(
-      statusCode = responseReceived.status.toString,
+      statusCode = "200",
       failureReason = failureReason,
       tavcReferenceNumber = tavcReferenceNumber,
       acknowledgementReference = acknowledgementRef,
