@@ -61,8 +61,8 @@ trait AuditService {
 
 
     val detailData = AASubmissionAuditDetail(
-      statusCode = "200",
-      failureReason = "Thhis is a failure",
+      statusCode = responseReceived.status.toString,
+      failureReason = failureReason,
       tavcReferenceNumber = tavcReferenceNumber,
       acknowledgementReference = acknowledgementRef,
       companyName = submittedDataForAudit.companyName.fold(AAAuditConstants.noValueProvided)(_.toString),
@@ -75,8 +75,6 @@ trait AuditService {
       schemeTypes = submittedDataForAudit.schemeTypes,
       registeredAddress = submittedDataForAudit.registeredAddress,
       contactAddress = submittedDataForAudit.contactAddress)
-
-    Logger.warn("[AuditService][sendTAVCAdvancedAssuranceEvent] Data to submit is: " ++ detailData.toString)
 
     auditConnector.sendEvent(ExtendedDataEvent.apply(appName, AAAuditConstants.submitAuditType,
       tags = hc.toAuditTags(AAAuditConstants.transactionName, rh.path),
