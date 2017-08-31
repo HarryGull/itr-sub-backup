@@ -17,10 +17,11 @@
 package services
 
 import connectors.SubmissionDESConnector
+import play.api.Logger
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{Json, JsValue}
 
 
 object SubmissionService extends SubmissionService{
@@ -33,7 +34,9 @@ trait SubmissionService {
 
   def submitAA(jsonValue:JsValue, tavcReferenceId:String)
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    submissionDESConnector.submit(jsonValue, tavcReferenceId)
+   submissionDESConnector.submit(jsonValue, tavcReferenceId).recover{
+     case e: Exception => Logger.warn("[SubmissionService][submitAA] Failed call to submitAA with Exception (AUDITING)")
+       HttpResponse(500, Some(Json.toJson("FAILURE")))}
   }
 
   def submitCS(jsonValue:JsValue, tavcReferenceId:String)

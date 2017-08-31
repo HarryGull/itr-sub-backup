@@ -55,6 +55,7 @@ trait SubmissionController extends BaseController with Authorisation {
           val auditData = bodyWithRef.as[AASubmissionDataForAuditModel]
 
           submissionService.submitAA(bodyWithRef, tavcReferenceId) map { responseReceived =>
+            Logger.warn("[SubmissionController][submitAA] Response Status is: " + responseReceived.status ++ " And body is: "  ++ responseReceived.body)
             auditService.sendTAVCAdvancedAssuranceEvent(auditData, tavcReferenceId, responseReceived, acknowledgementRef)
             auditService.logSubscriptionResponseAA(responseReceived, "SubmissionController", "submitAA", tavcReferenceId)
             val stopContext = timerContext.stop()
