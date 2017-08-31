@@ -35,7 +35,7 @@ trait SubmissionService {
   def submitAA(jsonValue:JsValue, tavcReferenceId:String)
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
    submissionDESConnector.submit(jsonValue, tavcReferenceId).recover{
-     case e: Exception => Logger.warn("[SubmissionService][submitAA] Failed call to submitAA with Exception (AUDITING)")
+     case e: Exception => Logger.warn("[SubmissionService][submitAA] Failed call to submitAA with Exception (AUDITING): Message: " + e.getMessage)
        HttpResponse(500, Some(Json.toJson("FAILURE")))}
   }
 
