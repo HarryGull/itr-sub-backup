@@ -31,11 +31,11 @@ trait AuditHelper {
 
 
   val testRequestPath = "test/path"
-  val responseReasonContent = (message: String) => s"""{"reason" : "$message"}"""
+  val responseReasonContent = (message: String) => s"""{"message" : "$message"}"""
   val responseSuccessContent = s"""{"processingDate":"2014-12-17T09:30:47Z","formBundleNumber":"FBUND98763284"}"""
 
   // logging
-  val reasonMessage = (message: String) => s"""{"reason" : "$message"}"""
+  val reasonMessage = (message: String) => s"""{"message" : "$message"}"""
   //val eventCaptor2 = ArgumentCaptor.forClass(classOf[DataEvent])
   val eventCaptor = ArgumentCaptor.forClass(classOf[Audit])
 
