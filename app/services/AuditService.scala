@@ -147,8 +147,8 @@ trait AuditService {
 
   private def getResponseReason(response: HttpResponse): Option[String] = {
     Try {
-      if (response.body.nonEmpty && response.body.contains("reason"))
-        Some((response.json \ "reason").as[String])
+      if (response.body.nonEmpty && response.body.contains("message"))
+        Some((response.json \ "message").as[String])
       else None
     } match {
       case Success(result) => result

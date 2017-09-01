@@ -33,6 +33,7 @@ import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.math._
+import scala.util.{Failure, Success, Try}
 
 object SubmissionController extends SubmissionController{
   val submissionService: SubmissionService= SubmissionService
@@ -55,18 +56,19 @@ trait SubmissionController extends BaseController with Authorisation {
           val timerContext = AuditService.metrics.startTimer(MetricsEnum.TAVC_SUBMISSION)
           val auditData = bodyWithRef.as[AASubmissionDataForAuditModel]
 
+          def auditAA(httpResponse: HttpResponse) = {
+            auditService.sendTAVCAdvancedAssuranceEvent(auditData, tavcReferenceId, httpResponse, acknowledgementRef)
+            auditService.logSubscriptionResponseAA(httpResponse, "SubmissionController", "submitAA", tavcReferenceId)
+            timerContext.stop()
+          }
+
           submissionService.submitAA(bodyWithRef, tavcReferenceId).recover{
             case exception: Exception => {
-              val auditHttpResponse = handleSubmissionException(exception)
-              auditService.sendTAVCAdvancedAssuranceEvent(auditData, tavcReferenceId, auditHttpResponse, acknowledgementRef)
-              auditService.logSubscriptionResponseAA(auditHttpResponse, "SubmissionController", "submitAA", tavcReferenceId)
-              val stopContext = timerContext.stop()
+              auditAA(handleSubmissionException(exception))
               throw exception
             }
           } map { responseReceived =>
-            auditService.sendTAVCAdvancedAssuranceEvent(auditData, tavcReferenceId, responseReceived, acknowledgementRef)
-            auditService.logSubscriptionResponseAA(responseReceived, "SubmissionController", "submitAA", tavcReferenceId)
-            val stopContext = timerContext.stop()
+            auditAA(responseReceived)
             Status(responseReceived.status)(responseReceived.body)
           }
         }
@@ -93,10 +95,19 @@ trait SubmissionController extends BaseController with Authorisation {
           val timerContext = AuditService.metrics.startTimer(MetricsEnum.TAVC_SUBMISSION_CS)
           val auditData = bodyWithRef.as[CSSubmissionDataForAuditModel]
 
-          submissionService.submitCS(bodyWithRef, tavcReferenceId) map { responseReceived =>
-            auditService.sendTAVCSubmitComplianceStatementEvent(auditData, tavcReferenceId, responseReceived, acknowledgementRef)
-            auditService.logSubscriptionResponseCS(responseReceived, "SubmissionController", "submitCS", tavcReferenceId)
-            val stopContext = timerContext.stop()
+          def auditCS(httpResponse: HttpResponse) = {
+            auditService.sendTAVCSubmitComplianceStatementEvent(auditData, tavcReferenceId, httpResponse, acknowledgementRef)
+            auditService.logSubscriptionResponseCS(httpResponse, "SubmissionController", "submitCS", tavcReferenceId)
+            timerContext.stop()
+          }
+
+          submissionService.submitCS(bodyWithRef, tavcReferenceId).recover{
+            case exception: Exception => {
+              auditCS(handleSubmissionException(exception))
+              throw exception
+            }
+          } map { responseReceived =>
+            auditCS(responseReceived)
             Status(responseReceived.status)(responseReceived.body)
           }
         }
@@ -150,11 +161,10 @@ trait SubmissionController extends BaseController with Authorisation {
 
   private def handleSubmissionException(exception: Exception): HttpResponse = {
     exception match {
-      case exception: BadRequestException => HttpResponse(exception.responseCode)
-      case exception: NotFoundException => HttpResponse(exception.responseCode)
-      case Upstream4xxResponse(message, status, _, _) => HttpResponse(status)
-      case Upstream5xxResponse(message, status, _) => HttpResponse(status)
-      case _ => throw exception
+      case exception: BadRequestException => HttpResponse(exception.responseCode, Some(Json.toJson(exception.message)))
+      case exception: NotFoundException => HttpResponse(exception.responseCode, Some(Json.toJson(exception.message)))
+      case Upstream4xxResponse(message, status, _, _) => HttpResponse(status, Some(Json.toJson(message)))
+      case Upstream5xxResponse(message, status, _) => HttpResponse(status, Some(Json.toJson(message)))
     }
   }
 }
