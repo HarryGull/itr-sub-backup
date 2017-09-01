@@ -25,6 +25,7 @@ import models.{AASubmissionDataForAuditModel, CSSubmissionDataForAuditModel}
 import play.api.Logger
 import play.api.libs.json._
 import services.{AuditService, SubmissionService}
+import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
 import scala.concurrent.Future
@@ -54,7 +55,15 @@ trait SubmissionController extends BaseController with Authorisation {
           val timerContext = AuditService.metrics.startTimer(MetricsEnum.TAVC_SUBMISSION)
           val auditData = bodyWithRef.as[AASubmissionDataForAuditModel]
 
-          submissionService.submitAA(bodyWithRef, tavcReferenceId) map { responseReceived =>
+          submissionService.submitAA(bodyWithRef, tavcReferenceId).recover{
+            case exception: Exception => {
+              val auditHttpResponse = handleSubmissionException(exception)
+              auditService.sendTAVCAdvancedAssuranceEvent(auditData, tavcReferenceId, auditHttpResponse, acknowledgementRef)
+              auditService.logSubscriptionResponseAA(auditHttpResponse, "SubmissionController", "submitAA", tavcReferenceId)
+              val stopContext = timerContext.stop()
+              throw exception
+            }
+          } map { responseReceived =>
             auditService.sendTAVCAdvancedAssuranceEvent(auditData, tavcReferenceId, responseReceived, acknowledgementRef)
             auditService.logSubscriptionResponseAA(responseReceived, "SubmissionController", "submitAA", tavcReferenceId)
             val stopContext = timerContext.stop()
@@ -136,5 +145,16 @@ trait SubmissionController extends BaseController with Authorisation {
   private def insertAcknowledgementRef(requestBody: JsObject, acknowledgementRef: String): JsValue = {
     val ref = JsObject(Seq(("acknowledgementReference", JsString(acknowledgementRef))))
     (ref ++ requestBody).as[JsValue]
+  }
+
+
+  private def handleSubmissionException(exception: Exception): HttpResponse = {
+    exception match {
+      case exception: BadRequestException => HttpResponse(exception.responseCode)
+      case exception: NotFoundException => HttpResponse(exception.responseCode)
+      case Upstream4xxResponse(message, status, _, _) => HttpResponse(status)
+      case Upstream5xxResponse(message, status, _) => HttpResponse(status)
+      case _ => throw exception
+    }
   }
 }

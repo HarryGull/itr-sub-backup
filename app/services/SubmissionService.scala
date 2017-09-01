@@ -34,10 +34,7 @@ trait SubmissionService {
 
   def submitAA(jsonValue:JsValue, tavcReferenceId:String)
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-   submissionDESConnector.submit(jsonValue, tavcReferenceId).recover {
-     case Upstream4xxResponse(message, status, _, _) => HttpResponse(status,Some(Json.toJson(message)))
-     case Upstream5xxResponse(message, status, _) => HttpResponse(status,Some(Json.toJson(message)))
-   }
+    submissionDESConnector.submit(jsonValue, tavcReferenceId)
   }
 
   def submitCS(jsonValue:JsValue, tavcReferenceId:String)
