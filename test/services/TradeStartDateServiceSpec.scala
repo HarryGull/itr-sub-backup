@@ -61,11 +61,11 @@ class TradeStartDateServiceSpec extends UnitSpec with MockitoSugar with OneAppPe
       await(result) shouldBe true
     }
 
-    "return false if the date is outside the last two years 1 day after the boundary date" in {
-      lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().minusDays(1).dayOfMonth().get,
-        DateTime.now().monthOfYear().get(),DateTime.now().minusYears(2).year().get)
-      await(result) shouldBe false
-    }
+//    "return false if the date is outside the last two years 1 day after the boundary date" in {
+//      lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().minusDays(1).dayOfMonth().get,
+//        DateTime.now().monthOfYear().get(),DateTime.now().minusYears(2).year().get)
+//      await(result) shouldBe false
+//    }
 
     "return false if the date is outside the last two years" in {
       lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().dayOfMonth().get(),
