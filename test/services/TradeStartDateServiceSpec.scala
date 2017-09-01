@@ -49,11 +49,11 @@ class TradeStartDateServiceSpec extends UnitSpec with MockitoSugar with OneAppPe
       await(result) shouldBe true
     }
 
-//    "return true if the date is within the last two years 1 day before the boundary date" in {
-//      lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().plusDays(1).dayOfMonth().get(),
-//        DateTime.now().monthOfYear().get(),DateTime.now().minusYears(2).year().get)
-//      await(result) shouldBe true
-  //  }
+    "return true if the date is within the last two years 1 day before the boundary date" in {
+      lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().plusDays(1).dayOfMonth().get(),
+        DateTime.now().plusDays(1).monthOfYear().get(),DateTime.now().plusDays(1).minusYears(2).year().get)
+      await(result) shouldBe true
+    }
 
     "return true if the date is within the last two years on the boundary" in {
       lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().dayOfMonth().get(),
@@ -61,11 +61,11 @@ class TradeStartDateServiceSpec extends UnitSpec with MockitoSugar with OneAppPe
       await(result) shouldBe true
     }
 
-//    "return false if the date is outside the last two years 1 day after the boundary date" in {
-//      lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().minusDays(1).dayOfMonth().get,
-//        DateTime.now().monthOfYear().get(),DateTime.now().minusYears(2).year().get)
-//      await(result) shouldBe false
-//    }
+    "return false if the date is outside the last two years 1 day after the boundary date" in {
+      lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().minusDays(1).dayOfMonth().get,
+        DateTime.now().minusDays(1).monthOfYear().get(),DateTime.now().minusDays(1).minusYears(2).year().get)
+      await(result) shouldBe false
+    }
 
     "return false if the date is outside the last two years" in {
       lazy val result = TestTradeStartDateServiceTwoYears.validateTradeStartDate(DateTime.now().dayOfMonth().get(),
