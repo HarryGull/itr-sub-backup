@@ -31,7 +31,12 @@ trait AuditHelper {
 
 
   val testRequestPath = "test/path"
-  val responseReasonContent = (message: String) => s"""{"message" : "$message"}"""
+  def responseReasonContent(code: Int, message: String) : String = {
+    s"""POST of 'http://localhost:9639/tax-assured-venture-capital/taxpayers/XA0000019191/returns'
+       |returned {$code}. Response body: '{\"reason\":\"$message}\"}'""".
+      stripMargin
+    }
+
   val responseSuccessContent = s"""{"processingDate":"2014-12-17T09:30:47Z","formBundleNumber":"FBUND98763284"}"""
 
   // logging
@@ -49,15 +54,15 @@ trait AuditHelper {
   val responseOkNocontent = HttpResponse(OK)
   val responseCreatedNocontent = HttpResponse(CREATED)
   val responseBadRequestEtmpDuplicate = HttpResponse(BAD_REQUEST,
-    Some(Json.parse(responseReasonContent(EtmpResponseReasons.duplicateSubmission400))))
+    Some(Json.toJson(responseReasonContent(BAD_REQUEST, EtmpResponseReasons.duplicateSubmission400))))
   val responseServiceUnavailableEtmpNotProcessed = HttpResponse(SERVICE_UNAVAILABLE,
-    Some(Json.parse(responseReasonContent(EtmpResponseReasons.notProcessed503))))
+    Some(Json.toJson(responseReasonContent(SERVICE_UNAVAILABLE,EtmpResponseReasons.notProcessed503))))
   val responseInternalServerErrorEtmpSap = HttpResponse(INTERNAL_SERVER_ERROR,
-    Some(Json.parse(responseReasonContent(EtmpResponseReasons.sapError500))))
+    Some(Json.toJson(responseReasonContent(INTERNAL_SERVER_ERROR,EtmpResponseReasons.sapError500))))
   val responseInternalServerErrorEtmpRegime = HttpResponse(INTERNAL_SERVER_ERROR,
-    Some(Json.parse(responseReasonContent(EtmpResponseReasons.noRegime500))))
+    Some(Json.toJson(responseReasonContent(INTERNAL_SERVER_ERROR, EtmpResponseReasons.noRegime500))))
   val responseInternalServerErrorEtmp = HttpResponse(INTERNAL_SERVER_ERROR,
-    Some(Json.parse(responseReasonContent(EtmpResponseReasons.serverError500))))
+    Some(Json.toJson(responseReasonContent(INTERNAL_SERVER_ERROR, EtmpResponseReasons.serverError500))))
   val submissionControllerTestName = "SubmissionController"
   val subscriptionControllerTestName = "SubscriptionController"
   val subscribeTestAction = "subscribe"

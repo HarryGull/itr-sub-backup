@@ -146,10 +146,13 @@ trait AuditService {
 
 
   private def getResponseReason(response: HttpResponse): Option[String] = {
+    val charsToRemove = "}):\\\"'"
+    val reasonRegex = """(?<=reason).*()$""".r
     Try {
-      if (response.body.nonEmpty && response.body.contains("message"))
-        Some((response.json \ "message").as[String])
-      else None
+      reasonRegex.findFirstIn(response.body) match {
+        case Some(reason) => Some(reason.filterNot(c => charsToRemove.contains(c)))
+        case None => None
+      }
     } match {
       case Success(result) => result
       case Failure(_) => None
