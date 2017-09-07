@@ -16,10 +16,8 @@
 
 package services
 
-import common.{CSAuditConstants, AAAuditConstants, AuditConstants, ResponseConstants}
+import common.{CSAuditConstants, AAAuditConstants, ResponseConstants}
 import config.MicroserviceAuditConnector
-import metrics.MetricsEnum
-import metrics.MetricsEnum.MetricsEnum
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
@@ -57,9 +55,6 @@ trait AuditService {
     else
       getResponseReason(responseReceived).fold(AAAuditConstants.noValueProvided)(_.toString)
 
-    val np = AAAuditConstants.noValueProvided
-
-
     val detailData = AASubmissionAuditDetail(
       statusCode = responseReceived.status.toString,
       failureReason = failureReason,
@@ -89,9 +84,7 @@ trait AuditService {
 
     val failureReason: String = if (checkResponseSuccess(responseReceived.status)) AAAuditConstants.notApplicable
     else
-      getResponseReason(responseReceived).fold(AAAuditConstants.noValueProvided)(_.toString)
-
-    val np = AAAuditConstants.noValueProvided
+      getResponseReason(responseReceived).fold(AAAuditConstants.noValueProvided)(_.toString).trim
 
     val detailData = CSSubmissionAuditDetail(
       statusCode = responseReceived.status.toString,
@@ -142,7 +135,6 @@ trait AuditService {
 
     logMessage
   }
-
 
 
   private def getResponseReason(response: HttpResponse): Option[String] = {
