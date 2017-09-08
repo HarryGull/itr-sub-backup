@@ -17,6 +17,8 @@
 package common
 object Constants{
   val fullTimeEquivalenceLimit = 25
+  val schemeTypeEIS = "EIS"
+  val schemeTypeSEIS = "SEIS"
 }
 object ResponseConstants {
   val success = "Success"

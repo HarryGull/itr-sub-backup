@@ -25,6 +25,7 @@ import play.api.test.Helpers._
 import org.mockito.Mockito._
 import org.scalatestplus.play.OneAppPerSuite
 import uk.gov.hmrc.play.test.UnitSpec
+import common.MockConstants._
 
 class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfter {
 
@@ -32,26 +33,26 @@ class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with Before
     override val authConnector = mockAuthConnector
   }
 
-  val validAmount = 200000
-  val invalidAmount = 200001
+  val validAmountEIS = 15000000
+  val validAmountSEIS = 200000
   val fakeRequest = FakeRequest()
 
   before {
     reset(mockAuthConnector)
   }
-  
+
   "GrossAssetsController" should {
     "use the correct auth connector" in {
       GrossAssetsController.authConnector shouldBe AuthConnector
     }
   }
-  
+
 
   "validating the checkGrossAssetsExceeded method with a TAVC account with status Activated and confidence level 50" when  {
 
-    "calling with an valid grossAmount which is exactly at the the maximum" should {
+    "calling with an EIS scheme type and a valid grossAmount which is exactly at the the maximum" should {
 
-      lazy val result = TestController.checkGrossAssetsExceeded(validAmount)(fakeRequest)
+      lazy val result = TestController.checkGrossAssetsExceeded(testSchemeTypeEIS, validAmountEIS)(fakeRequest)
 
       "return status OK" in {
         setup()
@@ -71,9 +72,53 @@ class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with Before
       }
     }
 
-    "calling with an invalid grossAmount which exceeds the maximum" should {
+    "calling with an EIS scheme type and an invalid grossAmount which exceeds the maximum" should {
 
-      lazy val result = TestController.checkGrossAssetsExceeded(invalidAmount)(fakeRequest)
+      lazy val result = TestController.checkGrossAssetsExceeded(testSchemeTypeEIS, validAmountEIS+1)(fakeRequest)
+
+      "return status OK" in {
+        setup()
+        status(result) shouldBe OK
+      }
+
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+
+      "return true" in {
+        setup()
+        val data = contentAsString(result)
+        val json = Json.parse(data)
+        json.as[Boolean] shouldBe true
+      }
+    }
+
+    "calling with an SEIS scheme type and a valid grossAmount which is exactly at the the maximum" should {
+
+      lazy val result = TestController.checkGrossAssetsExceeded(testSchemeTypeSEIS, validAmountSEIS)(fakeRequest)
+
+      "return status OK" in {
+        setup()
+        status(result) shouldBe OK
+      }
+
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+
+      "return false" in {
+        setup()
+        val data = contentAsString(result)
+        val json = Json.parse(data)
+        json.as[Boolean] shouldBe false
+      }
+    }
+
+    "calling with an SEIS scheme type and an invalid grossAmount which exceeds the maximum" should {
+
+      lazy val result = TestController.checkGrossAssetsExceeded(testSchemeTypeSEIS, validAmountSEIS+1)(fakeRequest)
 
       "return status OK" in {
         setup()
@@ -96,11 +141,11 @@ class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with Before
 
   "validating the checkGrossAssetsExceeded method with a TAVC account with status NotYetActivated and confidence level 50" when  {
 
-    "calling with a valid grossInvestment and a valid PreviousSchemesTotal" should {
+    "calling with a valid grossInvestment" should {
 
       "return status FORBIDDEN" in {
         setup("NotYetActivated")
-        val result = TestController.checkGrossAssetsExceeded(validAmount)(fakeRequest)
+        val result = TestController.checkGrossAssetsExceeded(testSchemeTypeEIS, validAmountEIS)(fakeRequest)
         status(result) shouldBe FORBIDDEN
       }
     }
@@ -109,8 +154,22 @@ class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with Before
 
       "return status FORBIDDEN" in {
         setup("NotYetActivated")
-        val result = TestController.checkGrossAssetsExceeded(invalidAmount)(fakeRequest)
+        val result = TestController.checkGrossAssetsExceeded(testSchemeTypeEIS, validAmountEIS+1)(fakeRequest)
         status(result) shouldBe FORBIDDEN
+      }
+    }
+  }
+
+
+  "Validating the checkGrossAssetsExceeded method with a TAVC account with status Activated and confidence level 50" when  {
+
+    "calling with an Invalid scheme type" should {
+
+      lazy val result = TestController.checkGrossAssetsExceeded(invalidSchemeType, validAmountEIS)(fakeRequest)
+
+      "return a BadRequest with an error reason" in {
+        setup()
+        status(result) shouldBe BAD_REQUEST
       }
     }
   }

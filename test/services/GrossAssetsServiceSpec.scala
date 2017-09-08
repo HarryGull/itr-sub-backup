@@ -19,22 +19,29 @@ package services
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
+import common.MockConstants._
 
 class GrossAssetsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
   val grossAmount = 1
-  val maxProposedAmount = 200000
+  val maxProposedAmountEIS = 15000000
+  val maxProposedAmountSEIS = 200000
   val emptyAmount = 0
 
-  def grossAssetsCheckExceeds(grossAmount: Int)(test: Boolean => Any) {
-    val result = GrossAssetsService.checkGrossAssetsExceeded(grossAmount)
+  def grossAssetsCheckExceedsEIS(grossAmount: Int)(test: Boolean => Any) {
+    val result = GrossAssetsService.checkGrossAssetsExceeded(testSchemeTypeEIS, grossAmount)
     test(result)
   }
 
-  "Sending a gross assets amount is 1" should {
+  def grossAssetsCheckExceedsSEIS(grossAmount: Int)(test: Boolean => Any) {
+    val result = GrossAssetsService.checkGrossAssetsExceeded(testSchemeTypeSEIS, grossAmount)
+    test(result)
+  }
+
+  "Sending a gross assets amount of 1 for EIS" should {
     "return false" in {
 
-      grossAssetsCheckExceeds(grossAmount)(
+      grossAssetsCheckExceedsEIS(grossAmount)(
         result => {
           result shouldBe false
         }
@@ -42,10 +49,10 @@ class GrossAssetsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAf
     }
   }
 
-  "Sending a gross assets amount is at the limit" should {
+  "Sending a gross assets amount at the limit for EIS" should {
     "return false" in {
 
-      grossAssetsCheckExceeds(maxProposedAmount)(
+      grossAssetsCheckExceedsEIS(maxProposedAmountEIS)(
         result => {
           result shouldBe false
         }
@@ -53,14 +60,55 @@ class GrossAssetsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAf
     }
   }
 
-  "Sending a gross assets amount is over the limit" should {
+  "Sending a gross assets amount over the limit for EIS" should {
     "return true" in {
 
-      grossAssetsCheckExceeds(maxProposedAmount + 1)(
+      grossAssetsCheckExceedsEIS(maxProposedAmountEIS + 1)(
         result => {
           result shouldBe true
         }
       )
+    }
+  }
+
+  "Sending a gross assets amount of 1 for SEIS" should {
+    "return false" in {
+
+      grossAssetsCheckExceedsSEIS(grossAmount)(
+        result => {
+          result shouldBe false
+        }
+      )
+    }
+  }
+
+  "Sending a gross assets amount at the limit for SEIS" should {
+    "return false" in {
+
+      grossAssetsCheckExceedsSEIS(maxProposedAmountSEIS)(
+        result => {
+          result shouldBe false
+        }
+      )
+    }
+  }
+
+  "Sending a gross assets amount over the limit for SEIS" should {
+    "return true" in {
+
+      grossAssetsCheckExceedsSEIS(maxProposedAmountSEIS + 1)(
+        result => {
+          result shouldBe true
+        }
+      )
+    }
+  }
+
+  "Specifying an incorrect scheme type" should {
+    "throw a MatchException" in {
+      intercept[MatchError] {
+        GrossAssetsService.checkGrossAssetsExceeded(invalidSchemeType, grossAmount)
+      }
     }
   }
 

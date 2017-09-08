@@ -16,17 +16,22 @@
 
 package services
 
-import scala.concurrent.Future
+import common.Constants
 
 object GrossAssetsService extends GrossAssetsService{
-  val maxGrossAssetsAllowed: Int = 200000
+  val maxGrossAssetsAllowedEIS: Int = 15000000
+  val maxGrossAssetsAllowedSEIS: Int = 200000
 }
 
 trait GrossAssetsService{
 
-  val maxGrossAssetsAllowed: Int
+  val maxGrossAssetsAllowedEIS: Int
+  val maxGrossAssetsAllowedSEIS: Int
 
-  def checkGrossAssetsExceeded(grossAmount: Int): Boolean = {
-      grossAmount > maxGrossAssetsAllowed
+  def checkGrossAssetsExceeded(schemeType: String, grossAmount: Int): Boolean = {
+    schemeType match {
+      case Constants.schemeTypeEIS => grossAmount > maxGrossAssetsAllowedEIS
+      case Constants.schemeTypeSEIS => grossAmount > maxGrossAssetsAllowedSEIS
+    }
   }
 }
