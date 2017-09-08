@@ -17,6 +17,7 @@
 package controllers
 
 import auth.{Authorisation, Authorised, NotAuthorised}
+import common.Constants
 import connectors.AuthConnector
 import play.api.libs.json._
 import services.GrossAssetsService
@@ -25,19 +26,25 @@ import uk.gov.hmrc.play.microservice.controller.BaseController
 import scala.concurrent.Future
 import play.api.mvc._
 
+import scala.util.{Failure, Success, Try}
+
 object GrossAssetsController extends GrossAssetsController {
   override val authConnector: AuthConnector = AuthConnector
 }
 
 trait GrossAssetsController extends BaseController with Authorisation {
 
-    def checkGrossAssetsExceeded(grossAmount: Int): Action[AnyContent] = Action.async {
-      implicit request => authorised {
-        case Authorised => Future.successful(Ok(Json.toJson(
-          GrossAssetsService.checkGrossAssetsExceeded(grossAmount)
-        )))
+    def checkGrossAssetsExceeded(schemeType: String, grossAmount: Int): Action[AnyContent] = Action.async {
+      implicit request =>
+        authorised {
+        case Authorised => {
+          Try(GrossAssetsService.checkGrossAssetsExceeded(schemeType, grossAmount)) match {
+            case Success(hasExceeded) => Future.successful(Ok(Json.toJson(hasExceeded)))
+            case Failure(matchException) => Future.successful(BadRequest(
+              Json.toJson(Map("error" -> "Invalid URL parameter", "reason" -> "Invalid scheme type"))))
+          }
+        }
         case NotAuthorised => Future.successful(Forbidden)
       }
     }
-
 }
