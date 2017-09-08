@@ -16,20 +16,20 @@
 
 package controllers
 
+import common.Constants
 import connectors.AuthConnector
 import helpers.AuthHelper._
-import org.mockito.Matchers
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
+import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results._
 import play.api.test.FakeRequest
-import org.mockito.Mockito._
+import play.api.test.Helpers._
 import services.EmployeeFullTimeEquivalenceService
 import uk.gov.hmrc.play.test.UnitSpec
-import play.api.test.Helpers._
-import org.scalatest.mock.MockitoSugar
 
 class EmployeeFullTimeEquivalenceControllerSpec extends UnitSpec with MockitoSugar with OneAppPerSuite with BeforeAndAfter{
 
@@ -37,7 +37,7 @@ class EmployeeFullTimeEquivalenceControllerSpec extends UnitSpec with MockitoSug
   val invalidNumberMessage = "Invalid Number"
 
   val successResponse: Boolean => Result = bool => Status(OK)(Json.toJson(bool))
-  val failedResponse: String => Result = reason => Status(INTERNAL_SERVER_ERROR)(Json.toJson(Map("error"->"Invalid URL parameter",
+  val failedResponse: String => Result = reason => Status(BAD_REQUEST)(Json.toJson(Map("error"->"Invalid URL parameter",
     "reason" -> reason)))
 
 
@@ -59,9 +59,11 @@ class EmployeeFullTimeEquivalenceControllerSpec extends UnitSpec with MockitoSug
   }
 
   "sending a GET request to the EmployeeFullTimeEquivalenceController" when {
-    "Authenticated and enrolled" should {
-      when(TestController.employeeFullTimeEquivalenceService.checkFullTimeEquivalence(Matchers.any())).thenReturn(successResponse(true))
-      lazy val result = TestController.checkFullTimeEquivalence("25")(fakeRequest)
+    "Authenticated and enrolled for the scheme type SEIS with valid count" should {
+      when(TestController.employeeFullTimeEquivalenceService.checkFullTimeEquivalence(Constants.schemeTypeSEIS,
+        String.valueOf(Constants.fullTimeEquivalenceSEISLimit))).thenReturn(successResponse(true))
+      lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeSEIS,
+        String.valueOf(Constants.fullTimeEquivalenceSEISLimit))(fakeRequest)
       "return status OK" in {
         setup()
         status(result) shouldBe OK
@@ -72,11 +74,106 @@ class EmployeeFullTimeEquivalenceControllerSpec extends UnitSpec with MockitoSug
       }
     }
 
+    "Authenticated and enrolled for the scheme type SEIS with invalid count" should {
+      when(TestController.employeeFullTimeEquivalenceService.checkFullTimeEquivalence(Constants.schemeTypeSEIS,
+        String.valueOf(Constants.fullTimeEquivalenceInvalidLimit))).thenReturn(failedResponse("Negative Number"))
+      lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeSEIS,
+        String.valueOf(Constants.fullTimeEquivalenceInvalidLimit))(fakeRequest)
+      "return status BAD_REQUEST" in {
+        setup()
+        status(result) shouldBe BAD_REQUEST
+      }
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+    }
 
-    "not Authenticated or enrolled" should {
+    "not Authenticated or enrolled for the scheme type SEIS" should {
       "return status FORBIDDEN" in {
         setup("NotYetActivated")
-        lazy val result = TestController.checkFullTimeEquivalence("25")(fakeRequest)
+        lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeSEIS,
+          String.valueOf(Constants.fullTimeEquivalenceSEISLimit))(fakeRequest)
+        status(result) shouldBe FORBIDDEN
+      }
+
+    }
+
+    "Authenticated and enrolled for the scheme type EIS with valid count" should {
+      when(TestController.employeeFullTimeEquivalenceService.checkFullTimeEquivalence(Constants.schemeTypeEIS,
+        String.valueOf(Constants.fullTimeEquivalenceEISLimit))).thenReturn(successResponse(true))
+      lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeEIS,
+        String.valueOf(Constants.fullTimeEquivalenceEISLimit))(fakeRequest)
+      "return status OK" in {
+        setup()
+        status(result) shouldBe OK
+      }
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+    }
+
+    "Authenticated and enrolled for the scheme type EIS with invalid count" should {
+      when(TestController.employeeFullTimeEquivalenceService.checkFullTimeEquivalence(Constants.schemeTypeEIS,
+        String.valueOf(Constants.fullTimeEquivalenceInvalidLimit))).thenReturn(failedResponse("Negative Number"))
+      lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeEIS,
+        String.valueOf(Constants.fullTimeEquivalenceInvalidLimit))(fakeRequest)
+      "return status BAD_REQUEST" in {
+        setup()
+        status(result) shouldBe BAD_REQUEST
+      }
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+    }
+
+    "not Authenticated or enrolled for the scheme type EIS" should {
+      "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeEIS,
+          String.valueOf(Constants.fullTimeEquivalenceSEISLimit))(fakeRequest)
+        status(result) shouldBe FORBIDDEN
+      }
+
+    }
+
+   "Authenticated and enrolled for the scheme type EISKI" should {
+      when(TestController.employeeFullTimeEquivalenceService.checkFullTimeEquivalence(Constants.schemeTypeEISWithKI,
+        String.valueOf(Constants.fullTimeEquivalenceEISWithKILimit))).thenReturn(successResponse(true))
+      lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeEISWithKI,
+        String.valueOf(Constants.fullTimeEquivalenceEISWithKILimit))(fakeRequest)
+      "return status OK" in {
+        setup()
+        status(result) shouldBe OK
+      }
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+    }
+
+    "Authenticated and enrolled for the scheme type EISKI with invalid count" should {
+      when(TestController.employeeFullTimeEquivalenceService.checkFullTimeEquivalence(Constants.schemeTypeEISWithKI,
+        String.valueOf(Constants.fullTimeEquivalenceInvalidLimit))).thenReturn(failedResponse("Negative Number"))
+      lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeEISWithKI,
+        String.valueOf(Constants.fullTimeEquivalenceInvalidLimit))(fakeRequest)
+      "return status BAD_REQUEST" in {
+        setup()
+        status(result) shouldBe BAD_REQUEST
+      }
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+    }
+
+    "not Authenticated or enrolled for the scheme type EISKI" should {
+      "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        lazy val result = TestController.checkFullTimeEquivalence(Constants.schemeTypeEISWithKI,
+          String.valueOf(Constants.fullTimeEquivalenceEISWithKILimit))(fakeRequest)
         status(result) shouldBe FORBIDDEN
       }
 

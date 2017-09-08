@@ -26,17 +26,23 @@ import scala.util.{Failure, Success, Try}
 import play.api.http.Status._
 
 object EmployeeFullTimeEquivalenceService extends EmployeeFullTimeEquivalenceService{
-  override val fullTimeEquivalenceLimit = BigDecimal(Constants.fullTimeEquivalenceLimit)
+  override val fullTimeEquivalenceSEISLimit = BigDecimal(Constants.fullTimeEquivalenceSEISLimit)
+  override val fullTimeEquivalenceEISLimit = BigDecimal(Constants.fullTimeEquivalenceEISLimit)
+  override val fullTimeEquivalenceEISWithKILimit = BigDecimal(Constants.fullTimeEquivalenceEISWithKILimit)
 }
 
 trait EmployeeFullTimeEquivalenceService{
 
-  val fullTimeEquivalenceLimit: BigDecimal
-    def checkFullTimeEquivalence(numberOfFullTimeEquivalentEmployees: String): Result = {
+  val fullTimeEquivalenceSEISLimit: BigDecimal
+  val fullTimeEquivalenceEISLimit: BigDecimal
+  val fullTimeEquivalenceEISWithKILimit: BigDecimal
+
+  def checkFullTimeEquivalence(schemeType: String, numberOfFullTimeEquivalentEmployees: String): Result = {
+
     Try(BigDecimal(numberOfFullTimeEquivalentEmployees)) match{
       case Success(fte) => {
         if(fte.signum!= -1)
-          Status(OK)(Json.toJson(checkFTE(fte)))
+          Status(OK)(Json.toJson(checkFTE(schemeType, fte)))
         else
           Status(BAD_REQUEST)(Json.toJson(Map("error" -> "Invalid URL parameter",  "reason" -> "Negative Number")))
       }
@@ -47,6 +53,12 @@ trait EmployeeFullTimeEquivalenceService{
     }
   }
 
-  private def checkFTE(numOfFullTimeEquivalence: BigDecimal): Boolean = numOfFullTimeEquivalence <= fullTimeEquivalenceLimit
-
+  private def checkFTE(schemeType: String, numOfFullTimeEquivalence: BigDecimal): Boolean = {
+    schemeType match {
+      case Constants.schemeTypeEIS => numOfFullTimeEquivalence <= fullTimeEquivalenceEISLimit
+      case Constants.schemeTypeSEIS => numOfFullTimeEquivalence <= fullTimeEquivalenceSEISLimit
+      case Constants.schemeTypeEISWithKI => numOfFullTimeEquivalence <= fullTimeEquivalenceEISWithKILimit
+      case _ => false
+    }
+  }
 }
