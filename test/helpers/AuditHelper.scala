@@ -16,8 +16,6 @@
 
 package helpers
 
-import common.AuditConstants
-import model._
 import models.{CSSubmissionDataForAuditModel, AuditAddressModel, SchemeTypesModel, AASubmissionDataForAuditModel}
 import org.mockito.ArgumentCaptor
 import play.api.libs.json.Json
