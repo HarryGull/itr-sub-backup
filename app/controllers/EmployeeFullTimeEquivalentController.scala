@@ -34,10 +34,12 @@ trait EmployeeFullTimeEquivalentController extends BaseController with Authorisa
 
   val employeeFullTimeEquivalenceService: EmployeeFullTimeEquivalenceService
 
-  def checkFullTimeEquivalence(numberOfFullTimeEquivalentEmployees: String): Action[AnyContent] = Action.async { implicit request =>
+  def checkFullTimeEquivalence(schemeType: String, numberOfFullTimeEquivalentEmployees: String): Action[AnyContent] =
+    Action.async { implicit request =>
     authorised {
       case Authorised => {
-        Future.successful(employeeFullTimeEquivalenceService.checkFullTimeEquivalence(numberOfFullTimeEquivalentEmployees))
+        Future.successful(employeeFullTimeEquivalenceService.checkFullTimeEquivalence(
+          schemeType, numberOfFullTimeEquivalentEmployees))
       }
       case NotAuthorised => Future.successful(Forbidden)
     }

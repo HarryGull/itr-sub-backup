@@ -15,11 +15,18 @@
  */
 
 package common
+
 object Constants{
-  val fullTimeEquivalenceLimit = 25
+
+  val fullTimeEquivalenceSEISLimit = 25
+  val fullTimeEquivalenceEISLimit = 250
+  val fullTimeEquivalenceEISWithKILimit = 500
+  val fullTimeEquivalenceInvalidLimit = -0.001
   val schemeTypeEIS = "EIS"
   val schemeTypeSEIS = "SEIS"
+  val schemeTypeEISWithKI = "EISKI"
 }
+
 object ResponseConstants {
   val success = "Success"
   val defaultNotFound = "The remote endpoint has indicated that no data can be found"
