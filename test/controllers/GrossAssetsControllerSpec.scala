@@ -35,6 +35,7 @@ class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with Before
 
   val validAmountEIS = 15000000
   val validAmountSEIS = 200000
+  val validGrossAssetsAfterIssue = 16000000
   val fakeRequest = FakeRequest()
 
   before {
@@ -160,7 +161,6 @@ class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with Before
     }
   }
 
-
   "Validating the checkGrossAssetsExceeded method with a TAVC account with status Activated and confidence level 50" when  {
 
     "calling with an Invalid scheme type" should {
@@ -174,4 +174,63 @@ class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with Before
     }
   }
 
+  "validating the checkGrossAssetsAfterIssueExceeded method with a TAVC account with status Activated and confidence level 50" when  {
+
+    "calling gross assets after issue and an invalid grossAmount which exceeds the maximum" should {
+
+      lazy val result = TestController.checkGrossAssetsAfterIssueExceeded(validGrossAssetsAfterIssue + 1)(fakeRequest)
+
+      "return status OK" in {
+        setup()
+        status(result) shouldBe OK
+      }
+
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+
+      "return true" in {
+        setup()
+        val data = contentAsString(result)
+        val json = Json.parse(data)
+        json.as[Boolean] shouldBe true
+      }
+    }
+
+    "calling gross assets after issue and an valid grossAmount which exceeds the maximum" should {
+
+      lazy val result = TestController.checkGrossAssetsAfterIssueExceeded(validGrossAssetsAfterIssue)(fakeRequest)
+
+      "return status OK" in {
+        setup()
+        status(result) shouldBe OK
+      }
+
+      "return a JSON result" in {
+        setup()
+        contentType(result) shouldBe Some("application/json")
+      }
+
+      "return true" in {
+        setup()
+        val data = contentAsString(result)
+        val json = Json.parse(data)
+        json.as[Boolean] shouldBe false
+      }
+    }
+  }
+
+  "validating the checkGrossAssetsAfterIssueExceeded method with a TAVC account with status " +
+    "NotYetActivated and confidence level 50" when  {
+
+    "calling checkGrossAssetsAfterIssueExceeded with any amount " should {
+
+      "return status FORBIDDEN" in {
+        setup("NotYetActivated")
+        val result = TestController.checkGrossAssetsAfterIssueExceeded(validGrossAssetsAfterIssue)(fakeRequest)
+        status(result) shouldBe FORBIDDEN
+      }
+    }
+  }
 }

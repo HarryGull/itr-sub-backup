@@ -21,17 +21,23 @@ import common.Constants
 object GrossAssetsService extends GrossAssetsService{
   val maxGrossAssetsAllowedEIS: Int = 15000000
   val maxGrossAssetsAllowedSEIS: Int = 200000
+  val maxGrossAssetsAfterIssueAllowed: Int = 16000000
 }
 
 trait GrossAssetsService{
 
   val maxGrossAssetsAllowedEIS: Int
   val maxGrossAssetsAllowedSEIS: Int
+  val maxGrossAssetsAfterIssueAllowed: Int
 
   def checkGrossAssetsExceeded(schemeType: String, grossAmount: Int): Boolean = {
     schemeType match {
       case Constants.schemeTypeEIS => grossAmount > maxGrossAssetsAllowedEIS
       case Constants.schemeTypeSEIS => grossAmount > maxGrossAssetsAllowedSEIS
     }
+  }
+
+  def checkGrossAssetsAfterIssueExceeded(grossAmount: Int): Boolean = {
+    grossAmount > maxGrossAssetsAfterIssueAllowed
   }
 }
