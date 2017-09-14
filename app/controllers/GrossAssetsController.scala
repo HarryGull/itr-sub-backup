@@ -34,17 +34,26 @@ object GrossAssetsController extends GrossAssetsController {
 
 trait GrossAssetsController extends BaseController with Authorisation {
 
-    def checkGrossAssetsExceeded(schemeType: String, grossAmount: Int): Action[AnyContent] = Action.async {
-      implicit request =>
-        authorised {
-        case Authorised => {
-          Try(GrossAssetsService.checkGrossAssetsExceeded(schemeType, grossAmount)) match {
-            case Success(hasExceeded) => Future.successful(Ok(Json.toJson(hasExceeded)))
-            case Failure(matchException) => Future.successful(BadRequest(
-              Json.toJson(Map("error" -> "Invalid URL parameter", "reason" -> "Invalid scheme type"))))
-          }
+  def checkGrossAssetsExceeded(schemeType: String, grossAmount: Int): Action[AnyContent] = Action.async {
+    implicit request =>
+      authorised {
+      case Authorised => {
+        Try(GrossAssetsService.checkGrossAssetsExceeded(schemeType, grossAmount)) match {
+          case Success(hasExceeded) => Future.successful(Ok(Json.toJson(hasExceeded)))
+          case Failure(matchException) => Future.successful(BadRequest(
+            Json.toJson(Map("error" -> "Invalid URL parameter", "reason" -> "Invalid scheme type"))))
         }
+      }
+      case NotAuthorised => Future.successful(Forbidden)
+    }
+  }
+
+  def checkGrossAssetsAfterIssueExceeded(grossAmount: Int): Action[AnyContent] = Action.async {
+    implicit request =>
+      authorised {
+        case Authorised =>
+          Future.successful(Ok(Json.toJson(GrossAssetsService.checkGrossAssetsAfterIssueExceeded(grossAmount))))
         case NotAuthorised => Future.successful(Forbidden)
       }
-    }
+  }
 }
