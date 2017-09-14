@@ -198,7 +198,7 @@ class GrossAssetsControllerSpec extends UnitSpec with OneAppPerSuite with Before
       }
     }
 
-    "calling gross assets after issue and an valid grossAmount which exceeds the maximum" should {
+    "calling gross assets after issue and an valid grossAmount within the maximum range" should {
 
       lazy val result = TestController.checkGrossAssetsAfterIssueExceeded(validGrossAssetsAfterIssue)(fakeRequest)
 
