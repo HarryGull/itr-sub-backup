@@ -36,3 +36,6 @@ GET        /compliance-statement/has-investment-trade-started/validate-has-inves
 POST       /compliance-statement/:tavcReferenceId/submit                                                                                                                                                                                                                           controllers.SubmissionController.submitCS(tavcReferenceId: String)
 
 GET        /submission-period/submission-period-checker/trade-start-date/:tradeStartDay/:tradeStartMonth/:tradeStartYear/share-issue-date/:shareIssueDay/:shareIssueMonth/:shareIssueYear                                                                                          controllers.SubmissionPeriodController.submissionPeriodCheck(tradeStartDay: Int, tradeStartMonth: Int, tradeStartYear: Int, shareIssueDay: Int, shareIssueMonth: Int, shareIssueYear: Int)
+
+GET        /gross-assets/gross-assets-after-issue-checker/check-total/gross-amount/:grossAmount                                                                                                                                                                                    controllers.GrossAssetsController.checkGrossAssetsAfterIssueExceeded(grossAmount: Int)
+

@@ -26,6 +26,7 @@ class GrossAssetsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAf
   val grossAmount = 1
   val maxProposedAmountEIS = 15000000
   val maxProposedAmountSEIS = 200000
+  val maxGrossAssetsAfterIssueAllowed = 16000000
   val emptyAmount = 0
 
   def grossAssetsCheckExceedsEIS(grossAmount: Int)(test: Boolean => Any) {
@@ -112,4 +113,15 @@ class GrossAssetsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAf
     }
   }
 
+  "Sending a gross assets after issue amount over the limit" should {
+    "return true" in {
+      GrossAssetsService.checkGrossAssetsAfterIssueExceeded(maxGrossAssetsAfterIssueAllowed + 1) shouldBe true
+    }
+  }
+
+  "Sending a gross assets after issue amount within the limit" should {
+    "return true" in {
+      GrossAssetsService.checkGrossAssetsAfterIssueExceeded(maxGrossAssetsAfterIssueAllowed) shouldBe false
+    }
+  }
 }
