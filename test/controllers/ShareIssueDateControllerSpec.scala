@@ -28,7 +28,7 @@ import org.scalatestplus.play.OneAppPerSuite
 import uk.gov.hmrc.play.test.UnitSpec
 import common.MockConstants._
 
-class ShareIssueDateControllerSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfter {
+class SubmissionPeriodControllerSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfter {
 
   object TestController extends SubmissionPeriodController {
     override val authConnector = mockAuthConnector

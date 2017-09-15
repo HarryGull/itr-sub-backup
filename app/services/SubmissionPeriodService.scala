@@ -16,19 +16,17 @@
 
 package services
 
+import common.Constants._
 import org.joda.time.DateTime
 
 object SubmissionPeriodService extends SubmissionPeriodService {
   val tradeStartDateLimitMonths = 28
-  val endTaxYearMonth = 4
-  val endTaxYearDay = 5
 }
 
 trait SubmissionPeriodService{
 
   val tradeStartDateLimitMonths: Int
-  val endTaxYearMonth: Int
-  val endTaxYearDay: Int
+
 
   def submissionPeriodCheck(tradeStartDay: Int, tradeStartMonth: Int, tradeStartYear: Int,
                           shareIssueDay: Int, shareIssueMonth: Int, shareIssueYear: Int): Boolean = {

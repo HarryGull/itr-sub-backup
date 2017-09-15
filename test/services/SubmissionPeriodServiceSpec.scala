@@ -29,6 +29,7 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
 
   val sessionId = UUID.randomUUID.toString
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId.toString)))
+  val irrelevantDate = (1,1,1111)
 
   object TestSubmissionPeriodService extends SubmissionPeriodService {
     val tradeStartDateLimitMonths = 28
@@ -39,10 +40,6 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
   "The SubmissionPeriodService" should {
     "Should have an trade start date limit of the correct amount of months" in {
       SubmissionPeriodService.tradeStartDateLimitMonths shouldBe 28
-    }
-    "Should have the correct tax year end date" in {
-      SubmissionPeriodService.endTaxYearMonth shouldBe 4
-      SubmissionPeriodService.endTaxYearDay shouldBe 5
     }
   }
 
@@ -75,24 +72,17 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
 
     "return same year tax end date if date given is before tax year end date" in {
       val result = TestSubmissionPeriodService.endOfTaxYearDate(beforeTaxYearEnd)
-      await(result).getYear shouldBe currentTaxYearEnd.getYear
-      await(result).getMonthOfYear shouldBe currentTaxYearEnd.getMonthOfYear
-      await(result).getDayOfMonth shouldBe currentTaxYearEnd.getDayOfMonth
-
+      result.getYear shouldBe currentTaxYearEnd.getYear
       }
 
     "return same year tax end date if date given is exactly the tax year end date" in {
       val result = TestSubmissionPeriodService.endOfTaxYearDate(currentTaxYearEnd)
-      await(result).getYear shouldBe currentTaxYearEnd.getYear
-      await(result).getMonthOfYear shouldBe currentTaxYearEnd.getMonthOfYear
-      await(result).getDayOfMonth shouldBe currentTaxYearEnd.getDayOfMonth
+      result.getYear shouldBe currentTaxYearEnd.getYear
     }
 
     "return next year tax end date if date given is after tax year end date" in {
       val result = TestSubmissionPeriodService.endOfTaxYearDate(afterTaxYearEnd)
-      await(result).getYear shouldBe currentTaxYearEnd.plusYears(1).getYear
-      await(result).getMonthOfYear shouldBe currentTaxYearEnd.plusYears(1).getMonthOfYear
-      await(result).getDayOfMonth shouldBe currentTaxYearEnd.plusYears(1).getDayOfMonth
+      result.getYear shouldBe currentTaxYearEnd.plusYears(1).getYear
     }
   }
 
@@ -104,7 +94,7 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
       val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths).plusDays(1)
       lazy val result = {
         TestSubmissionPeriodService.submissionPeriodCheck(tradeStartDate.getDayOfMonth,
-          tradeStartDate.getMonthOfYear, tradeStartDate.getYear, 1,1,1)
+          tradeStartDate.getMonthOfYear, tradeStartDate.getYear, irrelevantDate._1, irrelevantDate._2 ,irrelevantDate._3)
       }
       await(result) shouldBe true
     }
@@ -113,7 +103,7 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
       val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths)
       lazy val result = {
         TestSubmissionPeriodService.submissionPeriodCheck(tradeStartDate.getDayOfMonth,
-          tradeStartDate.getMonthOfYear, tradeStartDate.getYear, 1,1,1)
+          tradeStartDate.getMonthOfYear, tradeStartDate.getYear, irrelevantDate._1, irrelevantDate._2 ,irrelevantDate._3)
       }
       await(result) shouldBe false
     }
@@ -122,7 +112,7 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
       val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths).minusDays(1)
       lazy val result = {
         TestSubmissionPeriodService.submissionPeriodCheck(tradeStartDate.getDayOfMonth,
-          tradeStartDate.getMonthOfYear, tradeStartDate.getYear, 1,1,1)
+          tradeStartDate.getMonthOfYear, tradeStartDate.getYear, irrelevantDate._1, irrelevantDate._2 ,irrelevantDate._3)
       }
       await(result) shouldBe false
     }

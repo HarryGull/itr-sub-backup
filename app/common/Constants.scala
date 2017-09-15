@@ -25,6 +25,8 @@ object Constants{
   val schemeTypeEIS = "EIS"
   val schemeTypeSEIS = "SEIS"
   val schemeTypeEISWithKI = "EISKI"
+  val endTaxYearDay = 5
+  val endTaxYearMonth = 4
 }
 
 object ResponseConstants {

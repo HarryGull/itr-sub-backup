@@ -20,7 +20,7 @@ GET        /market-criteria/new-geographical/:newGeographical/new-product/:newPr
 
 GET        /trade-start-date/validate-trade-start-date/trade-start-day/:tradeStartDay/trade-start-month/:tradeStartMonth/trade-start-year/:tradeStartYear                                                                                                                          controllers.TradeStartDateController.validateTradeStartDate(tradeStartDay: Int, tradeStartMonth: Int, tradeStartYear: Int)
 
-GET        /gross-assets/gross-assets-checker/check-total/gross-amount/:schemeType/:grossAmount                                                                                                                                                                                    controllers.GrossAssetsController.checkGrossAssetsExceeded(schemeType: String, grossAmount: Int)
+GET        /gross-assets/gross-assets-checker/check-total/grsoss-amount/:schemeType/:grossAmount                                                                                                                                                                                    controllers.GrossAssetsController.checkGrossAssetsExceeded(schemeType: String, grossAmount: Int)
 
 GET        /throttle/check-user-access                                                                                                                                                                                                                                             controllers.ThrottleController.checkUserAccess()
 
@@ -34,3 +34,5 @@ GET        /compliance-statement/full-time-equivalence-check/:schemeType/:number
 GET        /compliance-statement/has-investment-trade-started/validate-has-investment-trade-started/day/:hasInvestmentTradeStartedDay/month/:hasInvestmentTradeStartedMonth/year/:hasInvestmentTradeStartedYear                                                                    controllers.HasInvestmentTradeStartedController.validateHasInvestmentTradeStarted(hasInvestmentTradeStartedDay: Int, hasInvestmentTradeStartedMonth: Int, hasInvestmentTradeStartedYear: Int)
 
 POST       /compliance-statement/:tavcReferenceId/submit                                                                                                                                                                                                                           controllers.SubmissionController.submitCS(tavcReferenceId: String)
+
+GET
