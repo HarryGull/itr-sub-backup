@@ -45,14 +45,14 @@ class SubmissionPeriodControllerSpec extends UnitSpec with OneAppPerSuite with B
     reset(mockAuthConnector)
   }
 
-  "ShareIssueDateController" should {
+  "The SubmissionPeriodController" should {
     "use the correct auth connector" in {
       SubmissionPeriodController.authConnector shouldBe AuthConnector
     }
   }
 
 
-  "validating the dateOfShareIssueCheck method with a TAVC account with status Activated and confidence level 50" when  {
+  "validating the submissionPeriodCheck method with a TAVC account with status Activated and confidence level 50" when  {
 
     "calling with valid dates that pass the check" should {
 
@@ -106,14 +106,14 @@ class SubmissionPeriodControllerSpec extends UnitSpec with OneAppPerSuite with B
   }
 
 
-  "Validating the dateOfShareIssueCheck method with a TAVC account with status Activated and confidence level 50" when  {
+  "Validating the submissionPeriodCheck method with a TAVC account with status Activated and confidence level 50" when  {
 
     "calling with an Invalid date" should {
 
       lazy val result = TestController.submissionPeriodCheck(validDateSuccess.getDayOfMonth, invalidMonth, validDateSuccess.getYear,
         validDateSuccess.getDayOfMonth, invalidMonth, validDateSuccess.getYear)(fakeRequest)
 
-      "return a BadRequest with an error reason" in {
+      "return a BadRequest" in {
         setup()
         status(result) shouldBe BAD_REQUEST
       }
@@ -125,7 +125,7 @@ class SubmissionPeriodControllerSpec extends UnitSpec with OneAppPerSuite with B
     }
   }
 
-  "validating the dateOfShareIssueCheck method with a TAVC account with status NotYetActivated and confidence level 50" when  {
+  "validating the submissionPeriodCheck method with a TAVC account with status NotYetActivated and confidence level 50" when  {
 
     "calling with a dates that pass the check" should {
 

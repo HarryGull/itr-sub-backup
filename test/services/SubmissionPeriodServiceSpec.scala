@@ -24,6 +24,7 @@ import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
 import org.scalatestplus.play.{OneAppPerSuite}
 import uk.gov.hmrc.play.http.logging.SessionId
+import common.Constants._
 
 class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
 
@@ -33,8 +34,6 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
 
   object TestSubmissionPeriodService extends SubmissionPeriodService {
     val tradeStartDateLimitMonths = 28
-    val endTaxYearMonth = 4
-    val endTaxYearDay = 5
   }
 
   "The SubmissionPeriodService" should {
@@ -50,22 +49,15 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
 
     "return return the latest of two dates" in {
       val result = TestSubmissionPeriodService.latest(dateOne, dateTwo)
-      await(result) shouldBe dateOne
-    }
-
-    "return the first date given if they are the same" in {
-      lazy val result = {
-        val result = TestSubmissionPeriodService.latest(dateOne, DateTime.now())
-        await(result) shouldBe dateOne
-      }
+      result shouldBe dateOne
     }
   }
 
   "SubmissionPeriodService.endTaxYear" should {
 
     val currentTaxYearEnd = new DateTime(DateTime.now().getYear,
-                                        TestSubmissionPeriodService.endTaxYearMonth,
-                                        TestSubmissionPeriodService.endTaxYearDay, 0, 0)
+                                        endTaxYearMonth,
+                                        endTaxYearDay, 0, 0)
 
     val beforeTaxYearEnd  = currentTaxYearEnd.minusDays(1)
     val afterTaxYearEnd  = currentTaxYearEnd.plusDays(1)
@@ -90,59 +82,74 @@ class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneApp
   "SubmissionPeriodService.submissionPeriodCheck" should {
 
     val today = DateTime.now()
+    val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths)
     "return true if today is before the trade start date limit" in {
-      val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths).plusDays(1)
+      val tradeStartDateTemp =tradeStartDate.plusDays(1)
       lazy val result = {
-        TestSubmissionPeriodService.submissionPeriodCheck(tradeStartDate.getDayOfMonth,
-          tradeStartDate.getMonthOfYear, tradeStartDate.getYear, irrelevantDate._1, irrelevantDate._2 ,irrelevantDate._3)
+        TestSubmissionPeriodService.submissionPeriodCheck(tradeStartDateTemp.getDayOfMonth,
+          tradeStartDateTemp.getMonthOfYear, tradeStartDateTemp.getYear, irrelevantDate._1, irrelevantDate._2 ,irrelevantDate._3)
       }
-      await(result) shouldBe true
+      result shouldBe true
     }
 
     "return false if today is on the trade start date limit" in {
-      val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths)
       lazy val result = {
         TestSubmissionPeriodService.submissionPeriodCheck(tradeStartDate.getDayOfMonth,
           tradeStartDate.getMonthOfYear, tradeStartDate.getYear, irrelevantDate._1, irrelevantDate._2 ,irrelevantDate._3)
       }
-      await(result) shouldBe false
+      result shouldBe false
     }
 
     "return false if today is after the trade start date limit" in {
-      val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths).minusDays(1)
+      val tradeStartDateTemp =tradeStartDate.minusDays(1)
       lazy val result = {
-        TestSubmissionPeriodService.submissionPeriodCheck(tradeStartDate.getDayOfMonth,
-          tradeStartDate.getMonthOfYear, tradeStartDate.getYear, irrelevantDate._1, irrelevantDate._2 ,irrelevantDate._3)
+        TestSubmissionPeriodService.submissionPeriodCheck(tradeStartDateTemp.getDayOfMonth,
+          tradeStartDateTemp.getMonthOfYear, tradeStartDateTemp.getYear, irrelevantDate._1, irrelevantDate._2 ,irrelevantDate._3)
       }
-      await(result) shouldBe false
+      result shouldBe false
     }
-//
-//    "return true if today is before the end of tax year limit" in {
-//      val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths).plusDays(1)
-//      lazy val result = {
-//        TestSubmissionPeriodService.submissionPeriodCheck(1,1,1,tradeStartDate.getDayOfMonth,
-//          tradeStartDate.getMonthOfYear, tradeStartDate.getYear)
-//      }
-//      await(result) shouldBe true
-//    }
-//
-//    "return false if today is on the end of tax year limit" in {
-//      val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths)
-//      lazy val result = {
-//        TestSubmissionPeriodService.submissionPeriodCheck(1,1,1,tradeStartDate.getDayOfMonth,
-//          tradeStartDate.getMonthOfYear, tradeStartDate.getYear)
-//      }
-//      await(result) shouldBe false
-//    }
-//
-//    "return false if today is after end of tax year limit" in {
-//      val tradeStartDate = today.minusMonths(TestSubmissionPeriodService.tradeStartDateLimitMonths).minusDays(1)
-//      lazy val result = {
-//        TestSubmissionPeriodService.submissionPeriodCheck(1,1,1,tradeStartDate.getDayOfMonth,
-//          tradeStartDate.getMonthOfYear, tradeStartDate.getYear)
-//      }
-//      await(result) shouldBe false
-//    }
+
+    "return true when a share issue date from last year is given (Share issue date before april 6th)" in {
+      lazy val result = {
+        TestSubmissionPeriodService.
+          submissionPeriodCheck(irrelevantDate._1, irrelevantDate._2, irrelevantDate._3,
+            endTaxYearDay, endTaxYearMonth, today.minusYears(1).getYear)
+      }
+      result shouldBe true
+    }
+
+
+    "return true when a share issue date from 2 years is given (Share issue date after april 6th)" in {
+      lazy val result = {
+        TestSubmissionPeriodService.
+          submissionPeriodCheck(irrelevantDate._1, irrelevantDate._2, irrelevantDate._3,
+            endTaxYearDay + 1, endTaxYearMonth, today.minusYears(2).getYear)
+      }
+      result shouldBe true
+    }
+
+
+    "return the expectedResult when a share issue date from 2 years ago is given" in {
+      val expected = {
+        if(today.isBefore(new DateTime(today.getYear, endTaxYearMonth, endTaxYearMonth, 0, 0))) true else false
+      }
+      lazy val result = {
+        TestSubmissionPeriodService.
+          submissionPeriodCheck(irrelevantDate._1, irrelevantDate._2, irrelevantDate._3,
+            endTaxYearDay, endTaxYearMonth, today.minusYears(2).getYear)
+      }
+      result shouldBe expected
+    }
+
+
+    "return true when the share issue date condition is the latter of the two conditions and it is after today" in {
+      lazy val result = {
+        TestSubmissionPeriodService.
+          submissionPeriodCheck(tradeStartDate.getDayOfMonth, tradeStartDate.getMonthOfYear, tradeStartDate.getYear,
+            endTaxYearDay, endTaxYearMonth, today.minusYears(1).getYear)
+      }
+      result shouldBe true
+    }
   }
 
 }
