@@ -36,3 +36,7 @@ GET        /compliance-statement/has-investment-trade-started/validate-has-inves
 POST       /compliance-statement/:tavcReferenceId/submit                                                                                                                                                                                                                           controllers.SubmissionController.submitCS(tavcReferenceId: String)
 
 GET        /gross-assets/gross-assets-after-issue-checker/check-total/gross-amount/:grossAmount                                                                                                                                                                                    controllers.GrossAssetsController.checkGrossAssetsAfterIssueExceeded(grossAmount: Int)
+
+GET        /compliance-statement/validate-annual-limit/previous-schemes-total-in-range/:previousSchemesTotalInRange/total-amount-raised/:totalAmountRaised    controllers.AnnualLimitController.checkLimitExceeded(previousSchemesTotalInRange: Int, totalAmountRaised: Int)
+
+
