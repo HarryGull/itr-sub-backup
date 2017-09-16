@@ -31,7 +31,7 @@ object AnnualLimitController extends AnnualLimitController{
 
 trait AnnualLimitController extends BaseController with Authorisation {
 
-  def checkLimitExceeded(previousSchemesTotalInRange: Int, totalAmountRaised: Int): Action[AnyContent] = Action.async {
+  def checkLimitExceeded(previousSchemesTotalInRange: Long, totalAmountRaised: Long): Action[AnyContent] = Action.async {
     implicit request => authorised {
       case Authorised =>
       Future.successful(Ok(Json.toJson{

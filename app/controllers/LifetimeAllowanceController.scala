@@ -32,8 +32,8 @@ object LifetimeAllowanceController extends LifetimeAllowanceController {
 trait LifetimeAllowanceController extends BaseController with Authorisation {
 
   def checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean,
-                                     previousInvestmentSchemesTotal: Int,
-                                     proposedAmount: Int): Action[AnyContent] = Action.async {
+                                     previousInvestmentSchemesTotal: Long,
+                                     proposedAmount: Long): Action[AnyContent] = Action.async {
     implicit request => authorised {
       case Authorised => Future.successful(Ok(Json.toJson(
         LifetimeAllowanceService.checkLifetimeAllowanceExceeded(hadPrevRFI, isKi, previousInvestmentSchemesTotal, proposedAmount)

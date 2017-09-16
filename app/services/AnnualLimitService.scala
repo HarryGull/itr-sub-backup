@@ -24,10 +24,8 @@ trait AnnualLimitService{
 
   val annualLimit: Int
 
-  def checkLimitExceeded(previousSchemesTotalInRange: Int, totalAmountRaised: Int): Boolean = {
-
+  def checkLimitExceeded(previousSchemesTotalInRange: Long, totalAmountRaised: Long): Boolean = {
     previousSchemesTotalInRange + totalAmountRaised > annualLimit
-
   }
 
 }
