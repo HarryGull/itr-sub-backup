@@ -34,7 +34,7 @@ object GrossAssetsController extends GrossAssetsController {
 
 trait GrossAssetsController extends BaseController with Authorisation {
 
-  def checkGrossAssetsExceeded(schemeType: String, grossAmount: Int): Action[AnyContent] = Action.async {
+  def checkGrossAssetsExceeded(schemeType: String, grossAmount: Long): Action[AnyContent] = Action.async {
     implicit request =>
       authorised {
       case Authorised => {
@@ -48,7 +48,7 @@ trait GrossAssetsController extends BaseController with Authorisation {
     }
   }
 
-  def checkGrossAssetsAfterIssueExceeded(grossAmount: Int): Action[AnyContent] = Action.async {
+  def checkGrossAssetsAfterIssueExceeded(grossAmount: Long): Action[AnyContent] = Action.async {
     implicit request =>
       authorised {
         case Authorised =>
