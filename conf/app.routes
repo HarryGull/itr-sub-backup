@@ -4,10 +4,12 @@ GET        /knowledge-intensive/check-ki-costs/operating-costs/:operatingCosts1s
 
 GET        /knowledge-intensive/check-secondary-conditions/has-percentage-with-masters/:hasPercentageWithMasters/has-ten-year-plan/:hasTenYearPlan                                                                                                                                 controllers.KnowledgeIntensiveController.checkSecondaryConditions(hasPercentageWithMasters: Boolean, hasTenYearPlan: Boolean)
 
-GET        /lifetime-allowance/lifetime-allowance-checker/had-previous-rfi/:hadPrevRFI/is-knowledge-intensive/:isKi/previous-schemes-total/:previousInvestmentSchemesTotal/proposed-amount/:proposedAmount                                                                         controllers.LifetimeAllowanceController.checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int)
+GET        /lifetime-allowance/lifetime-allowance-checker/had-previous-rfi/:hadPrevRFI/is-knowledge-intensive/:isKi/previous-schemes-total/:previousInvestmentSchemesTotal/proposed-amount/:proposedAmount                                                                         controllers.LifetimeAllowanceController.checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean, previousInvestmentSchemesTotal: Long, proposedAmount: Long)
 
 GET        /averaged-annual-turnover/check-averaged-annual-turnover/proposed-investment-amount/:proposedInvestmentAmount/annual-turn-over/:annualTurnOver1stYear/:annualTurnOver2ndYear/:annualTurnOver3rdYear/:annualTurnOver4thYear/:annualTurnOver5thYear                       controllers.AveragedAnnualTurnoverController.checkAveragedAnnualTurnover(proposedInvestmentAmount: Int, annualTurnOver1stYear: Int, annualTurnOver2ndYear: Int, annualTurnOver3rdYear: Int, annualTurnOver4thYear:Int, annualTurnOver5thYear:Int)
 
+
+##TODO: is the below in use??"##
 GET        /seis/previous-investments-checker/investments-since-trade-start-date/:investmentsTotalSinceStartDate/is-total-exceeded                                                                                                                                                 controllers.SeisAllowanceController.checkSeisAllowanceExceeded(investmentsTotalSinceStartDate: Int)
 
 POST       /advanced-assurance/:tavcReferenceId/submit                                                                                                                                                                                                                             controllers.SubmissionController.submitAA(tavcReferenceId: String)
@@ -20,7 +22,7 @@ GET        /market-criteria/new-geographical/:newGeographical/new-product/:newPr
 
 GET        /trade-start-date/validate-trade-start-date/trade-start-day/:tradeStartDay/trade-start-month/:tradeStartMonth/trade-start-year/:tradeStartYear                                                                                                                          controllers.TradeStartDateController.validateTradeStartDate(tradeStartDay: Int, tradeStartMonth: Int, tradeStartYear: Int)
 
-GET        /gross-assets/gross-assets-checker/check-total/gross-amount/:schemeType/:grossAmount                                                                                                                                                                                    controllers.GrossAssetsController.checkGrossAssetsExceeded(schemeType: String, grossAmount: Int)
+GET        /gross-assets/gross-assets-checker/check-total/gross-amount/:schemeType/:grossAmount                                                                                                                                                                                    controllers.GrossAssetsController.checkGrossAssetsExceeded(schemeType: String, grossAmount: Long)
 
 GET        /throttle/check-user-access                                                                                                                                                                                                                                             controllers.ThrottleController.checkUserAccess()
 
@@ -28,11 +30,15 @@ POST       /token/generate-temporary-token                                      
 
 GET        /token/validate-temporary-token/:id                                                                                                                                                                                                                                     controllers.TokenController.validateTemporaryToken(id: String)
 
-#########Compliance Statement###########
+#########Compliance Statement############
 GET        /compliance-statement/full-time-equivalence-check/:schemeType/:numberOfFullTimeEquivalentEmployees                                                                                                                                                                      controllers.EmployeeFullTimeEquivalentController.checkFullTimeEquivalence(schemeType: String, numberOfFullTimeEquivalentEmployees: String)
 
 GET        /compliance-statement/has-investment-trade-started/validate-has-investment-trade-started/day/:hasInvestmentTradeStartedDay/month/:hasInvestmentTradeStartedMonth/year/:hasInvestmentTradeStartedYear                                                                    controllers.HasInvestmentTradeStartedController.validateHasInvestmentTradeStarted(hasInvestmentTradeStartedDay: Int, hasInvestmentTradeStartedMonth: Int, hasInvestmentTradeStartedYear: Int)
 
 POST       /compliance-statement/:tavcReferenceId/submit                                                                                                                                                                                                                           controllers.SubmissionController.submitCS(tavcReferenceId: String)
 
-GET        /gross-assets/gross-assets-after-issue-checker/check-total/gross-amount/:grossAmount                                                                                                                                                                                    controllers.GrossAssetsController.checkGrossAssetsAfterIssueExceeded(grossAmount: Int)
+GET        /gross-assets/gross-assets-after-issue-checker/check-total/gross-amount/:grossAmount                                                                                                                                                                                    controllers.GrossAssetsController.checkGrossAssetsAfterIssueExceeded(grossAmount: Long)
+
+GET        /compliance-statement/validate-annual-limit/previous-schemes-total-in-range/:previousSchemesTotalInRange/total-amount-raised/:totalAmountRaised                                                                                                                         controllers.AnnualLimitController.checkLimitExceeded(previousSchemesTotalInRange: Long, totalAmountRaised: Long)
+
+

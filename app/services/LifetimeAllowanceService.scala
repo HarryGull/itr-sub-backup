@@ -16,8 +16,6 @@
 
 package services
 
-import scala.concurrent.Future
-
 object LifetimeAllowanceService extends LifetimeAllowanceService{
   val maxKi: Int = 20000000
   val maxNonKi: Int = 12000000
@@ -28,17 +26,17 @@ trait LifetimeAllowanceService{
   val maxKi: Int
   val maxNonKi: Int
 
-  def checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int): Boolean = {
+  def checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean, previousInvestmentSchemesTotal: Long, proposedAmount: Long): Boolean = {
 
     /** Checks that all operating costs are greater than zero. 'forall' short hand for map and contains **/
     def validAmounts: Boolean = if(hadPrevRFI)previousInvestmentSchemesTotal > 0 && proposedAmount > 0 else proposedAmount > 0
 
-    def checkTotalKI(hadPreviousRFI: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int) : Boolean =  {
+    def checkTotalKI(hadPreviousRFI: Boolean, previousInvestmentSchemesTotal: Long, proposedAmount: Long) : Boolean =  {
       if(hadPreviousRFI) proposedAmount + previousInvestmentSchemesTotal > maxKi
       else proposedAmount > maxKi
     }
 
-    def checkTotalNonKI(hadPreviousRFI: Boolean, previousInvestmentSchemesTotal: Int, proposedAmount: Int) : Boolean = {
+    def checkTotalNonKI(hadPreviousRFI: Boolean, previousInvestmentSchemesTotal: Long, proposedAmount: Long) : Boolean = {
       if(hadPreviousRFI) proposedAmount + previousInvestmentSchemesTotal > maxNonKi
       else proposedAmount > maxNonKi
     }

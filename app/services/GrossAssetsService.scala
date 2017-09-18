@@ -30,14 +30,14 @@ trait GrossAssetsService{
   val maxGrossAssetsAllowedSEIS: Int
   val maxGrossAssetsAfterIssueAllowed: Int
 
-  def checkGrossAssetsExceeded(schemeType: String, grossAmount: Int): Boolean = {
+  def checkGrossAssetsExceeded(schemeType: String, grossAmount: Long): Boolean = {
     schemeType match {
       case Constants.schemeTypeEIS => grossAmount > maxGrossAssetsAllowedEIS
       case Constants.schemeTypeSEIS => grossAmount > maxGrossAssetsAllowedSEIS
     }
   }
 
-  def checkGrossAssetsAfterIssueExceeded(grossAmount: Int): Boolean = {
+  def checkGrossAssetsAfterIssueExceeded(grossAmount: Long): Boolean = {
     grossAmount > maxGrossAssetsAfterIssueAllowed
   }
 }
