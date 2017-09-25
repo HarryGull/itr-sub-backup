@@ -30,7 +30,7 @@ POST       /token/generate-temporary-token                                      
 
 GET        /token/validate-temporary-token/:id                                                                                                                                                                                                                                     controllers.TokenController.validateTemporaryToken(id: String)
 
-#########Compliance Statement############
+#########Compliance Statement#############
 GET        /compliance-statement/full-time-equivalence-check/:schemeType/:numberOfFullTimeEquivalentEmployees                                                                                                                                                                      controllers.EmployeeFullTimeEquivalentController.checkFullTimeEquivalence(schemeType: String, numberOfFullTimeEquivalentEmployees: String)
 
 GET        /compliance-statement/has-investment-trade-started/validate-has-investment-trade-started/day/:hasInvestmentTradeStartedDay/month/:hasInvestmentTradeStartedMonth/year/:hasInvestmentTradeStartedYear                                                                    controllers.HasInvestmentTradeStartedController.validateHasInvestmentTradeStarted(hasInvestmentTradeStartedDay: Int, hasInvestmentTradeStartedMonth: Int, hasInvestmentTradeStartedYear: Int)
