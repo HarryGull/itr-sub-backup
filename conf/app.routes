@@ -6,7 +6,7 @@ GET        /knowledge-intensive/check-secondary-conditions/has-percentage-with-m
 
 GET        /lifetime-allowance/lifetime-allowance-checker/had-previous-rfi/:hadPrevRFI/is-knowledge-intensive/:isKi/previous-schemes-total/:previousInvestmentSchemesTotal/proposed-amount/:proposedAmount                                                                         controllers.LifetimeAllowanceController.checkLifetimeAllowanceExceeded(hadPrevRFI: Boolean, isKi: Boolean, previousInvestmentSchemesTotal: Long, proposedAmount: Long)
 
-GET        /averaged-annual-turnover/check-averaged-annual-turnover/proposed-investment-amount/:proposedInvestmentAmount/annual-turn-over/:annualTurnOver1stYear/:annualTurnOver2ndYear/:annualTurnOver3rdYear/:annualTurnOver4thYear/:annualTurnOver5thYear                       controllers.AveragedAnnualTurnoverController.checkAveragedAnnualTurnover(proposedInvestmentAmount: Int, annualTurnOver1stYear: Int, annualTurnOver2ndYear: Int, annualTurnOver3rdYear: Int, annualTurnOver4thYear:Int, annualTurnOver5thYear:Int)
+GET        /averaged-annual-turnover/check-averaged-annual-turnover/proposed-investment-amount/:proposedInvestmentAmount/annual-turn-over/:annualTurnOver1stYear/:annualTurnOver2ndYear/:annualTurnOver3rdYear/:annualTurnOver4thYear/:annualTurnOver5thYear                       controllers.AveragedAnnualTurnoverController.checkAveragedAnnualTurnover(proposedInvestmentAmount: Long, annualTurnOver1stYear: Long, annualTurnOver2ndYear:Long, annualTurnOver3rdYear: Long, annualTurnOver4thYear:Long, annualTurnOver5thYear:Long)
 
 
 ##TODO: is the below in use??"##
