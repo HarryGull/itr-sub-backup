@@ -30,8 +30,8 @@ object AveragedAnnualTurnoverController extends AveragedAnnualTurnoverController
 
 trait AveragedAnnualTurnoverController extends BaseController with Authorisation{
 
-  def checkAveragedAnnualTurnover(proposedInvestmentAmount: Int, annualTurnOver1stYear: Int,annualTurnOver2ndYear: Int,annualTurnOver3rdYear: Int,
-                                  annualTurnOver4thYear:Int, annualTurnOver5thYear:Int): Action[AnyContent] = Action.async {
+  def checkAveragedAnnualTurnover(proposedInvestmentAmount: Long, annualTurnOver1stYear: Long,annualTurnOver2ndYear: Long,annualTurnOver3rdYear: Long,
+                                  annualTurnOver4thYear:Long, annualTurnOver5thYear:Long): Action[AnyContent] = Action.async {
     implicit request => authorised {
       case Authorised => Future.successful(Ok(Json.toJson{
         AveragedAnnualTurnoverService.checkAveragedAnnualTurnover(proposedInvestmentAmount,annualTurnOver1stYear,annualTurnOver2ndYear,annualTurnOver3rdYear,
