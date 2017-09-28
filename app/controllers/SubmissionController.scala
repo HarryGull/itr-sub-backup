@@ -114,11 +114,11 @@ trait SubmissionController extends BaseController with Authorisation {
     }
   }
 
-  def getAASubmissionDetails(tavcReferenceNumber: String):Action[AnyContent] = Action.async { implicit request =>
+  def getReturnsSummary(tavcReferenceNumber: String):Action[AnyContent] = Action.async { implicit request =>
     authorised {
       case Authorised =>
-        Logger.info(s"[SubmissionController][getAASubmissionSummary]")
-        submissionService.getAASubmissionDetails(tavcReferenceNumber) map { responseReceived =>
+        Logger.info(s"[SubmissionController][getReturnsSummary]")
+        submissionService.getReturnsSummary(tavcReferenceNumber) map { responseReceived =>
           Status(responseReceived.status)(responseReceived.body)
         }
       case NotAuthorised => Future.successful(Forbidden)

@@ -14,7 +14,7 @@ GET        /seis/previous-investments-checker/investments-since-trade-start-date
 
 POST       /advanced-assurance/:tavcReferenceId/submit                                                                                                                                                                                                                             controllers.SubmissionController.submitAA(tavcReferenceId: String)
 
-GET        /advanced-assurance/:tavcReferenceId/submission-details                                                                                                                                                                                                                 controllers.SubmissionController.getAASubmissionDetails(tavcReferenceId: String)
+GET        /returns/:tavcReferenceId/submission-details                                                                                                                                                                                                                 controllers.SubmissionController.getReturnsSummary(tavcReferenceId: String)
 
 GET        /registration/registration-details/safeid/:safeID                                                                                                                                                                                                                       controllers.RegistrationDetailsController.getRegistrationDetails(safeID: String)
 
