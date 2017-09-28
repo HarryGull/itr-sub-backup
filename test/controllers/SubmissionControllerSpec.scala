@@ -237,7 +237,7 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
       .thenReturn(Future.successful(HttpResponse(status, Some(response))))
     when(mockSubmissionService.submitCS(Matchers.any(),Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(HttpResponse(status, Some(response))))
-    when(mockSubmissionService.getAASubmissionDetails(Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockSubmissionService.getReturnsSummary(Matchers.any())(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(HttpResponse(status, Some(response))))
 
     object TestController extends SubmissionController {
@@ -325,7 +325,7 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
 
     "return a response" in new Setup(OK, getSubmissionDetailsJsVal) {
       setup()
-      val result = TestController.getAASubmissionDetails(tavcRef)(FakeRequest())
+      val result = TestController.getReturnsSummary(tavcRef)(FakeRequest())
       status(result) shouldBe OK
       result map { response =>
         assertResult(getSubmissionDetailsJsVal)(response.body)
@@ -337,7 +337,7 @@ class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPer
 
     "return a response" in new Setup(FORBIDDEN, getSubmissionDetailsJsVal) {
       setup()
-      val result = TestController.getAASubmissionDetails(tavcRef)(FakeRequest())
+      val result = TestController.getReturnsSummary(tavcRef)(FakeRequest())
       status(result) shouldBe FORBIDDEN
     }
   }

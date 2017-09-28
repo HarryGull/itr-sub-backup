@@ -80,7 +80,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppP
     "return a valid response" in new Setup {
       when(mockHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(OK, Some(validSubmissionDetailsJsVal))))
-      val result = TestConnector.getAASubmissionDetails(dummyTavcRef)
+      val result = TestConnector.getReturnsSummary(dummyTavcRef)
       await(result) match {
         case response => {
           response.status shouldBe OK
@@ -94,7 +94,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppP
     "return a response" in new Setup {
       when(mockHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, None)))
-      val result = TestConnector.getAASubmissionDetails(dummyTavcRef)
+      val result = TestConnector.getReturnsSummary(dummyTavcRef)
       await(result) match {
         case response => {
           response.status shouldBe BAD_REQUEST
