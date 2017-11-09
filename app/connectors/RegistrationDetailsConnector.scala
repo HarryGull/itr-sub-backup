@@ -17,8 +17,6 @@
 package connectors
 
 import config.{MicroserviceAppConfig, WSHttp}
-import play.Logger
-
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpReads, HttpResponse }
 import uk.gov.hmrc.http.logging.Authorization

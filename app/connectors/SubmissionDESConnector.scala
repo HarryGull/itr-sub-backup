@@ -16,17 +16,12 @@
 
 package connectors
 
-import java.io.FileInputStream
-
-import com.typesafe.config.ConfigFactory
 import config.{MicroserviceAppConfig, WSHttp}
 import play.api.libs.json.{JsValue, Json, Writes}
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http._
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpPost, HttpPut, HttpReads, HttpResponse }
-import uk.gov.hmrc.http.logging.Authorization
 
 object SubmissionDESConnector extends SubmissionDESConnector {
 
