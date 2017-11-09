@@ -23,9 +23,10 @@ import config.{MicroserviceAppConfig, WSHttp}
 import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
-import uk.gov.hmrc.play.http.logging.Authorization
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpPost, HttpPut, HttpReads, HttpResponse }
+import uk.gov.hmrc.http.logging.Authorization
 
 object SubmissionDESConnector extends SubmissionDESConnector {
 
@@ -45,14 +46,14 @@ trait SubmissionDESConnector {
               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val requestUrl = s"$serviceUrl/tax-assured-venture-capital/taxpayers/$tavcReferenceId/returns"
     val desHeaders = hc.copy(authorization = Some(Authorization(s"Bearer $token"))).withExtraHeaders("Environment" -> environment)
-    http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(jsonValue))(implicitly[Writes[JsValue]],HttpReads.readRaw,desHeaders)
+    http.POST[JsValue, HttpResponse](requestUrl, Json.toJson(jsonValue))(implicitly[Writes[JsValue]],HttpReads.readRaw,desHeaders, ec)
   }
 
   def getReturnsSummary(tavcReferenceId:String)
                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val requestUrl = s"$serviceUrl/tax-assured-venture-capital/taxpayers/$tavcReferenceId/returns/summary"
     val desHeaders = hc.copy(authorization = Some(Authorization(s"Bearer $token"))).withExtraHeaders("Environment" -> environment)
-    http.GET[HttpResponse](requestUrl)(HttpReads.readRaw,desHeaders)
+    http.GET[HttpResponse](requestUrl)(HttpReads.readRaw,desHeaders, ec)
   }
 
 }

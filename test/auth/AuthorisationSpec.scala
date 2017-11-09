@@ -21,7 +21,6 @@ import connectors.AuthConnector
 import org.mockito.Matchers
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mock.MockitoSugar
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
 import org.mockito.Mockito._
@@ -29,6 +28,8 @@ import play.api.mvc.Results
 import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 class AuthorisationSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {
 
@@ -108,8 +109,8 @@ class AuthorisationSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {
     }
 
     "Return a NotAuthorised result when no authority is found" in {
-      when(mockAuthConnector.getCurrentAuthority()(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(None))
-      when(mockAuthConnector.getTAVCEnrolment(Matchers.anyString())(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(None))
+      when(mockAuthConnector.getCurrentAuthority()(Matchers.any[HeaderCarrier](), Matchers.any())).thenReturn(Future.successful(None))
+      when(mockAuthConnector.getTAVCEnrolment(Matchers.anyString())(Matchers.any[HeaderCarrier](), Matchers.any())).thenReturn(Future.successful(None))
       val result = authorised()
       status(result) shouldBe FORBIDDEN
     }

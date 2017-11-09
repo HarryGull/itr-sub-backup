@@ -18,10 +18,10 @@ package connectors
 
 import config.{MicroserviceAppConfig, WSHttp}
 import play.Logger
-import uk.gov.hmrc.play.http.logging.Authorization
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpReads, HttpResponse }
+import uk.gov.hmrc.http.logging.Authorization
 
 object RegistrationDetailsConnector extends RegistrationDetailsConnector {
   override lazy val http = WSHttp
@@ -43,6 +43,6 @@ trait RegistrationDetailsConnector {
 
   def getRegistrationDetails(safeID: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val desHeaders = hc.copy(authorization = Some(Authorization(s"Bearer $token"))).withExtraHeaders("Environment" -> environment)
-    http.GET[HttpResponse](s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID")(HttpReads.readRaw,desHeaders)
+    http.GET[HttpResponse](s"$serviceUrl$getRegistrationDetailsURL?$safeIDQuery$safeID")(HttpReads.readRaw,desHeaders, ec)
   }
 }

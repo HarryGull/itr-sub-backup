@@ -27,10 +27,10 @@ import play.api.test.FakeRequest
 import services.{AuditService, TokenService}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.{HttpResponse, HeaderCarrier}
 import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 class TokenControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfterEach {
 

@@ -20,9 +20,9 @@ import connectors.RegistrationDetailsConnector
 import play.Logger
 import play.api.mvc.Results._
 import play.api.mvc.Result
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 object RegistrationDetailsService extends RegistrationDetailsService {
   override lazy val registrationDetailsConnector = RegistrationDetailsConnector

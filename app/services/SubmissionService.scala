@@ -22,6 +22,7 @@ import uk.gov.hmrc.play.http._
 
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.libs.json.{Json, JsValue}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 
 object SubmissionService extends SubmissionService{

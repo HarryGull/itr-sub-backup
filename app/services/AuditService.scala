@@ -20,18 +20,18 @@ import common.{CSAuditConstants, AAAuditConstants, ResponseConstants}
 import config.MicroserviceAuditConnector
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.play.config.AppName
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.AuditExtensions.auditHeaderCarrier
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
-import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import play.api.http.Status
 import play.api.Logger
 import metrics.{Metrics, MetricsEnum}
 import models._
 import play.api.libs.json.Json
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.util.{Failure, Success, Try}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 object AuditService extends AuditService with AppName {
   val metrics = Metrics
@@ -71,7 +71,7 @@ trait AuditService {
       registeredAddress = submittedDataForAudit.registeredAddress,
       contactAddress = submittedDataForAudit.contactAddress)
 
-    auditConnector.sendEvent(ExtendedDataEvent.apply(appName, AAAuditConstants.submitAuditType,
+    auditConnector.sendExtendedEvent(ExtendedDataEvent.apply(appName, AAAuditConstants.submitAuditType,
       tags = hc.toAuditTags(AAAuditConstants.transactionName, rh.path),
       detail = Json.toJson(detailData)))
 
@@ -102,7 +102,7 @@ trait AuditService {
       registeredAddress = submittedDataForAudit.registeredAddress,
       contactAddress = submittedDataForAudit.contactAddress)
 
-    auditConnector.sendEvent(ExtendedDataEvent.apply(appName, CSAuditConstants.submitAuditType,
+    auditConnector.sendExtendedEvent(ExtendedDataEvent.apply(appName, CSAuditConstants.submitAuditType,
       tags = hc.toAuditTags(CSAuditConstants.transactionName, rh.path),
       detail = Json.toJson(detailData)))
   }

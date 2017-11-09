@@ -19,19 +19,19 @@ package services
 import java.util.UUID
 
 import connectors.SubmissionDESConnector
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
 import fixtures.SubmissionFixture
 import org.mockito.Matchers
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.OneServerPerSuite
-import uk.gov.hmrc.play.http.logging.SessionId
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.logging.SessionId
 
 class SubmissionServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite
   with SubmissionFixture {

@@ -20,7 +20,6 @@ import connectors.AuthConnector
 import helpers.AuthHelper._
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.{FakeHeaders, FakeRequest}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.test.Helpers.{FORBIDDEN, _}
@@ -33,6 +32,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import services.{AuditService, SubmissionService}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 class SubmissionControllerSpec extends UnitSpec with MockitoSugar with OneAppPerSuite with BeforeAndAfter with SubmissionFixture {
 

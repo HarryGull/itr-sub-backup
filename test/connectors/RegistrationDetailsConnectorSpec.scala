@@ -22,13 +22,12 @@ import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.test.UnitSpec
 import org.scalatestplus.play.OneAppPerSuite
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 class RegistrationDetailsConnectorSpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
 
@@ -59,14 +58,14 @@ class RegistrationDetailsConnectorSpec extends UnitSpec with MockitoSugar with O
     "return the http GET response code" in {
       when(mockHttp.GET[HttpResponse](Matchers.eq(
         s"${TestConnector.serviceUrl}${TestConnector.getRegistrationDetailsURL}?${TestConnector.safeIDQuery}$safeID"))
-      (Matchers.any(),Matchers.any())).thenReturn(Future.successful(HttpResponse(OK,Some(responseJson))))
+      (Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK,Some(responseJson))))
       await(result).status shouldBe OK
     }
 
     "return the http GET response json" in {
       when(mockHttp.GET[HttpResponse](Matchers.eq(
         s"${TestConnector.serviceUrl}${TestConnector.getRegistrationDetailsURL}?${TestConnector.safeIDQuery}$safeID"))
-        (Matchers.any(),Matchers.any())).thenReturn(Future.successful(HttpResponse(OK,Some(responseJson))))
+        (Matchers.any(),Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK,Some(responseJson))))
       await(result).json shouldBe responseJson
     }
 

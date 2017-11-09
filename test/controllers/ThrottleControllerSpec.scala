@@ -27,9 +27,9 @@ import play.api.test.FakeRequest
 import services.{AuditService, ThrottleService}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 class ThrottleControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with BeforeAndAfterEach {
 

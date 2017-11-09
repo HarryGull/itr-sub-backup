@@ -27,11 +27,11 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 import org.scalatestplus.play.OneAppPerSuite
-
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpPost, HttpResponse }
 
 class AuthConnectorSpec extends UnitSpec with MockitoSugar with ServicesConfig with OneAppPerSuite {
 
@@ -61,13 +61,13 @@ class AuthConnectorSpec extends UnitSpec with MockitoSugar with ServicesConfig w
 
   "AuthConnector.getCurrentAuthority" should {
     "return Some(Authority) when auth info is found" in {
-      when(mockHttp.GET[HttpResponse](Matchers.eq("localhost/auth/authority"))(Matchers.any(), Matchers.any()))
+      when(mockHttp.GET[HttpResponse](Matchers.eq("localhost/auth/authority"))(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(OK,Some(authResponse))))
       val result = await(TestConnector.getCurrentAuthority())
       result shouldBe Some(Authority(uri,oid,userDetailsLink,confidenceLevel))
     }
     "return None when no auth info is found" in {
-      when(mockHttp.GET[HttpResponse](Matchers.eq("localhost/auth/authority"))(Matchers.any(), Matchers.any()))
+      when(mockHttp.GET[HttpResponse](Matchers.eq("localhost/auth/authority"))(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND,None)))
       val result = await(TestConnector.getCurrentAuthority())
       result shouldBe None
@@ -76,19 +76,19 @@ class AuthConnectorSpec extends UnitSpec with MockitoSugar with ServicesConfig w
 
   "AuthConnector.getTAVCEnrolment" should {
     "return Some(Enrolment) when a TAVC enrolment is found" in {
-      when(mockHttp.GET[HttpResponse](Matchers.eq(s"localhost$uri/enrolments"))(Matchers.any(), Matchers.any()))
+      when(mockHttp.GET[HttpResponse](Matchers.eq(s"localhost$uri/enrolments"))(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(OK,Some(enrolmentResponse("HMRC-TAVC-ORG")))))
       val result = await(TestConnector.getTAVCEnrolment(uri))
       result shouldBe Some(Enrolment("HMRC-TAVC-ORG",Seq(Identifier("TAVCRef",tavcRef),Identifier("Postcode",postcode)),"Activated"))
     }
     "return None when no TAVC enrolment is found" in {
-      when(mockHttp.GET[HttpResponse](Matchers.eq(s"localhost$uri/enrolments"))(Matchers.any(), Matchers.any()))
+      when(mockHttp.GET[HttpResponse](Matchers.eq(s"localhost$uri/enrolments"))(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(OK,Some(enrolmentResponse("HMCE-VATDEC-ORG")))))
       val result = await(TestConnector.getTAVCEnrolment(uri))
       result shouldBe None
     }
     "return None when a status other than OK is returned" in {
-      when(mockHttp.GET[HttpResponse](Matchers.eq(s"localhost$uri/enrolments"))(Matchers.any(), Matchers.any()))
+      when(mockHttp.GET[HttpResponse](Matchers.eq(s"localhost$uri/enrolments"))(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(FORBIDDEN)))
       val result = await(TestConnector.getTAVCEnrolment(uri))
       result shouldBe None

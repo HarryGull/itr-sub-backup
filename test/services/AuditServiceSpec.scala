@@ -22,12 +22,10 @@ import org.mockito.{ArgumentCaptor, Matchers}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import uk.gov.hmrc.play.http.logging.SessionId
 import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import uk.gov.hmrc.play.config.AppName
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 import metrics.{Metrics, MetricsEnum}
 import org.scalatest.BeforeAndAfter
@@ -39,6 +37,8 @@ import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.SessionId
 
 class AuditServiceSpec extends UnitSpec with MockitoSugar with AppName with OneAppPerSuite with BeforeAndAfter with AuditHelper with Eventually {
 

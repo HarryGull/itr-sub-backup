@@ -55,10 +55,8 @@ class TokenMongoRepository(implicit mongo: () => DB)
   def validateTemporaryToken(id: String): Future[Boolean] = {
     getTemporarySecret(id).flatMap{
       case Some(token) => {
-        Logger.warn(" TESTING IN QA AND DEV have some issues 123------ "+token.id)
         Future.successful(true)}
       case None => {
-        Logger.warn(" TESTING IN QA AND DEV have some issues 456------ "+id)
         Future.successful(false)}
     }
   }
