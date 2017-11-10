@@ -18,15 +18,12 @@ package connectors
 
 import config.{MicroserviceAppConfig, WSHttp}
 import play.api.http.Status._
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http._
-import play.api.Logger
 import auth.{Authority, Enrolment}
 import uk.gov.hmrc.play.auth.microservice.connectors.ConfidenceLevel
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
 
 trait AuthConnector {
 
@@ -36,7 +33,7 @@ trait AuthConnector {
 
   def http: HttpGet with HttpPost
 
-  def getCurrentAuthority()(implicit hc: HeaderCarrier): Future[Option[Authority]] = {
+  def getCurrentAuthority()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Authority]] = {
     val getUrl = s"""$serviceUrl/$authorityUri"""
     http.GET[HttpResponse](getUrl).map {
       response =>
@@ -53,7 +50,7 @@ trait AuthConnector {
     }
   }
 
-  def getTAVCEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] = {
+  def getTAVCEnrolment(uri: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Enrolment]] = {
     val getUrl = s"$serviceUrl$uri/enrolments"
     http.GET[HttpResponse](getUrl).map {
       response =>

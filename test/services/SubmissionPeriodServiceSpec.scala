@@ -19,12 +19,12 @@ package services
 import java.util.UUID
 
 import org.joda.time.DateTime
-import uk.gov.hmrc.play.http.{HeaderCarrier}
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
 import org.scalatestplus.play.{OneAppPerSuite}
-import uk.gov.hmrc.play.http.logging.SessionId
 import common.Constants._
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.SessionId
 
 class SubmissionPeriodServiceSpec extends UnitSpec with MockitoSugar with OneAppPerSuite {
 

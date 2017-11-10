@@ -24,14 +24,13 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneAppPerSuite
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.test.Helpers.{BAD_REQUEST, _}
-import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppPerSuite with SubmissionFixture {
 
@@ -58,7 +57,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppP
   "calling submit" should {
     "return a valid response for an AA request" in new Setup {
 
-      when(mockHttp.POST[JsValue, HttpResponse](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+      when(mockHttp.POST[JsValue, HttpResponse](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(HttpResponse(OK))
 
       val result = TestConnector.submit(validSubmissionJsValAA, dummyTavcRef)
@@ -67,7 +66,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppP
 
     "return a valid response for a CS request" in new Setup {
 
-      when(mockHttp.POST[JsValue, HttpResponse](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
+      when(mockHttp.POST[JsValue, HttpResponse](Matchers.anyString(), Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(HttpResponse(SERVICE_UNAVAILABLE))
 
       val result = TestConnector.submit(validSubmissionJsValCS, dummyTavcRef)
@@ -78,7 +77,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppP
   "Calling getAASubmissionDetails with a TAVC account authorized" should {
 
     "return a valid response" in new Setup {
-      when(mockHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(OK, Some(validSubmissionDetailsJsVal))))
       val result = TestConnector.getReturnsSummary(dummyTavcRef)
       await(result) match {
@@ -92,7 +91,7 @@ class SubmissionDESConnectorSpec extends UnitSpec with MockitoSugar with OneAppP
   "SubmissionController.getAASubmissionDetails with a TAVC account not authorized" should {
 
     "return a response" in new Setup {
-      when(mockHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockHttp.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, None)))
       val result = TestConnector.getReturnsSummary(dummyTavcRef)
       await(result) match {

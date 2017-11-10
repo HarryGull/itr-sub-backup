@@ -30,6 +30,7 @@ import scala.concurrent.Future
 import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.math._
+import uk.gov.hmrc.http.{ BadRequestException, HttpResponse, NotFoundException, Upstream4xxResponse, Upstream5xxResponse }
 
 object SubmissionController extends SubmissionController{
   val submissionService: SubmissionService= SubmissionService
