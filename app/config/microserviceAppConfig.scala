@@ -28,6 +28,7 @@ trait AppConfig {
   val authURL: String
   val authorityURL: String
   val throttleThreshold: Int
+  val fileUploadURL: String
 }
 
 object MicroserviceAppConfig extends AppConfig with ServicesConfig {
@@ -41,4 +42,5 @@ object MicroserviceAppConfig extends AppConfig with ServicesConfig {
   override lazy val authURL = baseUrl("auth")
   override lazy val authorityURL = loadConfig("authority.url")
   override lazy val throttleThreshold = getConfInt("throttle.threshold", throw new Exception("throttle-threshold not found in config"))
+  override lazy val fileUploadURL: String = baseUrl("file-upload")
 }

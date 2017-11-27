@@ -27,6 +27,14 @@ object Constants{
   val schemeTypeEISWithKI = "EISKI"
   val endTaxYearDay = 5
   val endTaxYearMonth = 4
+  val bulkUploadRowDelimeterLength = 10000
+
+  val quarantined = "QUARANTINED"
+  val cleaned = "CLEANED"
+  val infected = "INFECTED"
+  val available = "AVAILABLE"
+  val error = "ERROR"
+
 }
 
 object ResponseConstants {

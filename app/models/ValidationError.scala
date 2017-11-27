@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package repositories
+package models
 
-import play.modules.reactivemongo.MongoDbConnection
+import play.api.libs.json._
 
-object Repositories {
-  private implicit val mongo = new MongoDbConnection {}.db
+case class ValidationError(row: Int, column: Int, error: String)
 
-  lazy val throttleRepository = new ThrottleMongoRepository()
-  lazy val tokenRepository = new TokenMongoRepository()
-  lazy val investorMongoRepository = new InvestorMongoRepository()
-  lazy val investorErrorMongoRepository = new InvestorErrorMongoRepository()
+object ValidationError {
+  implicit val format = Json.format[ValidationError]
 }
