@@ -1,0 +1,7 @@
+#Cross field validation errors
+cross.field.validation.hasCompanyEmptyFields=Where Column 2 is 'Company' then Columns 3 & 4 must be blank
+cross.field.validation.hasCompanyRequiredFields=Where Column 2 is 'Company' then Column 5 cannot be blank
+cross.field.validation.hasIndividualEmptyFields=Where Column 2 is 'Individual' then Column 5 must be blank
+cross.field.validation.hasIndividualRequiredFields=Where Column 2 is 'Individual' then Column 3 cannot be blank
+cross.field.validation.hasCountryCodeRequiredFields=Where Column 11 is 'GB' then Column 10 cannot be blank
+cross.field.validation.hasUnitIssuesRequiredFields=For each block of four columns from Column 24, if one entry is populated all four data items must all be.populated Note: this must be able to handle multiple existing shareholdings in the row (24-27,28-31, ...)

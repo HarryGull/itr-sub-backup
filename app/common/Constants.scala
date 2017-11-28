@@ -35,6 +35,11 @@ object Constants{
   val available = "AVAILABLE"
   val error = "ERROR"
 
+  val typeCompany = "Company"
+  val typeIndividual = "Individual"
+
+  val countryCodeGB = "GB"
+
 }
 
 object ResponseConstants {
