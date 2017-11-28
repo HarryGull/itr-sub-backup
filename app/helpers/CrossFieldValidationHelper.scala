@@ -45,14 +45,14 @@ object CrossFieldValidationHelper {
     /** Where Column 2 is "Individual" then Column 3 cannot be blank **/
     val hasIndividualRequiredFields: Boolean =
       if (investor.investorType == Constants.typeIndividual) investor.investorInfo.investorDetails.individualDetails.isDefined else true
-    
+
     /** Where Column 11 is "GB" then Column 10 cannot be blank **/
     val hasCountryCodeRequiredFields: Boolean = {
-      if (investor.investorType == Constants.typeIndividual &&
-        investor.investorInfo.investorDetails.individualDetails.get.individualAddress.countryCode == Constants.countryCodeGB) {
+      if (investor.investorInfo.investorDetails.individualDetails.isDefined
+        && investor.investorInfo.investorDetails.individualDetails.get.individualAddress.countryCode == Constants.countryCodeGB){
         investor.investorInfo.investorDetails.individualDetails.get.individualAddress.postalCode.isDefined
-      } else if (investor.investorType == Constants.typeCompany &&
-        investor.investorInfo.investorDetails.companyDetails.get.companyAddress.get.countryCode == Constants.countryCodeGB) {
+      } else if (investor.investorInfo.investorDetails.companyDetails.isDefined
+        && investor.investorInfo.investorDetails.companyDetails.get.companyAddress.get.countryCode == Constants.countryCodeGB) {
         investor.investorInfo.investorDetails.companyDetails.get.companyAddress.get.postalCode.isDefined
       }
       else true
