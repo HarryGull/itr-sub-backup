@@ -20,6 +20,7 @@ private object AppDependencies {
   private val scalaTestVersion = "2.2.6"
   private val mockitoAll = "1.9.5"
   private val scalaTestPlus = "1.5.1"
+  private val akkaStreamTestKitVersion = "2.5.6"
 
   val compile = Seq(
     "uk.gov.hmrc" %% "play-reactivemongo" % playReactivemongoVersion,
@@ -44,6 +45,7 @@ private object AppDependencies {
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.mockito" % "mockito-all" % mockitoAll % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlus % scope,
+        "com.typesafe.akka" %% "akka-stream-testkit" % akkaStreamTestKitVersion,
         "uk.gov.hmrc" %% "reactivemongo-test" % "2.0.0" % scope
       )
     }.test
